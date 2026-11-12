@@ -211,3 +211,35 @@ code { font-size: 0.9em; background: var(--ground-3); padding: 0 4px; border-rad
   .page:last-child { break-after: auto; }
   .page .pic img { max-height: 150mm; object-fit: contain; }
 }
+
+/* power walkthrough (power.html): the bench drawing, wires in their real colours */
+.pw-sheet svg { max-height: 68vh; }
+.pw-ink { fill: var(--ink-2); }
+.pw-green { fill: color-mix(in srgb, var(--patch-green) 22%, var(--ground)); }
+.pw-red { fill: color-mix(in srgb, var(--patch-red) 18%, var(--ground)); }
+.pw-blue { fill: color-mix(in srgb, var(--patch-blue) 22%, var(--ground)); }
+.pw-wago { fill: var(--ground-3); }
+.pw-button { fill: var(--patch-red); }
+.pw-halo { fill: none; stroke: var(--ink-3); stroke-width: 6; opacity: 0.45; stroke-linecap: round; stroke-linejoin: round; }
+.pw-wire { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.pw-wire.now { stroke-width: 4.5; }
+.pw-ring { fill: none; stroke: var(--light-mark); stroke-width: 2.5; }
+#wires g { transition: opacity var(--t-ui) var(--ease-out); }
+@media (prefers-reduced-motion: no-preference) {
+  .pw-wire.now { stroke-dasharray: 9 6; animation: pw-flow 1s linear infinite; }
+  @keyframes pw-flow { to { stroke-dashoffset: -15; } }
+}
+.pw-pills { display: flex; flex-wrap: wrap; gap: var(--s-2); padding: var(--s-3) var(--s-4) var(--s-4); }
+.pw-pill { min-width: 2.4rem; height: 2.2rem; padding: 0 var(--s-2); border-radius: 999px; border: 1px solid var(--rule);
+  background: transparent; color: var(--ink-2); font: inherit; font-size: var(--step-small); cursor: pointer; }
+.pw-pill.done { color: var(--ink); background: var(--ground-3); }
+.pw-pill.on { background: var(--ground-4); color: var(--ink); border-color: var(--light-mark); font-weight: 600; }
+@media (hover: hover) and (pointer: fine) { .pw-pill:not(.on):hover { background: var(--ground-4); } }
+.pw-pill.ck { border-style: dashed; }
+.pw-violet { fill: color-mix(in srgb, #7b62c9 22%, var(--ground)); }
+.pw-teal { fill: color-mix(in srgb, #2f9a86 22%, var(--ground)); }
+.pw-coral { fill: color-mix(in srgb, #d0623e 20%, var(--ground)); }
+.pw-amber { fill: color-mix(in srgb, #c98a1e 22%, var(--ground)); }
+.pw-cmd { margin: var(--s-3) 0 0; padding: var(--s-3) var(--s-4); background: var(--ground-3); border: 1px solid var(--rule);
+  border-radius: 6px; font-size: var(--step-small); white-space: pre-wrap; overflow-wrap: anywhere; }
+.pw-pass { margin: var(--s-3) 0 0; padding: var(--s-2) var(--s-3); border-left: 3px solid var(--patch-green); background: var(--ground-3); }

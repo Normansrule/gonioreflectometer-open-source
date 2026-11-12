@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio power wiring</title>
+<meta name="description" content="The OpenGonio motor power, wired step by step as the parts sit on the bench: wall adapter, jack, e-stop, over-travel switch, lever connectors, SKR Pico and the PC817 power sense. Text from docs/wiring.yaml.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/guide.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the walkthrough</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Pages">
+  <a href="./">Website</a><a href="lab.html">Lab</a><a href="power.html" aria-current="page">Power wiring</a><a href="controller.html">Controller wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="g-head" aria-labelledby="h1">
+ <h1 id="h1" class="display">Power wiring, step by step</h1>
+ <p class="g-lead">The motor power drawn the way the parts sit on the bench: wall adapter and jack, e-stop, over-travel switch, the two
+  lever connectors on the tray, the SKR Pico and the PC817 power sense. Wires already made stay drawn; the moving wire with the two rings
+  is the one to make now. The wording comes from <code>docs/wiring.yaml</code>, the same source as the <a href="wiring.html">full wiring guide</a>,
+  which carries on from here with the motors.</p>
+ <p class="g-safety"><span class="patch red" aria-hidden="true"></span><span><b>Press the e-stop and keep the wall adapter unplugged while you wire.</b>
+  Strip 8 mm for screw terminals and 11 mm for lever connectors, twist the strands, tug-test every wire.</span></p>
+</section>
+
+<section class="stage" aria-label="Current step">
+ <figure class="sheet pw-sheet" style="margin:0">
+  <svg id="bench" viewBox="0 0 680 470" role="img" aria-labelledby="bench-title bench-desc">
+   <title id="bench-title">Power wiring on the bench</title>
+   <desc id="bench-desc">Outlet, 24 V adapter, jack, e-stop, over-travel switch with black, grey and blue leads, splices A and B, a cap,
+    lever connectors MOT+ and MOT−, the SKR Pico power input and the PC817 opto module, with the wires made so far.</desc>
+   <rect class="box-r" x="40" y="40" width="50" height="64" rx="6"/>
+   <rect x="56" y="58" width="5" height="14" rx="2" class="pw-ink"/><rect x="69" y="58" width="5" height="14" rx="2" class="pw-ink"/>
+   <text class="pin-t" x="65" y="122" text-anchor="middle">Outlet</text>
+   <rect class="box-r" x="110" y="50" width="96" height="44" rx="6"/>
+   <text class="box-t" x="158" y="67" text-anchor="middle">24 V 3 A</text><text class="pin-t" x="158" y="84" text-anchor="middle">adapter</text>
+   <rect class="box-r pw-green" x="226" y="140" width="56" height="62" rx="6"/>
+   <text class="box-t" x="248" y="158" text-anchor="middle">Jack</text>
+   <text class="pin-t" x="270" y="178" text-anchor="end">+</text><text class="pin-t" x="270" y="194" text-anchor="end">−</text>
+   <circle cx="282" cy="174" r="4" class="pw-ink"/><circle cx="282" cy="190" r="4" class="pw-ink"/>
+   <rect class="box-r pw-red" x="320" y="30" width="160" height="110" rx="8"/>
+   <text class="box-t" x="400" y="50" text-anchor="middle">E-stop (lid off)</text>
+   <circle cx="400" cy="76" r="14" class="pw-button"/>
+   <text class="pin-t" x="345" y="110" text-anchor="middle">NC 1</text><text class="pin-t" x="390" y="110" text-anchor="middle">NC 2</text>
+   <text class="pin-t" x="430" y="110" text-anchor="middle">NO 3</text><text class="pin-t" x="462" y="110" text-anchor="middle">4</text>
+   <circle cx="345" cy="126" r="4" class="pw-ink"/><circle cx="390" cy="126" r="4" class="pw-ink"/>
+   <circle cx="430" cy="126" r="4" class="pw-ink" opacity=".35"/><circle cx="462" cy="126" r="4" class="pw-ink" opacity=".35"/>
+   <rect class="box-r" x="520" y="30" width="130" height="80" rx="8"/>
+   <text class="box-t" x="585" y="52" text-anchor="middle">Limit switch</text><text class="pin-t" x="585" y="69" text-anchor="middle">over-travel</text>
+   <path d="M545 110V150" stroke="#1c1b19" stroke-width="3"/><path d="M580 110V150" stroke="#9b9a95" stroke-width="3"/><path d="M615 110V150" stroke="#2f7fd6" stroke-width="3"/>
+   <text class="pin-t" x="545" y="100" text-anchor="middle">COM</text><text class="pin-t" x="580" y="100" text-anchor="middle">NC</text><text class="pin-t" x="615" y="100" text-anchor="middle">NO</text>
+   <rect class="box-r pw-wago" x="430" y="200" width="80" height="34" rx="6"/><text class="pin-t" x="470" y="221" text-anchor="middle">Splice A</text>
+   <rect class="box-r pw-wago" x="530" y="200" width="80" height="34" rx="6"/><text class="pin-t" x="570" y="221" text-anchor="middle">Splice B</text>
+   <rect class="box-r pw-wago" x="622" y="200" width="50" height="34" rx="6"/><text class="pin-t" x="647" y="221" text-anchor="middle">Cap</text>
+   <rect class="box-r" x="300" y="280" width="170" height="40" rx="6"/>
+   <text class="box-t" x="314" y="304">MOT+</text>
+   <text class="pin-t" x="380" y="304" text-anchor="middle">1</text><text class="pin-t" x="415" y="304" text-anchor="middle">2</text><text class="pin-t" x="450" y="304" text-anchor="middle">3</text>
+   <rect class="box-r" x="300" y="350" width="170" height="40" rx="6"/>
+   <text class="box-t" x="314" y="374">MOT−</text>
+   <text class="pin-t" x="380" y="374" text-anchor="middle">1</text><text class="pin-t" x="415" y="374" text-anchor="middle">2</text><text class="pin-t" x="450" y="374" text-anchor="middle">3</text>
+   <rect class="box-r pw-green" x="520" y="270" width="140" height="90" rx="8"/>
+   <text class="box-t" x="590" y="292" text-anchor="middle">SKR Pico</text>
+   <text class="pin-t" x="532" y="316">+ 12/24V</text><text class="pin-t" x="532" y="344">GND −</text>
+   <rect class="box-r pw-blue" x="520" y="388" width="140" height="60" rx="8"/>
+   <text class="box-t" x="590" y="407" text-anchor="middle">PC817 opto</text>
+   <text class="pin-t" x="532" y="424">IN+</text><text class="pin-t" x="532" y="442">IN−</text>
+   <g id="wires"></g><g id="rings"></g>
+  </svg>
+  <div class="pw-pills" id="pills" role="group" aria-label="Steps"></div>
+ </figure>
+
+ <article class="card" aria-live="polite">
+  <div class="c-head">
+   <h2 id="s-title"></h2>
+   <p class="meta" id="k-sec"></p>
+  </div>
+  <div class="c-body" id="s-body"></div>
+  <div class="c-nav">
+   <p class="progress num" id="k-step"></p>
+   <div class="nav">
+    <button class="btn" type="button" id="back">Back</button>
+    <button class="btn btn-light" type="button" id="next">Next</button>
+   </div>
+   <p class="hint">Keys: <span class="kbd">←</span> <span class="kbd">→</span>. Each step has its own link (the address bar).</p>
+  </div>
+ </article>
+</section>
+
+<p class="foot">Nothing here has been built or measured yet: this is the design. Part numbers in brackets are the parts list IDs
+ (README → Electronics). The wires here are sections 1 and 2 of the <a href="wiring.html">full wiring guide</a> plus the two
+ power-sense wires from its section 6; after the check, Next carries on with the <a href="controller.html">controller wiring</a>.</p>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="lab.html">Lab</a><a href="power.html" aria-current="page">Power wiring</a><a href="controller.html">Controller wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
+</footer>
+<script src="wiring-guide.js"></script>
+<script src="og/walk-power.js"></script>
+<script src="og/walk.js"></script>
+</body>
+</html>

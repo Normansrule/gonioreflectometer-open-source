@@ -4,6 +4,8 @@
 
 Open-source four-axis gonioreflectometer and 3D scanner. It measures the bidirectional reflectance distribution function (BRDF) of flat samples and scans objects in 3D. Design follows Ansari-Asl et al. (2024), rebuilt for under \$630 in parts, with no soldering, drilling, sawing or crimping.
 
+New here? The **project map** on the website (`docs/explore/`) shows the whole project as a clickable map with a guided tour in plain words.
+
 | Page                                                                                                                                                                                              | Contents                                                      |
 |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
 | [How it works](How-it-works.md)                                                                                                                                                                   | BRDF, geometry, the four axes, one measurement                |

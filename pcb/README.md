@@ -13,6 +13,7 @@ One board on the controller tray that replaces the loose modules and most jumper
 | Two 4-channel MOSFET modules MSK-03 (10, optional, BLOCKED) | footprints only until a reviewed colour-LED driver exists |
 | Keypad, OLED, sensor jumpers to the ESP32-S3 (02, 10, 15) | keyed headers; keypad commons joined on the board (no lever connector) |
 | Nothing (trade-off in stage 01) | reverse-polarity MOSFET, transient-voltage-suppression (TVS) diode, bulk capacitor |
+| INA219 power monitor BAT-05 + hub GND jumper (17, battery upgrade) | INA219 + 0.1 Ω shunt between TB1 `+` and the e-stop line, on I2C0 at 0x40; ground shared on the board |
 
 ## Rules
 

@@ -261,6 +261,7 @@ figcaption { margin-top: var(--s-3); font-size: var(--step-small); color: var(--
 .trio th { text-align: left; font-weight: 400; color: var(--ink-2); font-size: 1rem; padding: var(--s-2) var(--s-3) var(--s-2) 0; }
 .trio thead th { padding-bottom: 0; }
 .trio td { font-family: var(--font-display); font-size: clamp(1.75rem, 1.2rem + 1.5vw, 2.5rem); line-height: 1; padding: var(--s-2) var(--s-3) var(--s-2) 0; }
+@media (max-width: 380px) { .trio th { font-size: 0.8125rem; padding-right: var(--s-2); } .trio td { font-size: 1.375rem; padding-right: var(--s-2); } }
 .panel .big, .big { font-family: var(--font-display); font-size: clamp(2.5rem, 1.6rem + 3vw, 4rem); line-height: 1; font-variant-numeric: tabular-nums; }
 .big.fail { color: var(--patch-red); }
 
@@ -315,3 +316,8 @@ figcaption { margin-top: var(--s-3); font-size: var(--step-small); color: var(--
               margin: var(--s-9) 0 0 -0.04em; white-space: nowrap; }
 .foot .legal { margin-top: var(--s-6); font-size: 0.8125rem; opacity: 0.75; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); }
 .foot :focus-visible { outline-color: var(--ground); }
+
+/* the landing header on the narrowest phones: "Project map" becomes "Map" */
+.show-xs { display: none; }
+@media (max-width: 360px) { .hide-xs { display: none; } .show-xs { display: inline; }
+  .top { gap: var(--s-3); } .top .mark { font-size: 1.25rem; } .top .theme { padding: 0 var(--s-3); } }

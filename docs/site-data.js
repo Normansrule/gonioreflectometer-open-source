@@ -241,17 +241,18 @@ window.SITE = {
    "milestones": [
     "Adaptive sampling",
     "Space carving",
-    "Compare with MERL / RGL data"
+    "Compare with MERL / RGL data",
+    "Battery power"
    ],
-   "steps": 3,
-   "hours": 13.0,
+   "steps": 7,
+   "hours": 17.2,
    "cost": 0.0
   }
  ],
  "plan_usd": 495.19,
  "cap_usd": 630.0,
- "steps": 136,
- "hours": 94.0,
+ "steps": 140,
+ "hours": 98.2,
  "parts": 83,
  "evidence": [
   {

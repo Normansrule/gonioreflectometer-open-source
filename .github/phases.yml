@@ -2330,3 +2330,60 @@ milestones:
     verify:
     - Fitted roughness within 20 % of the published fit.
     record: Both fits + a plot in `phases/17-upgrades/`.
+- id: M49
+  stage: 17-upgrades
+  title: Battery power
+  goal: Run without the wall socket, from a USB-C power bank or a 24 V pack charged over USB-C.
+  weeks: 1
+  steps:
+  - id: M49.1
+    title: Power monitor
+    time: 45 min
+    needs:
+    - stage 01 power and the ESP32-S3 hub working
+    - INA219 (BAT-05) + STEMMA QT cable (BAT-05b)
+    do:
+    - 'Power off: adapter unplugged. Move the red lead that runs from the jack `+` to the e-stop: jack `+` → INA219 `VIN+`, INA219 `VIN−` → e-stop (lever connector). Now it reads every source.'
+    - 'Chain it on the hub''s first I²C pair: hub → AS7341 (SPC-02) → INA219 (BAT-05b) → OLED. Female jumper from a hub GND pin to the 24 V `−` lever connector (the INA219 reads bus volts against the hub ground).'
+    - '`bash scripts/hub.sh` (copies the new firmware); `python -m serial.tools.miniterm /dev/ttyACM1 115200` (the hub''s port); type `SOURCE WALL`, then `BATT?`.'
+    verify:
+    - '`BATT WALL` reads 24.0 ± 0.3 V, about 0.03 A with the motors asleep, `OK` (design.md → Battery power).'
+    record: Idle and homing volts and amps in phases/17-upgrades/design.md → Results.
+  - id: M49.2
+    title: USB-C bank straight in (Level 1)
+    time: 30 min
+    needs:
+    - M49.1
+    - PD trigger (BAT-02), plug lead (BAT-06), a USB-C bank with a 20 V profile, ≥ 45 W
+    do:
+    - Set the trigger's DIP switch to 20 V; plug in the bank; its display must read 20 V (not 5 V).
+    - 'Plug lead into the trigger''s screw terminals: red `+`, black `−`. Meter on the plug (T-B1): centre `+`, 20.0 V.'
+    - 'E-stop pressed. Adapter out, plug lead into the jack, then release the e-stop. Send `SOURCE USBC <bank Wh>` (the Wh printed on the bank).'
+    verify:
+    - Home, then one mirror sweep finishes; `BATT USBC` reads 19.5–20.5 V throughout.
+    record: Bank model, Wh, and the sweep's Wh used in design.md → Results.
+  - id: M49.3
+    title: 24 V pack, charged over USB-C (Level 2)
+    time: 2 h
+    needs:
+    - M49.2
+    - pack (BAT-01), charging module (BAT-03), fuse holder + fuse (BAT-04)
+    do:
+    - 'Pack on arrival (T-B2): 21–25.2 V on its leads; read its label for the protections; note balancing and a thermistor if listed.'
+    - 'Charging module, pack **not** connected: trigger out → module in; set output 24.00 V and current limit 1.000 A (its manual); check the LCD (T-B3).'
+    - 'Fuse holder on the pack `+`. Lever connectors: node `+` = fuse lead + module out `+` + plug lead `+`; node `−` = pack `−` + module out `−` + plug lead `−`. Never use the pack''s own 25.2 V charger.'
+    - Charge until the module's current falls below 0.1 A at 24.0 V. Then e-stop pressed, plug lead into the jack, release. Send `SOURCE PACK`.
+    verify:
+    - 'Charging stops at 24.0 V (T-B3); `BATT PACK` reads 23.8–24.1 V full; a mirror sweep runs with USB-C both plugged in and unplugged.'
+    record: Charge time from empty, pack volts full and after one sweep, in design.md → Results.
+  - id: M49.4
+    title: Runtime and warnings
+    time: 1 h
+    needs:
+    - M49.3
+    do:
+    - 'T-B4: from full, run mirror sweeps back to back (USB-C unplugged) until the OLED shows CRIT.'
+    - 'T-B5: check that CRIT appeared on the OLED and in the app log, and that the run paused after its pose.'
+    verify:
+    - CRIT at 20.3–20.5 V; the run paused; hours and Wh replace the estimates in design.md.
+    record: Hours, Wh used and the volts curve (from `BATT?` every minute) in design.md → Results.

@@ -26,6 +26,7 @@ build:           ## regenerate checklists, README tables, figures, budgets, 3D i
 	$(PY) tools/make_assets.py > /dev/null
 	$(PY) tools/wiring.py
 	$(PY) tools/build_book.py
+	$(PY) tools/explore_graph.py
 	$(PY) tools/cad/index.py
 	$(PY) tools/cad/catalog.py
 	$(PY) tools/bom_readme.py

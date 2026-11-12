@@ -3,7 +3,9 @@
 #
 # USB serial line protocol (laptop <-> hub)
 #   out: BTN HOME|START|STOP|LIGHT|NEXT|PAUSE   POWER 0|1   ENC a b c d   PONG OpenGonio-hub 4 POWER n   ERR <msg>
-#   in : BAND 0-7 | BAND OFF | ENC? | POWER? | PING | SHOW line1|line2|line3 | SPEC? <id>
+#   in : BAND 0-7 | BAND OFF | ENC? | POWER? | PING | SHOW line1|line2|line3 | SPEC? <id> | BATT? | SOURCE WALL|PACK|USBC [Wh]
+#   BATT? -> 'BATT <source> <volts> <amps> <watts> <Wh used> <OK|LOW|CRIT|NONE>' from an INA219 (0x40, stage 17 battery kit)
+#   on the first I2C pair; the hub also sends that line when the state changes, and 'BTN PAUSE' once on CRIT.
 #   SPEC? <id> -> 'SPEC #<id> f1 f2 f3 f4 f5 f6 f7 f8 clear nir' from an AS7341 (0x39) on the first I2C pair (shared with the OLED).
 # Same protocol on the board's USB connector (laptop) and on UART1 GPIO 47 TX / 48 RX (Pi Zero station, 3.3 V, 115200).
 # Optional SSD1306 128x64 OLED at 0x3C on the first I2C pair (GPIO 2 SCL, GPIO 1 SDA); install: mpremote mip install ssd1306
@@ -24,6 +26,8 @@ I2C_PAIRS = [(2, 1), (40, 39), (42, 41), (18, 38)]   # (scl, sda)
 UART_TX, UART_RX = 47, 48
 AS5600 = 0x36
 DEBOUNCE_MS = 30
+INA = 0x40                              # INA219 power monitor, 0.1 ohm shunt (Adafruit 904): volts and amps on the 24 V line
+SHUNT_OHM = 0.1
 
 btn = {n: Pin(p, Pin.IN, Pin.PULL_UP) for n, p in BUTTONS.items()}
 last = {n: 1 for n in BUTTONS}
@@ -39,6 +43,53 @@ try:
     oled = ssd1306.SSD1306_I2C(128, 64, buses[0])
 except Exception:                           # no display fitted: everything else still works
     oled = None
+
+
+def battery_state(volts, source, used_wh, capacity_wh):
+    """OK / LOW / CRIT for the power source in use. WALL never runs out; a sagging supply still reads LOW.
+    PACK: six lithium-ion cells (25.2 V full): LOW at 3.6 V a cell, CRIT at 3.4 V, above the pack's own cut-off.
+    USBC: the bank holds 20 V until it is empty, so the warning comes from energy used against its rated Wh."""
+    if source == "PACK":
+        return "CRIT" if volts < 20.4 else "LOW" if volts < 21.6 else "OK"
+    if source == "USBC":
+        if volts < 18.5:                    # the bank stopped holding 20 V: it is about to switch off
+            return "CRIT"
+        left = 1 - used_wh / capacity_wh if capacity_wh > 0 else 1
+        return "CRIT" if left < 0.05 else "LOW" if left < 0.15 else "OK"
+    return "LOW" if volts < 22.0 else "OK"   # WALL (24 V adapter)
+
+
+def load_source():
+    try:
+        name, wh = (open("source.txt").read().split() + ["0"])[:2]
+        return (name, float(wh)) if name in ("WALL", "PACK", "USBC") else ("WALL", 0.0)
+    except Exception:                       # first boot: no file yet
+        return "WALL", 0.0
+
+
+def ina_read():
+    raw = buses[0].readfrom_mem(INA, 0x01, 2)                       # shunt voltage, signed, 10 uV a count
+    sh = (raw[0] << 8) | raw[1]
+    sh = sh - 0x10000 if sh & 0x8000 else sh
+    v = buses[0].readfrom_mem(INA, 0x02, 2)                         # bus voltage, bits 15-3, 4 mV a count
+    return (((v[0] << 8) | v[1]) >> 3) * 0.004, sh * 10e-6 / SHUNT_OHM
+
+
+saved = load_source()
+source = saved[0]                           # WALL / PACK / USBC, kept in source.txt across restarts
+capacity_wh = saved[1]                      # USBC: the bank's rated Wh; 0 = not set
+used_wh = 0.0
+batt = "NONE"
+batt_t = time.ticks_ms()
+
+
+def batt_line():
+    try:
+        volts, amps = ina_read()
+    except OSError:                         # no INA219 fitted
+        return None, "BATT %s 0 0 0 0 NONE" % source
+    return (volts, amps), "BATT %s %.2f %.3f %.1f %.2f %s" % (source, volts, amps, volts * amps, used_wh,
+                                                             battery_state(volts, source, used_wh, capacity_wh))
 
 
 AS = 0x39                                   # AS7341 11-channel spectral sensor; register map per the ams datasheet
@@ -119,6 +170,7 @@ def motion_power():
 
 
 def handle(line):
+    global source, capacity_wh, used_wh
     if line.strip().upper().startswith("SHOW"):
         show(line.strip()[4:].strip().split("|"))
         return
@@ -138,6 +190,15 @@ def handle(line):
         elif parts[0] == "SPEC?":                # "SPEC? <id>": the reply echoes the id so the host can match it
             rid = ("#%d " % int(parts[1])) if len(parts) > 1 else ""
             out("SPEC " + rid + " ".join(str(v) for v in spectral()))
+        elif parts[0] == "BATT?":
+            out(batt_line()[1])
+        elif parts[0] == "SOURCE":               # after a full charge: SOURCE PACK, or SOURCE USBC 74 (the bank's Wh)
+            if parts[1] not in ("WALL", "PACK", "USBC"):
+                raise ValueError("source is WALL, PACK or USBC")
+            source, capacity_wh, used_wh = parts[1], float(parts[2]) if len(parts) > 2 else 0.0, 0.0
+            with open("source.txt", "w") as f:
+                f.write("%s %s" % (source, capacity_wh))
+            out(batt_line()[1])
         elif parts[0] == "ENC?":
             out("ENC " + " ".join("%.3f" % read_angle(b) for b in buses))
         else:
@@ -165,6 +226,18 @@ while True:
         out("POWER %d" % power)
         if not power:
             band(None)
+    if time.ticks_diff(now, batt_t) >= 1000:   # once a second: energy used and the battery state
+        dt, batt_t = time.ticks_diff(now, batt_t) / 3_600_000, now
+        reading, line = batt_line()
+        if reading:
+            used_wh += reading[0] * reading[1] * dt
+        state = line.split()[-1]
+        if state != batt:
+            batt = state
+            out(line)
+            if state == "CRIT":
+                out("BTN PAUSE")            # the run stops at its next safe point, as if PAUSE were pressed
+                show(["BATTERY", "CRITICAL", "", "charge or plug", "in the adapter"])
     while poll.poll(0):
         ch = sys.stdin.read(1)
         if ch in "\r\n":

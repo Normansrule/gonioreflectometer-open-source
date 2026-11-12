@@ -159,7 +159,7 @@ def check_site() -> list[str]:
     errs = []
     app = ROOT / "software" / "src" / "opengonio" / "app" / "static"
     for page in (ROOT / "docs" / "index.html", ROOT / "docs" / "lab.html", ROOT / "docs" / "wiring.html",
-                 ROOT / "docs" / "build.html", app / "index.html"):
+                 ROOT / "docs" / "power.html", ROOT / "docs" / "controller.html", ROOT / "docs" / "build.html", app / "index.html"):
         for ref in re.findall(r'(?:src|href)="([^"#?]+)', page.read_text(encoding="utf-8")):
             if re.match(r"^(https?:|mailto:|data:)", ref) or ref.startswith("/api/"):
                 continue
@@ -171,6 +171,14 @@ def check_site() -> list[str]:
             twin = app / "og" / rel
             if not twin.exists() or twin.read_bytes() != f.read_bytes():
                 errs.append(f"{twin.relative_to(ROOT)} differs from docs/og/{rel} (run `make build`)")
+    import json
+    guide = json.loads((ROOT / "docs" / "wiring-guide.js").read_text(encoding="utf-8").split("window.WIRING = ", 1)[1].strip().rstrip(";"))
+    have = {(w["from"]["part"], w["from"]["pin"], w["to"]["part"], w["to"]["pin"])
+            for g in guide["groups"] for w in g["wires"] if w.get("from") and w.get("to")}
+    for walk in sorted((ROOT / "docs" / "og").glob("walk-*.js")):     # bench walkthroughs draw rows of wiring.yaml
+        for st in json.loads(walk.read_text(encoding="utf-8").split("/*STEPS*/", 1)[1].split("/*END*/", 1)[0]):
+            if st["type"] == "wire" and tuple(st["from"] + st["to"]) not in have:
+                errs.append(f"docs/og/{walk.name}: '{st['title']}' is no longer a row in docs/wiring.yaml")
     rig = ROOT / "docs" / "og" / "model" / "rig.js"                 # the moving model must use today's axes and travel
     if rig.exists():
         import json

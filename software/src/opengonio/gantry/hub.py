@@ -1,8 +1,9 @@
 """Client for the ESP32-S3 panel + sensor hub (firmware/hub/main.py).
 
 Lines from the hub:  "BTN <HOME|START|STOP|LIGHT|NEXT|PAUSE>", "POWER <0|1>", "ENC a b c d", "SPEC #<id> f1..f8 clear nir",
-                     "PONG ...", "ERR ..."
-Lines to the hub:    "BAND <0-7>", "BAND OFF", "ENC?", "POWER?", "PING", "SHOW a|b|c" (OLED), "SPEC? <id>" (AS7341)
+                     "BATT <source> <V> <A> <W> <Wh used> <state>" (INA219, stage 17), "PONG ...", "ERR ..."
+Lines to the hub:    "BAND <0-7>", "BAND OFF", "ENC?", "POWER?", "PING", "SHOW a|b|c" (OLED), "SPEC? <id>" (AS7341),
+                     "BATT?", "SOURCE WALL|PACK|USBC [Wh]" (after a full charge)
 Port: USB (laptop) or the Pi UART /dev/serial0 (standalone station).
 
 One reader owns the line: every event that arrives while waiting for a sensor reply is kept in order and handed
@@ -22,7 +23,7 @@ MAX_LINE = 256
 
 @dataclass
 class HubEvent:
-    kind: str           # BTN | POWER | ENC | PONG | SPEC | ERR
+    kind: str           # BTN | POWER | ENC | PONG | SPEC | BATT | ERR
     value: str
 
 
@@ -37,7 +38,7 @@ def parse(line: str) -> HubEvent | None:
     if len(line) > MAX_LINE or not line.isprintable():          # noise, binary garbage, unterminated junk
         return None
     parts = line.strip().split(maxsplit=1)
-    if not parts or parts[0] not in ("BTN", "POWER", "ENC", "PONG", "SPEC", "ERR"):
+    if not parts or parts[0] not in ("BTN", "POWER", "ENC", "PONG", "SPEC", "BATT", "ERR"):
         return None
     ev = HubEvent(parts[0], parts[1] if len(parts) > 1 else "")
     if ev.kind == "BTN" and ev.value not in BUTTONS:
@@ -45,6 +46,20 @@ def parse(line: str) -> HubEvent | None:
     if ev.kind == "POWER" and ev.value not in ("0", "1"):
         return None
     return ev
+
+
+SOURCES = ("WALL", "PACK", "USBC")
+BATT_STATES = ("OK", "LOW", "CRIT", "NONE")
+
+
+def parse_battery(value: str) -> dict:
+    """'PACK 23.10 0.412 9.5 1.20 OK' -> {source, volts, amps, watts, used_wh, state} (ValueError if malformed).
+    state NONE: no INA219 fitted, the numbers are zeros."""
+    parts = value.split()
+    if len(parts) != 6 or parts[0] not in SOURCES or parts[5] not in BATT_STATES:
+        raise ValueError(f"BATT needs '<source> V A W Wh state', got {value!r}")
+    volts, amps, watts, used = (float(x) for x in parts[1:5])
+    return {"source": parts[0], "volts": volts, "amps": amps, "watts": watts, "used_wh": used, "state": parts[5]}
 
 
 def is_safety(ev: HubEvent) -> bool:

@@ -87,7 +87,7 @@ def test_calibration_file_loads_and_stale():
 
 def test_sim_demo_all_pass(tmp_path, cfg):
     from opengonio.sim import demo
-    rep = demo(cfg, tmp_path, today=dt.date(2026, 10, 5))
+    rep = demo(cfg, tmp_path)        # calibration dated today: the runs are stamped with today's date, so a fixed date goes stale
     assert rep["result"] == "ALL PASS", rep
     saved = load_calibration(tmp_path / "calibration.yaml")
     assert abs(saved.offsets["M3"] - 0.37) <= 0.15

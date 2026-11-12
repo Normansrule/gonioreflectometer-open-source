@@ -1,0 +1,4156 @@
+{
+ "version": "1.0.0",
+ "kind": "codebase",
+ "project": {
+  "name": "OpenGonio (Open Source Gonioreflectometer)",
+  "languages": [
+   "python",
+   "javascript",
+   "html",
+   "css"
+  ],
+  "frameworks": [
+   "grblHAL",
+   "MicroPython",
+   "CadQuery",
+   "pytest"
+  ],
+  "description": "A printable, modular instrument that measures how materials reflect light, with the software, firmware, build guide, website and paper in one repository.",
+  "analyzedAt": "2026-11-10T00:00:00Z",
+  "gitCommitHash": ""
+ },
+ "nodes": [
+  {
+   "id": "concept:brdf",
+   "type": "concept",
+   "name": "What the machine measures",
+   "summary": "How bright a material looks from every direction of light and view: its BRDF (bidirectional reflectance distribution function). Shiny plastic flashes where light bounces like a mirror; matte paint looks the same from everywhere. The machine records that pattern so a game engine or renderer can copy the real material.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "concept:angles",
+   "type": "concept",
+   "name": "Angles, not pictures",
+   "summary": "The camera stays fixed. The lamp swings on an arm (motor M4); the sample table turns (M3), tilts (M2) and spins (M1). Each pose is a pair of angles: where the light comes from and where the camera sees from.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "concept:run",
+   "type": "concept",
+   "name": "One measurement, start to finish",
+   "summary": "A plan lists the poses. The machine homes, moves to each pose, switches the lamp on and takes a bracket of photos. Everything is saved in a run folder with a manifest; `verify` checks it, `curve` turns pixels into numbers and `fit` finds the matching game material.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "concept:calibration",
+   "type": "concept",
+   "name": "Making the numbers true",
+   "summary": "A mirror finds where zero degrees really is. A dark frame removes the camera's own noise. A white reference turns brightness into reflectance. Every run keeps a copy of the calibration it used.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "concept:safety",
+   "type": "concept",
+   "name": "Safety comes first",
+   "summary": "One 24 V line runs through the e-stop and an over-travel switch. Pressing the e-stop cuts motor power in hardware; a small opto module tells the hub, which pauses the run and makes the machine home again.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "concept:build",
+   "type": "concept",
+   "name": "Built from modules, no solder",
+   "summary": "Printed black ABS parts, M2 screws, plug-in electronic modules, screw terminals and lever connectors. No soldering, drilling, sawing or crimping. Parts come from Digi-Key, Amazon or Adafruit.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "concept:truth",
+   "type": "concept",
+   "name": "Edit one file, everything follows",
+   "summary": "A few hand-edited files (parts lists, wiring, build steps, CAD) are the sources of truth. Tools regenerate the README tables, diagrams, build book, website and paper from them; `make check` proves they agree.",
+   "tags": [
+    "start here"
+   ],
+   "complexity": "simple"
+  },
+  {
+   "id": "module:phases/00-plan",
+   "type": "module",
+   "name": "00 · Plan",
+   "summary": "Stage 00: Plan. Know what you are building, why, and what to buy. Tests, dry runs and the simulated machine work before any hardware. Printed parts fit first time. Safety: ABS gives off fumes (styrene) while printing: enclosed printer, door shut, in a ventilated room you don't sleep in; open the door only after it cools.",
+   "tags": [
+    "stage",
+    "3 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/00-plan/README.md"
+  },
+  {
+   "id": "config:phases/00-plan/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 00",
+   "summary": "12 parts for stage 00: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/00-plan/bom.csv"
+  },
+  {
+   "id": "module:phases/01-power",
+   "type": "module",
+   "name": "01 · Power",
+   "summary": "Stage 01: Power. Wall adapter, e-stop box, wire and lever connectors on the bench, each checked; the power plate printed. Jack and e-stop wired with screw terminals and lever connectors only; nothing soldered; adapter unplugged throughout. 24 V at MOT+ / MOT− with the right polarity, cut by the e-stop. Safety: Only 24 V inside the machine: the wall adapter stays outside it. Before touching any screw terminal: press the e-stop and pull the adapter out of the wall. Wire everything with the adapter unplugged; it goes into the wall last.",
+   "tags": [
+    "stage",
+    "3 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/01-power/README.md"
+  },
+  {
+   "id": "config:phases/01-power/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 01",
+   "summary": "6 parts for stage 01: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/01-power/bom.csv"
+  },
+  {
+   "id": "module:phases/02-controller",
+   "type": "module",
+   "name": "02 · Controller and buttons",
+   "summary": "Stage 02: Controller and buttons. SKR Pico, keypads, cables, the motor 5-pack and the endstops on the bench; your ESP32-S3 as the hub. Laptop → USB-C → SKR Pico (grblHAL) → motor works on the bench. Membrane keys on the ESP32-S3 hub drive the machine. Safety: Never plug or unplug motors with 24 V on.",
+   "tags": [
+    "stage",
+    "4 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/02-controller/README.md"
+  },
+  {
+   "id": "config:phases/02-controller/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 02",
+   "summary": "10 parts for stage 02: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/02-controller/bom.csv"
+  },
+  {
+   "id": "module:phases/03-frame",
+   "type": "module",
+   "name": "03 · Frame",
+   "summary": "Stage 03: Frame. Nine printed tiles bolted into one 600 mm deck; every mount already has its pilot hole. Outrigger, camera pillar, scan post and boxes screwed into the deck's pilots.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/03-frame/README.md"
+  },
+  {
+   "id": "config:phases/03-frame/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 03",
+   "summary": "6 parts for stage 03: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/03-frame/bom.csv"
+  },
+  {
+   "id": "module:phases/04-light-arm",
+   "type": "module",
+   "name": "04 · Light arm (M4)",
+   "summary": "Stage 04: Light arm (M4). Light arm turns smoothly on the ring. M4 returns to the same spot every time (≤ 0.1°). Safety: Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/04-light-arm/README.md"
+  },
+  {
+   "id": "config:phases/04-light-arm/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 04",
+   "summary": "8 parts for stage 04: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/04-light-arm/bom.csv"
+  },
+  {
+   "id": "module:phases/05-table",
+   "type": "module",
+   "name": "05 · Table (M3)",
+   "summary": "Stage 05: Table (M3). Sample table turns on its fixed bolt axle without wobble. M3 returns to the same spot every time (≤ 0.1°). Safety: Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/05-table/README.md"
+  },
+  {
+   "id": "config:phases/05-table/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 05",
+   "summary": "7 parts for stage 05: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/05-table/bom.csv"
+  },
+  {
+   "id": "module:phases/06-camera-light",
+   "type": "module",
+   "name": "06 · Camera and light",
+   "summary": "Stage 06: Camera and light. Sharp, fixed-exposure image centred on the sample. Light switches from the laptop, stays cool and steady. First real data proves the angles are right. Safety: Don't stare into the lamp. Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.",
+   "tags": [
+    "stage",
+    "4 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/06-camera-light/README.md"
+  },
+  {
+   "id": "config:phases/06-camera-light/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 06",
+   "summary": "9 parts for stage 06: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/06-camera-light/bom.csv"
+  },
+  {
+   "id": "module:phases/07-calibrate",
+   "type": "module",
+   "name": "07 · Calibrate → game material",
+   "summary": "Stage 07: Calibrate → game material. Only the lamp lights the sample. Linear brightness and true angles. Values in real reflectance units (1/sr).",
+   "tags": [
+    "stage",
+    "4 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/07-calibrate/README.md"
+  },
+  {
+   "id": "config:phases/07-calibrate/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 07",
+   "summary": "12 parts for stage 07: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/07-calibrate/bom.csv"
+  },
+  {
+   "id": "module:phases/08-tilt",
+   "type": "module",
+   "name": "08 · Tilt (M2)",
+   "summary": "Stage 08: Tilt (M2). Sample tilts without leaving the zero point. All light directions, unattended. Safety: Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/08-tilt/README.md"
+  },
+  {
+   "id": "config:phases/08-tilt/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 08",
+   "summary": "7 parts for stage 08: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/08-tilt/bom.csv"
+  },
+  {
+   "id": "module:phases/09-spin",
+   "type": "module",
+   "name": "09 · Spin (M1)",
+   "summary": "Stage 09: Spin (M1). Sample spins on its own axis (direct drive). Brushed metal: highlight depends on direction. Safety: Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/09-spin/README.md"
+  },
+  {
+   "id": "config:phases/09-spin/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 09",
+   "summary": "4 parts for stage 09: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/09-spin/bom.csv"
+  },
+  {
+   "id": "module:phases/10-color",
+   "type": "module",
+   "name": "10 · Colour add-ons (optional)",
+   "summary": "Stage 10: Colour add-ons (optional). Colour spectrum of the spot at the zero point; camera stays for images. Polarizers: shine separated from colour. **LED bank BLOCKED**: its driver circuit is unsafe as designed (stage 10 design.md); do not wire or power MSK-01…03 - mark M30.1–M30.3 n/a. Without the bank scans leave out the photometric set.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/10-color/README.md"
+  },
+  {
+   "id": "config:phases/10-color/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 10",
+   "summary": "9 parts for stage 10: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/10-color/bom.csv"
+  },
+  {
+   "id": "module:phases/11-scan-capture",
+   "type": "module",
+   "name": "11 · 3D scan: capture",
+   "summary": "Stage 11: 3D scan: capture. Scan camera fixed at 650 mm, object held securely; nothing on the measuring side moves. Every photo's pose known to 0.3 mm. 144 photos (plus the photometric set with the optional LED bank), unattended.",
+   "tags": [
+    "stage",
+    "3 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/11-scan-capture/README.md"
+  },
+  {
+   "id": "config:phases/11-scan-capture/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 11",
+   "summary": "5 parts for stage 11: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/11-scan-capture/bom.csv"
+  },
+  {
+   "id": "module:phases/12-scan-mesh",
+   "type": "module",
+   "name": "12 · 3D scan: mesh",
+   "summary": "Stage 12: 3D scan: mesh. Shape from silhouettes in minutes. Accurate, detailed 3D model.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/12-scan-mesh/README.md"
+  },
+  {
+   "id": "module:phases/13-object-material",
+   "type": "module",
+   "name": "13 · Material on the 3D model",
+   "summary": "Stage 13: Material on the 3D model. Colour per texel from the scan photos. The scanned object looks real.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/13-object-material/README.md"
+  },
+  {
+   "id": "module:phases/14-laptop-app",
+   "type": "module",
+   "name": "14 · Laptop app",
+   "summary": "Stage 14: Laptop app. Connect, jog, home, live camera and run a plan in one browser page. One click per workflow; stopped jobs continue.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/14-laptop-app/README.md"
+  },
+  {
+   "id": "module:phases/15-standalone",
+   "type": "module",
+   "name": "15 · Standalone (no laptop)",
+   "summary": "Stage 15: Standalone (no laptop). OLED shows menu and progress (both modes). Pi drives the SKR Pico over USB and grabs camera frames. Buttons choose and run a job; images saved on the Pi.",
+   "tags": [
+    "stage",
+    "4 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/15-standalone/README.md"
+  },
+  {
+   "id": "config:phases/15-standalone/bom.csv",
+   "type": "config",
+   "name": "Parts, stage 15",
+   "summary": "8 parts for stage 15: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "tags": [
+    "parts list"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/15-standalone/bom.csv"
+  },
+  {
+   "id": "module:phases/16-release",
+   "type": "module",
+   "name": "16 · Release",
+   "summary": "Stage 16: Release. A new builder can finish stage 06 from the docs alone. Public, certified open hardware.",
+   "tags": [
+    "stage",
+    "2 milestones"
+   ],
+   "complexity": "simple",
+   "filePath": "phases/16-release/README.md"
+  },
+  {
+   "id": "module:phases/17-upgrades",
+   "type": "module",
+   "name": "17 · Upgrades (optional)",
+   "summary": "Stage 17: Upgrades (optional). Same fit with fewer photos. Concave shapes in the preview. Check against published measurements.",
+   "tags": [
+    "stage",
+    "4 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/17-upgrades/README.md"
+  },
+  {
+   "id": "file:firmware/hub/main.py",
+   "type": "file",
+   "name": "Hub firmware (ESP32-S3)",
+   "summary": "MicroPython on the ESP32-S3: keypads, motor-power sense, sensors, OLED; talks to the laptop over USB serial.",
+   "tags": [
+    "firmware",
+    "MicroPython"
+   ],
+   "complexity": "moderate",
+   "filePath": "firmware/hub/main.py"
+  },
+  {
+   "id": "config:firmware/grblhal/settings.txt",
+   "type": "config",
+   "name": "Motor board settings (grblHAL)",
+   "summary": "The settings sent to grblHAL on the SKR Pico: steps per degree, speeds, homing, soft limits.",
+   "tags": [
+    "firmware",
+    "grblHAL"
+   ],
+   "complexity": "simple",
+   "filePath": "firmware/grblhal/settings.txt"
+  },
+  {
+   "id": "file:software/src/opengonio/__init__.py",
+   "type": "file",
+   "name": "opengonio (package)",
+   "summary": "OpenGonio host software (runs on the laptop). SPDX-License-Identifier: GPL-3.0-or-later",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/app/__init__.py",
+   "type": "file",
+   "name": "app (package)",
+   "summary": "Control app: a browser (or desktop window) interface over the same code as the command line.",
+   "tags": [
+    "software",
+    "app"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/app/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/app/server.py",
+   "type": "file",
+   "name": "server.py",
+   "summary": "The control app's backend: one small JSON API over the same Gantry, camera and run code as the command line.",
+   "tags": [
+    "software",
+    "app"
+   ],
+   "complexity": "complex",
+   "filePath": "software/src/opengonio/app/server.py"
+  },
+  {
+   "id": "class:software/src/opengonio/app/server.py:Refused",
+   "type": "class",
+   "name": "Refused",
+   "summary": "A request the machine state does not allow (409): not connected, busy, not homed, unsafe.",
+   "tags": [
+    "software",
+    "app"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/app/server.py",
+   "lineRange": [
+    51,
+    52
+   ]
+  },
+  {
+   "id": "class:software/src/opengonio/app/server.py:App",
+   "type": "class",
+   "name": "App",
+   "summary": "Everything the endpoints touch. Methods raise Refused / GantryError; the handler turns them into JSON.",
+   "tags": [
+    "software",
+    "app"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/app/server.py",
+   "lineRange": [
+    67,
+    349
+   ]
+  },
+  {
+   "id": "file:software/src/opengonio/brdf/__init__.py",
+   "type": "file",
+   "name": "brdf (package)",
+   "summary": "BRDF models and checks from : Lambert, Schlick, Cook-Torrance colour, GGX, reflection, refraction.",
+   "tags": [
+    "software",
+    "brdf"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/brdf/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/brdf/models.py",
+   "type": "file",
+   "name": "models.py",
+   "summary": "Analytic BRDF models used for fitting (phase 7+).",
+   "tags": [
+    "software",
+    "brdf"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/brdf/models.py"
+  },
+  {
+   "id": "file:software/src/opengonio/calibration.py",
+   "type": "file",
+   "name": "calibration.py",
+   "summary": "Measured calibration (config/calibration.yaml): angle offsets, dark level, white reference, drift limit.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/calibration.py"
+  },
+  {
+   "id": "file:software/src/opengonio/camera/__init__.py",
+   "type": "file",
+   "name": "camera (package)",
+   "summary": "USB camera capture (UVC).",
+   "tags": [
+    "software",
+    "camera"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/camera/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/camera/uvc.py",
+   "type": "file",
+   "name": "uvc.py",
+   "summary": "USB (UVC) camera with locked exposure, gain and white balance, and a read-back of what the camera applied.",
+   "tags": [
+    "software",
+    "camera"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/camera/uvc.py"
+  },
+  {
+   "id": "file:software/src/opengonio/cli.py",
+   "type": "file",
+   "name": "cli.py",
+   "summary": "The `opengonio` command: connect, home, move, capture a plan, verify a run, draw its curve, fit a material, run the simulator or open the control app.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/cli.py"
+  },
+  {
+   "id": "file:software/src/opengonio/fit.py",
+   "type": "file",
+   "name": "fit.py",
+   "summary": "Fit a game-engine material to a measured curve: `opengonio fit data/<run>` -> fit.json + fit.svg (stage 07, M24).",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/fit.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/__init__.py",
+   "type": "file",
+   "name": "gantry (package)",
+   "summary": "Axes, kinematics, collision model, controller client (grblHAL / FluidNC), ESP32-S3 hub, button panel.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/collision.py",
+   "type": "file",
+   "name": "collision.py",
+   "summary": "Collision model: capsules for the camera assembly and the light arm, 30 mm keep-out.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/collision.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/config.py",
+   "type": "file",
+   "name": "config.py",
+   "summary": "Load and validate config/machine.yaml (axes are data; phases gate them).",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/config.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "file",
+   "name": "fluidnc.py",
+   "summary": "Motion-controller client for grbl-family firmware: grblHAL (BTT SKR Pico, USB-C) or FluidNC (ESP32 boards).",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/gantry/fluidnc.py"
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/fluidnc.py:SerialTransport",
+   "type": "class",
+   "name": "SerialTransport",
+   "summary": "USB serial: the SKR Pico's USB-C (RP2040, USB VID 0x2E8A) or an ESP32 board's CH340 (0x1A86).",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/fluidnc.py",
+   "lineRange": [
+    49,
+    72
+   ]
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/fluidnc.py:TcpTransport",
+   "type": "class",
+   "name": "TcpTransport",
+   "summary": "WiFi: FluidNC telnet server on port 23 (ESP32 boards only; the SKR Pico has no WiFi).",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/fluidnc.py",
+   "lineRange": [
+    75,
+    99
+   ]
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/fluidnc.py:RecordingTransport",
+   "type": "class",
+   "name": "RecordingTransport",
+   "summary": "Offline stand-in: answers 'ok', records every line and tracks the machine position like the controller (G53 G1 moves the axes, $H<axis> puts an axis at homes[axis]) so endpoint checks work in dry runs and tests. for_machine() sets homes from the configured firmware: 0 for grblHAL, home_deg for FluidNC.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/fluidnc.py",
+   "lineRange": [
+    177,
+    218
+   ]
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "file",
+   "name": "gantry.py",
+   "summary": "High-level control: home, validated coordinated moves, lights, sleep.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/gantry/gantry.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/hub.py",
+   "type": "file",
+   "name": "hub.py",
+   "summary": "Client for the ESP32-S3 panel + sensor hub (firmware/hub/main.py).",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/gantry/hub.py"
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/hub.py:SafetyInterrupt",
+   "type": "class",
+   "name": "SafetyInterrupt",
+   "summary": "STOP pressed or motion power lost while the host was waiting on the hub; the event stays queued.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/hub.py",
+   "lineRange": [
+    30,
+    31
+   ]
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/hub.py:HubBase",
+   "type": "class",
+   "name": "HubBase",
+   "summary": "Shared logic; subclasses provide send() and _readline().",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/hub.py",
+   "lineRange": [
+    84,
+    132
+   ]
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/hub.py:FakeHub",
+   "type": "class",
+   "name": "FakeHub",
+   "summary": "Test double: `queue` holds lines the hub will send; `sent` records lines sent to it.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/hub.py",
+   "lineRange": [
+    154,
+    166
+   ]
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "file",
+   "name": "kinematics.py",
+   "summary": "Forward kinematics for the fixed-camera layout of .",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/kinematics.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/panel.py",
+   "type": "file",
+   "name": "panel.py",
+   "summary": "Physical buttons -> machine actions (runs on the laptop).",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/panel.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/safety.py",
+   "type": "file",
+   "name": "safety.py",
+   "summary": "One place for what a power or STOP event means, used by the panel, the station and laptop runs.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/safety.py"
+  },
+  {
+   "id": "file:software/src/opengonio/hdr/__init__.py",
+   "type": "file",
+   "name": "hdr (package)",
+   "summary": "Exposure brackets -> linear HDR (Debevec & Malik ).",
+   "tags": [
+    "software",
+    "hdr"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/hdr/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/hdr/merge.py",
+   "type": "file",
+   "name": "merge.py",
+   "summary": "HDR from an exposure bracket of 8-bit UVC frames.",
+   "tags": [
+    "software",
+    "hdr"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/hdr/merge.py"
+  },
+  {
+   "id": "file:software/src/opengonio/imageio.py",
+   "type": "file",
+   "name": "imageio.py",
+   "summary": "Image helpers: 8-bit PNG read/write without OpenCV (PNG spec ), one pixel convention, region means.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/imageio.py"
+  },
+  {
+   "id": "file:software/src/opengonio/plans/__init__.py",
+   "type": "file",
+   "name": "plans (package)",
+   "summary": "Scan plans and repeatability statistics.",
+   "tags": [
+    "software",
+    "plans"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plans/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "file",
+   "name": "hemisphere.py",
+   "summary": "Out-of-plane plans from BRDF angles (stages 08–09): inverse kinematics for the fixed-camera layout .",
+   "tags": [
+    "software",
+    "plans"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plans/hemisphere.py"
+  },
+  {
+   "id": "file:software/src/opengonio/plans/inplane.py",
+   "type": "file",
+   "name": "inplane.py",
+   "summary": "In-plane plans: (theta_i, theta_r) grid -> (M3, M4) poses.",
+   "tags": [
+    "software",
+    "plans"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plans/inplane.py"
+  },
+  {
+   "id": "file:software/src/opengonio/plans/repeatability.py",
+   "type": "file",
+   "name": "repeatability.py",
+   "summary": "Repeatability: return to a pose N times and measure the scatter.",
+   "tags": [
+    "software",
+    "plans"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plans/repeatability.py"
+  },
+  {
+   "id": "file:software/src/opengonio/plot.py",
+   "type": "file",
+   "name": "plot.py",
+   "summary": "Small SVG line charts for measurement folders (curve.svg, fit.svg), no plotting library needed.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plot.py"
+  },
+  {
+   "id": "file:software/src/opengonio/roi.py",
+   "type": "file",
+   "name": "roi.py",
+   "summary": "Which pixels are valid sample signal at a given pose: the sample, inside the lamp's fully lit spot, facing the camera.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/roi.py"
+  },
+  {
+   "id": "file:software/src/opengonio/runrecord.py",
+   "type": "file",
+   "name": "runrecord.py",
+   "summary": "Run folders and manifest.json: one schema for laptop capture, the standalone station and the scanner.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/runrecord.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/__init__.py",
+   "type": "file",
+   "name": "scan (package)",
+   "summary": "3D photo scanner (phases 11-12): scan plans, known poses, COLMAP export, silhouette carving, photometric stereo.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "file",
+   "name": "calibrate.py",
+   "summary": "Scan-mode pose calibration: measure where the camera really is.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/calibrate.py"
+  },
+  {
+   "id": "class:software/src/opengonio/scan/calibrate.py:CameraCalibration",
+   "type": "class",
+   "name": "CameraCalibration",
+   "summary": "Measured scan-mode camera: pose in the world frame + OpenCV intrinsics and distortion.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/calibrate.py",
+   "lineRange": [
+    106,
+    138
+   ]
+  },
+  {
+   "id": "file:software/src/opengonio/scan/carve.py",
+   "type": "file",
+   "name": "carve.py",
+   "summary": "Silhouette carving (visual hull) with known poses - fast preview and photogrammetry check.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/carve.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/colmap.py",
+   "type": "file",
+   "name": "colmap.py",
+   "summary": "Write a COLMAP text model with the known poses (pose priors) .",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/colmap.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/demo.py",
+   "type": "file",
+   "name": "demo.py",
+   "summary": "Offline demo: synthetic sphere -> silhouette carving + photometric stereo, no hardware.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/demo.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/geometry.py",
+   "type": "file",
+   "name": "geometry.py",
+   "summary": "Scanner geometry: object frame, camera intrinsics and extrinsics from the axis angles.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/scan/geometry.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/photometric.py",
+   "type": "file",
+   "name": "photometric.py",
+   "summary": "Photometric stereo (Woodham 1980 ): per-pixel normal and albedo from k >= 3 images taken with a fixed camera and object under different, non-coplanar light directions.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/photometric.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/plan.py",
+   "type": "file",
+   "name": "plan.py",
+   "summary": "Scan plans: rings of views on the object's view sphere.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/plan.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/process.py",
+   "type": "file",
+   "name": "process.py",
+   "summary": "Process a scan folder written by `opengonio scan run` (stage 12).",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/process.py"
+  },
+  {
+   "id": "file:software/src/opengonio/scan/run.py",
+   "type": "file",
+   "name": "run.py",
+   "summary": "Run a scan on the machine: photogrammetry rings + photometric-stereo stations.",
+   "tags": [
+    "software",
+    "scan"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/scan/run.py"
+  },
+  {
+   "id": "file:software/src/opengonio/sim.py",
+   "type": "file",
+   "name": "sim.py",
+   "summary": "Simulated machine: the whole capture → verify → calibrate → curve chain with no hardware.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/sim.py"
+  },
+  {
+   "id": "class:software/src/opengonio/sim.py:SimTransport",
+   "type": "class",
+   "name": "SimTransport",
+   "summary": "Controller stand-in: machine position (RecordingTransport) plus the lamp outputs.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/sim.py",
+   "lineRange": [
+    39,
+    47
+   ]
+  },
+  {
+   "id": "file:software/src/opengonio/station.py",
+   "type": "file",
+   "name": "station.py",
+   "summary": "Standalone station: buttons + OLED pick and run a job; every image is saved with a manifest.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/station.py"
+  },
+  {
+   "id": "class:software/src/opengonio/station.py:Station",
+   "type": "class",
+   "name": "Station",
+   "summary": "Tick-driven job runner for the standalone station. Every failure path ends in a defined state: lights off, run marked aborted/error with the reason, position trust cleared after power events; nothing resumes by itself.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/station.py",
+   "lineRange": [
+    41,
+    230
+   ]
+  },
+  {
+   "id": "file:software/src/opengonio/verify.py",
+   "type": "file",
+   "name": "verify.py",
+   "summary": "Check a run folder (manifest.json + images) on the laptop: `opengonio verify DIR`, then `opengonio curve DIR`.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/verify.py"
+  },
+  {
+   "id": "file:tools/bom_check.py",
+   "type": "file",
+   "name": "bom_check.py",
+   "summary": "Check every phases/*/bom.csv and the machine total against HARD_CAP; draw docs/assets/budget.svg. Fill `Paid USD` as you buy (shipping included): the summary then shows planned vs actually spent.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/bom_check.py"
+  },
+  {
+   "id": "file:tools/bom_readme.py",
+   "type": "file",
+   "name": "bom_readme.py",
+   "summary": "README parts tables from phases/*/bom.csv: Electronics, Mechanical, Printed parts, Tools + optional kits. Each bought part: picture, qty, price, buy link (Digi-Key / Amazon / Adafruit) and its 3D model (STEP, STL); each printed part: picture and STEP / STL downloads.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/bom_readme.py"
+  },
+  {
+   "id": "file:tools/build_book.py",
+   "type": "file",
+   "name": "build_book.py",
+   "summary": "docs/build-book.js: the build book (docs/build.html), one step per page, like a toy-brick instruction book.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/build_book.py"
+  },
+  {
+   "id": "file:tools/check.py",
+   "type": "file",
+   "name": "check.py",
+   "summary": "One health check for the whole repo: `make check` (or `python tools/check.py`).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/check.py"
+  },
+  {
+   "id": "file:tools/explore_graph.py",
+   "type": "file",
+   "name": "explore_graph.py",
+   "summary": "docs/explore/knowledge-graph.json: the whole project as a map a newcomer can click through (run by `make build`).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/explore_graph.py"
+  },
+  {
+   "id": "file:tools/export_machine.py",
+   "type": "file",
+   "name": "export_machine.py",
+   "summary": "software/config/machine.yaml -> docs/machine.js, so the web simulator uses the same dimensions and limits as the software. Run by `make build`; `make check` fails if the two disagree. SPDX-License-Identifier: GPL-3.0-or-later",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/export_machine.py"
+  },
+  {
+   "id": "file:tools/exports.py",
+   "type": "file",
+   "name": "exports.py",
+   "summary": "Copies of the project in formats other software opens and edits -> exports/ (committed; see exports/README.md).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/exports.py"
+  },
+  {
+   "id": "file:tools/grblhal_settings.py",
+   "type": "file",
+   "name": "grblhal_settings.py",
+   "summary": "grblHAL $-settings for the BTT SKR Pico, generated from software/config/machine.yaml.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/grblhal_settings.py"
+  },
+  {
+   "id": "file:tools/machine3d.py",
+   "type": "file",
+   "name": "machine3d.py",
+   "summary": "Animated 3D drawing of the four-axis machine (after ) as SVG/SMIL.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/machine3d.py"
+  },
+  {
+   "id": "file:tools/make_assets.py",
+   "type": "file",
+   "name": "make_assets.py",
+   "summary": "Generate the animated SVG figures in docs/assets/ (original drawings).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/make_assets.py"
+  },
+  {
+   "id": "file:tools/new.py",
+   "type": "file",
+   "name": "new.py",
+   "summary": "Add things to the framework without hand-editing YAML or CSV. Run `make` afterwards.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/new.py"
+  },
+  {
+   "id": "file:tools/optics.py",
+   "type": "file",
+   "name": "optics.py",
+   "summary": "Fixed-camera optics for both modes: thin lens, field of view, depth of field, diffraction [R1 Fig. 7].",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/optics.py"
+  },
+  {
+   "id": "file:tools/paper_assets.py",
+   "type": "file",
+   "name": "paper_assets.py",
+   "summary": "Tables and figures for the paper, generated from the repo so the manuscript never drifts from the design.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/paper_assets.py"
+  },
+  {
+   "id": "file:tools/part_images.py",
+   "type": "file",
+   "name": "part_images.py",
+   "summary": "Pictures for PARTS.md (original drawings, no vendor photos): one line icon per kind of bought part, a rendered thumbnail of every printed part (orange) and of every bought part's 3D model (blue-grey) from its STL (parts more than 4 x longer than wide are drawn shortened, like a broken view).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/part_images.py"
+  },
+  {
+   "id": "file:tools/parts_doc.py",
+   "type": "file",
+   "name": "parts_doc.py",
+   "summary": "PARTS.md: your working parts list. You decide there; the tool keeps everything else in step.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/parts_doc.py"
+  },
+  {
+   "id": "file:tools/power_budget.py",
+   "type": "file",
+   "name": "power_budget.py",
+   "summary": "Final-machine power budget: phases/01-power/power_loads.yaml -> power_budget.md beside it.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/power_budget.py"
+  },
+  {
+   "id": "file:tools/readme_screens.py",
+   "type": "file",
+   "name": "readme_screens.py",
+   "summary": "docs/assets/screens/: README screenshots of the website and the control app, and two looping animations (hero.webp: the lamp going round the samples; rig.webp: the four axes in turn).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/readme_screens.py"
+  },
+  {
+   "id": "file:tools/refs_bib.py",
+   "type": "file",
+   "name": "refs_bib.py",
+   "summary": "Scholarly references (REFERENCES.md sections with IDs R1-R9, Sx, Gx, Tx, Vx, Nx, Hx) -> paper/references.bib, then APA 7 text (pandoc citeproc + paper/apa.csl) -> wiki/Bibliography.md and wiki/Appendix-*.md, and wiki/src/*.md (hand-written, cites as ) -> wiki/*.md with APA in-text citations and a reference list. BibTeX keys are the reference IDs, so the paper cites \\parencite{G12} and the wiki sho",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/refs_bib.py"
+  },
+  {
+   "id": "file:tools/roadmap.py",
+   "type": "file",
+   "name": "roadmap.py",
+   "summary": "Stages and milestones from .github/phases.yml.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/roadmap.py"
+  },
+  {
+   "id": "file:tools/roadmap_svg.py",
+   "type": "file",
+   "name": "roadmap_svg.py",
+   "summary": "Build-map figures from .github/phases.yml + .github/progress.json (written by roadmap.py, not by hand).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/roadmap_svg.py"
+  },
+  {
+   "id": "file:tools/site_data.py",
+   "type": "file",
+   "name": "site_data.py",
+   "summary": "docs/site-data.js: the numbers the website shows, from the repo's sources of truth (run by `make build`).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/site_data.py"
+  },
+  {
+   "id": "file:tools/site_model.py",
+   "type": "file",
+   "name": "site_model.py",
+   "summary": "docs/og/model/rig.js: the whole-machine CAD assembly as a compact mesh for the website's four-axis view.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/site_model.py"
+  },
+  {
+   "id": "file:tools/site_pictures.py",
+   "type": "file",
+   "name": "site_pictures.py",
+   "summary": "docs/og/img/*.png: the website's pictures, made from the project's own tools (no stock images, no photographs).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/site_pictures.py"
+  },
+  {
+   "id": "file:tools/wiring.py",
+   "type": "file",
+   "name": "wiring.py",
+   "summary": "Wiring tables and diagram from docs/wiring.yaml (the source of truth for every connection).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "complex",
+   "filePath": "tools/wiring.py"
+  },
+  {
+   "id": "file:tools/cad/parts.py",
+   "type": "file",
+   "name": "parts.py",
+   "summary": "Starter geometry for every printed part (CadQuery). Writes STEP (edit in Onshape) + STL (slice) into phases/NN/3d/.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "complex",
+   "filePath": "tools/cad/parts.py"
+  },
+  {
+   "id": "config:.github/phases.yml",
+   "type": "config",
+   "name": "Build steps",
+   "summary": "Every stage, milestone and step with its checks: the source of the stage checklists and the progress on the website.",
+   "tags": [
+    "source of truth"
+   ],
+   "complexity": "simple",
+   "filePath": ".github/phases.yml"
+  },
+  {
+   "id": "config:docs/wiring.yaml",
+   "type": "config",
+   "name": "Wiring",
+   "summary": "Every wire, pin by pin. The source of the wiring guide, the diagrams, the README Wiring section and both bench walkthroughs.",
+   "tags": [
+    "source of truth"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/wiring.yaml"
+  },
+  {
+   "id": "config:docs/assembly.yaml",
+   "type": "config",
+   "name": "Assembly steps",
+   "summary": "The order parts go together: the source of the build book.",
+   "tags": [
+    "source of truth"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/assembly.yaml"
+  },
+  {
+   "id": "config:software/config/machine.yaml",
+   "type": "config",
+   "name": "Machine description",
+   "summary": "Axes, limits, homing, lights and camera as data; the software reads it and the stages switch axes on as they are built.",
+   "tags": [
+    "source of truth"
+   ],
+   "complexity": "simple",
+   "filePath": "software/config/machine.yaml"
+  },
+  {
+   "id": "document:docs/build.html",
+   "type": "document",
+   "name": "OpenGonio build book",
+   "summary": "Put the OpenGonio machine together one step at a time, like a toy-brick instruction book: every printed and bought part from the CAD model, in order, with the screws for each step. Generated from docs/assembly.yaml.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/build.html"
+  },
+  {
+   "id": "document:docs/controller.html",
+   "type": "document",
+   "name": "OpenGonio controller wiring",
+   "summary": "The OpenGonio controller wired step by step as the parts sit on the bench: USB to the laptop, the bench motor, the X endstop, both keypads and the power sense, with the flashing and test commands at each check. Text from docs/wiring.yaml.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/controller.html"
+  },
+  {
+   "id": "document:docs/index.html",
+   "type": "document",
+   "name": "OpenGonio",
+   "summary": "OpenGonio is a printable, low-cost gonioreflectometer: it measures how a material reflects light at every angle (the BRDF). Design stage: no machine has been built or measured yet.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/index.html"
+  },
+  {
+   "id": "document:docs/lab.html",
+   "type": "document",
+   "name": "OpenGonio lab",
+   "summary": "OpenGonio lab: the machine simulator, BRDF explorer, calibration lab and 3D scan planner, computed in your browser. Design stage: nothing here is a measurement.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/lab.html"
+  },
+  {
+   "id": "document:docs/power.html",
+   "type": "document",
+   "name": "OpenGonio power wiring",
+   "summary": "The OpenGonio motor power, wired step by step as the parts sit on the bench: wall adapter, jack, e-stop, over-travel switch, lever connectors, SKR Pico and the PC817 power sense. Text from docs/wiring.yaml.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/power.html"
+  },
+  {
+   "id": "document:docs/wiring.html",
+   "type": "document",
+   "name": "OpenGonio wiring guide",
+   "summary": "Every wire in the OpenGonio machine, one at a time: from the 24 V wall adapter through the e-stop and limit switch to the motor board, the motors, the switches, the lamp and the hub. Generated from docs/wiring.yaml.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/wiring.html"
+  },
+  {
+   "id": "document:docs/explore/index.html",
+   "type": "document",
+   "name": "This map",
+   "summary": "The project as a clickable map, drawn from the repo by tools/explore_graph.py.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/explore/index.html"
+  },
+  {
+   "id": "document:wiki/src/3D-scanning.md",
+   "type": "document",
+   "name": "Wiki: 3D scanning",
+   "summary": "Using the same machine as a 3D scanner: photos from known angles become a 3D model.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/3D-scanning.md"
+  },
+  {
+   "id": "document:wiki/src/Build-guide.md",
+   "type": "document",
+   "name": "Wiki: Build guide",
+   "summary": "The whole build in order, from setting up the repo and choosing parts to the last stage.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Build-guide.md"
+  },
+  {
+   "id": "document:wiki/src/CAD.md",
+   "type": "document",
+   "name": "Wiki: CAD",
+   "summary": "The 3D models: printed parts, bought parts and the checks that nothing collides as the axes move.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/CAD.md"
+  },
+  {
+   "id": "document:wiki/src/Calibration.md",
+   "type": "document",
+   "name": "Wiki: Calibration",
+   "summary": "How the machine finds its true zero angle, removes camera noise and turns brightness into reflectance, and how often to repeat it.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Calibration.md"
+  },
+  {
+   "id": "document:wiki/src/Commands.md",
+   "type": "document",
+   "name": "Wiki: Commands",
+   "summary": "Every command you type, with what it does: setup, build, checks, capture, the simulator, the app.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Commands.md"
+  },
+  {
+   "id": "document:wiki/src/Extend.md",
+   "type": "document",
+   "name": "Wiki: Extend",
+   "summary": "How to change or add to the project: edit the source files, rebuild, check.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Extend.md"
+  },
+  {
+   "id": "document:wiki/src/Hardware.md",
+   "type": "document",
+   "name": "Wiki: Hardware",
+   "summary": "Every electrical connection and module: power, motor board, hub, lamp, USB.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Hardware.md"
+  },
+  {
+   "id": "document:wiki/src/Home.md",
+   "type": "document",
+   "name": "Wiki: Home",
+   "summary": "The wiki's front page: what the machine measures, how it is built and where to go next.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Home.md"
+  },
+  {
+   "id": "document:wiki/src/How-it-works.md",
+   "type": "document",
+   "name": "Wiki: How it works",
+   "summary": "How light, sample and camera angles combine into one measurement, explained with the equations behind it.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/How-it-works.md"
+  },
+  {
+   "id": "document:wiki/src/Machine.md",
+   "type": "document",
+   "name": "Wiki: Machine",
+   "summary": "The machine's layout: where the cameras sit, how each axis moves and how far.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Machine.md"
+  },
+  {
+   "id": "document:wiki/src/Paper.md",
+   "type": "document",
+   "name": "Wiki: Paper",
+   "summary": "The research paper written from this project, and how it is built.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Paper.md"
+  },
+  {
+   "id": "document:wiki/src/Repository-map.md",
+   "type": "document",
+   "name": "Wiki: Repository map",
+   "summary": "Where everything lives in the repository: one folder per stage, the software, firmware, tools, website and paper, and which files are generated.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Repository-map.md"
+  },
+  {
+   "id": "document:wiki/src/Software.md",
+   "type": "document",
+   "name": "Wiki: Software",
+   "summary": "The Python software on the laptop: motion, camera, runs, checks, fitting and the control app.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Software.md"
+  },
+  {
+   "id": "document:wiki/src/Test-materials.md",
+   "type": "document",
+   "name": "Wiki: Test materials",
+   "summary": "The samples to measure first (mirror, white PTFE, matte paper, plastic) and what each result should look like.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Test-materials.md"
+  },
+  {
+   "id": "document:wiki/src/Theory.md",
+   "type": "document",
+   "name": "Wiki: Theory",
+   "summary": "The physics: what a BRDF is, the reflection equation, and the material models the software fits.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Theory.md"
+  },
+  {
+   "id": "document:wiki/src/Tools-and-joins.md",
+   "type": "document",
+   "name": "Wiki: Tools and joins",
+   "summary": "The tools you need and how parts join without soldering, drilling or crimping.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Tools-and-joins.md"
+  },
+  {
+   "id": "document:README.md",
+   "type": "document",
+   "name": "README",
+   "summary": "Start here: what the machine is, the parts lists, the build table and the quick commands.",
+   "tags": [
+    "docs"
+   ],
+   "complexity": "simple",
+   "filePath": "README.md"
+  },
+  {
+   "id": "document:REFERENCES.md",
+   "type": "document",
+   "name": "References",
+   "summary": "Every paper, datasheet and product page the design relies on; the source of the paper's bibliography.",
+   "tags": [
+    "docs"
+   ],
+   "complexity": "simple",
+   "filePath": "REFERENCES.md"
+  },
+  {
+   "id": "document:paper/opengonio.tex",
+   "type": "document",
+   "name": "Research paper",
+   "summary": "The design written up for journal submission, with figures and evaluation plan; built to paper/build/opengonio.pdf.",
+   "tags": [
+    "docs"
+   ],
+   "complexity": "simple",
+   "filePath": "paper/opengonio.tex"
+  },
+  {
+   "id": "document:DESIGN.md",
+   "type": "document",
+   "name": "Design system",
+   "summary": "Colours, type and components shared by the website and the control app.",
+   "tags": [
+    "docs"
+   ],
+   "complexity": "simple",
+   "filePath": "DESIGN.md"
+  }
+ ],
+ "edges": [
+  {
+   "source": "module:phases/00-plan",
+   "target": "config:phases/00-plan/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/01-power",
+   "target": "config:phases/01-power/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/02-controller",
+   "target": "config:phases/02-controller/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/03-frame",
+   "target": "config:phases/03-frame/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/04-light-arm",
+   "target": "config:phases/04-light-arm/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/05-table",
+   "target": "config:phases/05-table/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/06-camera-light",
+   "target": "config:phases/06-camera-light/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/07-calibrate",
+   "target": "config:phases/07-calibrate/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/08-tilt",
+   "target": "config:phases/08-tilt/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/09-spin",
+   "target": "config:phases/09-spin/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/10-color",
+   "target": "config:phases/10-color/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/11-scan-capture",
+   "target": "config:phases/11-scan-capture/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/15-standalone",
+   "target": "config:phases/15-standalone/bom.csv",
+   "type": "contains",
+   "direction": "forward",
+   "description": "its parts list",
+   "weight": 0.8
+  },
+  {
+   "source": "module:phases/00-plan",
+   "target": "module:phases/01-power",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/01-power",
+   "target": "module:phases/02-controller",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/02-controller",
+   "target": "module:phases/03-frame",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/03-frame",
+   "target": "module:phases/04-light-arm",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/04-light-arm",
+   "target": "module:phases/05-table",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/05-table",
+   "target": "module:phases/06-camera-light",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/06-camera-light",
+   "target": "module:phases/07-calibrate",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/07-calibrate",
+   "target": "module:phases/08-tilt",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/08-tilt",
+   "target": "module:phases/09-spin",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/09-spin",
+   "target": "module:phases/10-color",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/10-color",
+   "target": "module:phases/11-scan-capture",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/11-scan-capture",
+   "target": "module:phases/12-scan-mesh",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/12-scan-mesh",
+   "target": "module:phases/13-object-material",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/13-object-material",
+   "target": "module:phases/14-laptop-app",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/14-laptop-app",
+   "target": "module:phases/15-standalone",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/15-standalone",
+   "target": "module:phases/16-release",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "module:phases/16-release",
+   "target": "module:phases/17-upgrades",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "class:software/src/opengonio/app/server.py:Refused",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "class:software/src/opengonio/app/server.py:App",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/fluidnc.py",
+   "target": "class:software/src/opengonio/gantry/fluidnc.py:SerialTransport",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/fluidnc.py",
+   "target": "class:software/src/opengonio/gantry/fluidnc.py:TcpTransport",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/fluidnc.py",
+   "target": "class:software/src/opengonio/gantry/fluidnc.py:RecordingTransport",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/hub.py",
+   "target": "class:software/src/opengonio/gantry/hub.py:SafetyInterrupt",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/hub.py",
+   "target": "class:software/src/opengonio/gantry/hub.py:HubBase",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/hub.py",
+   "target": "class:software/src/opengonio/gantry/hub.py:FakeHub",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/calibrate.py",
+   "target": "class:software/src/opengonio/scan/calibrate.py:CameraCalibration",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "class:software/src/opengonio/sim.py:SimTransport",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "class:software/src/opengonio/station.py:Station",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/plans/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/plans/inplane.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/station.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/verify.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/sim.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/cli.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/calibration.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/calibration.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/calibration.py",
+   "target": "file:software/src/opengonio/roi.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/inplane.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/demo.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/colmap.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/plan.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/runrecord.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/sim.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/app/server.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/sim.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/verify.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/fit.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/verify.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/station.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/colmap.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/verify.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/process.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/process.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/station.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/sim.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/station.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/repeatability.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/panel.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/run.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/scan/run.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/fit.py",
+   "target": "file:software/src/opengonio/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/fit.py",
+   "target": "file:software/src/opengonio/plot.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/__init__.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/__init__.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/collision.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/collision.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/gantry.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/gantry.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/gantry.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/kinematics.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/panel.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/panel.py",
+   "target": "file:software/src/opengonio/gantry/safety.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/safety.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/plans/hemisphere.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/plans/hemisphere.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/plans/hemisphere.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/plans/inplane.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/plans/inplane.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/roi.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/roi.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/runrecord.py",
+   "target": "file:software/src/opengonio/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/calibrate.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/carve.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/colmap.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/colmap.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/colmap.py",
+   "target": "file:software/src/opengonio/scan/plan.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/demo.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/demo.py",
+   "target": "file:software/src/opengonio/scan/carve.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/demo.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/demo.py",
+   "target": "file:software/src/opengonio/scan/photometric.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/demo.py",
+   "target": "file:software/src/opengonio/scan/plan.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/demo.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/geometry.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/geometry.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/geometry.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/plan.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/plan.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/plan.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/scan/carve.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/scan/photometric.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/colmap.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/plan.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/runrecord.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/run.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/brdf/models.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/fit.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/plans/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/plans/inplane.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/station.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/sim.py",
+   "target": "file:software/src/opengonio/verify.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/gantry/gantry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/gantry/safety.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/plans/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/plans/inplane.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/runrecord.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/scan/plan.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/station.py",
+   "target": "file:software/src/opengonio/scan/run.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/gantry/collision.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/runrecord.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/__init__.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/roi.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/verify.py",
+   "target": "file:software/src/opengonio/plot.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "concept:brdf",
+   "target": "file:software/src/opengonio/brdf/models.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:brdf",
+   "target": "file:software/src/opengonio/fit.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:brdf",
+   "target": "document:wiki/src/Theory.md",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:angles",
+   "target": "file:software/src/opengonio/gantry/kinematics.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:angles",
+   "target": "file:software/src/opengonio/plans/inplane.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:angles",
+   "target": "file:software/src/opengonio/plans/hemisphere.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:angles",
+   "target": "document:wiki/src/How-it-works.md",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:run",
+   "target": "file:software/src/opengonio/cli.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:run",
+   "target": "file:software/src/opengonio/runrecord.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:run",
+   "target": "file:software/src/opengonio/verify.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:run",
+   "target": "file:software/src/opengonio/camera/uvc.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:calibration",
+   "target": "file:software/src/opengonio/calibration.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:calibration",
+   "target": "file:software/src/opengonio/sim.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:calibration",
+   "target": "module:phases/07-calibrate",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:calibration",
+   "target": "document:wiki/src/Calibration.md",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:safety",
+   "target": "module:phases/01-power",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:safety",
+   "target": "file:software/src/opengonio/gantry/safety.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:safety",
+   "target": "file:software/src/opengonio/gantry/panel.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:safety",
+   "target": "file:firmware/hub/main.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:safety",
+   "target": "document:docs/power.html",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:build",
+   "target": "module:phases/03-frame",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:build",
+   "target": "file:tools/cad/parts.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:build",
+   "target": "document:docs/build.html",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:build",
+   "target": "document:wiki/src/Tools-and-joins.md",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:truth",
+   "target": "file:tools/check.py",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:truth",
+   "target": "config:.github/phases.yml",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:truth",
+   "target": "config:docs/wiring.yaml",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "concept:truth",
+   "target": "document:wiki/src/Repository-map.md",
+   "type": "related",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.7
+  },
+  {
+   "source": "file:tools/bom_readme.py",
+   "target": "config:phases/01-power/bom.csv",
+   "type": "reads_from",
+   "direction": "forward",
+   "description": "parts lists → README tables",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/bom_readme.py",
+   "target": "document:README.md",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/bom_check.py",
+   "target": "config:phases/01-power/bom.csv",
+   "type": "validates",
+   "direction": "forward",
+   "description": "stores, prices, budget cap",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/wiring.py",
+   "target": "config:docs/wiring.yaml",
+   "type": "reads_from",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/wiring.py",
+   "target": "document:docs/wiring.html",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "diagrams and the wiring data",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/wiring.py",
+   "target": "document:README.md",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "Wiring section",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/build_book.py",
+   "target": "config:docs/assembly.yaml",
+   "type": "reads_from",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/build_book.py",
+   "target": "document:docs/build.html",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/roadmap.py",
+   "target": "config:.github/phases.yml",
+   "type": "reads_from",
+   "direction": "forward",
+   "description": "steps → stage checklists",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/refs_bib.py",
+   "target": "document:REFERENCES.md",
+   "type": "reads_from",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/refs_bib.py",
+   "target": "document:paper/opengonio.tex",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "bibliography",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/site_data.py",
+   "target": "document:docs/index.html",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "the numbers on the website",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/check.py",
+   "target": "config:docs/wiring.yaml",
+   "type": "validates",
+   "direction": "forward",
+   "description": "pins match the hub firmware",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/check.py",
+   "target": "config:.github/phases.yml",
+   "type": "validates",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/explore_graph.py",
+   "target": "document:docs/explore/index.html",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "this map",
+   "weight": 0.8
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/hub.py",
+   "target": "file:firmware/hub/main.py",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "serial lines both sides agree on",
+   "weight": 0.8
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/fluidnc.py",
+   "target": "config:firmware/grblhal/settings.txt",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "grblHAL on the SKR Pico",
+   "weight": 0.8
+  },
+  {
+   "source": "document:docs/power.html",
+   "target": "module:phases/01-power",
+   "type": "documents",
+   "direction": "forward",
+   "description": "wire the power, step by step",
+   "weight": 0.8
+  },
+  {
+   "source": "document:docs/controller.html",
+   "target": "module:phases/02-controller",
+   "type": "documents",
+   "direction": "forward",
+   "description": "wire the controller, step by step",
+   "weight": 0.8
+  }
+ ],
+ "layers": [
+  {
+   "id": "layer:ideas",
+   "name": "Big ideas (start here)",
+   "description": "The few ideas that make the rest make sense.",
+   "nodeIds": [
+    "concept:brdf",
+    "concept:angles",
+    "concept:run",
+    "concept:calibration",
+    "concept:safety",
+    "concept:build",
+    "concept:truth"
+   ]
+  },
+  {
+   "id": "layer:stages",
+   "name": "Build stages and parts",
+   "description": "The machine built one working piece at a time, with its parts lists.",
+   "nodeIds": [
+    "module:phases/00-plan",
+    "config:phases/00-plan/bom.csv",
+    "module:phases/01-power",
+    "config:phases/01-power/bom.csv",
+    "module:phases/02-controller",
+    "config:phases/02-controller/bom.csv",
+    "module:phases/03-frame",
+    "config:phases/03-frame/bom.csv",
+    "module:phases/04-light-arm",
+    "config:phases/04-light-arm/bom.csv",
+    "module:phases/05-table",
+    "config:phases/05-table/bom.csv",
+    "module:phases/06-camera-light",
+    "config:phases/06-camera-light/bom.csv",
+    "module:phases/07-calibrate",
+    "config:phases/07-calibrate/bom.csv",
+    "module:phases/08-tilt",
+    "config:phases/08-tilt/bom.csv",
+    "module:phases/09-spin",
+    "config:phases/09-spin/bom.csv",
+    "module:phases/10-color",
+    "config:phases/10-color/bom.csv",
+    "module:phases/11-scan-capture",
+    "config:phases/11-scan-capture/bom.csv",
+    "module:phases/12-scan-mesh",
+    "module:phases/13-object-material",
+    "module:phases/14-laptop-app",
+    "module:phases/15-standalone",
+    "config:phases/15-standalone/bom.csv",
+    "module:phases/16-release",
+    "module:phases/17-upgrades"
+   ]
+  },
+  {
+   "id": "layer:firmware",
+   "name": "Machine firmware",
+   "description": "What runs on the motor board and the hub.",
+   "nodeIds": [
+    "file:firmware/hub/main.py",
+    "config:firmware/grblhal/settings.txt"
+   ]
+  },
+  {
+   "id": "layer:software",
+   "name": "Laptop software",
+   "description": "Planning, moving, capturing, checking and fitting, in Python.",
+   "nodeIds": [
+    "file:software/src/opengonio/__init__.py",
+    "file:software/src/opengonio/app/__init__.py",
+    "file:software/src/opengonio/app/server.py",
+    "class:software/src/opengonio/app/server.py:Refused",
+    "class:software/src/opengonio/app/server.py:App",
+    "file:software/src/opengonio/brdf/__init__.py",
+    "file:software/src/opengonio/brdf/models.py",
+    "file:software/src/opengonio/calibration.py",
+    "file:software/src/opengonio/camera/__init__.py",
+    "file:software/src/opengonio/camera/uvc.py",
+    "file:software/src/opengonio/cli.py",
+    "file:software/src/opengonio/fit.py",
+    "file:software/src/opengonio/gantry/__init__.py",
+    "file:software/src/opengonio/gantry/collision.py",
+    "file:software/src/opengonio/gantry/config.py",
+    "file:software/src/opengonio/gantry/fluidnc.py",
+    "class:software/src/opengonio/gantry/fluidnc.py:SerialTransport",
+    "class:software/src/opengonio/gantry/fluidnc.py:TcpTransport",
+    "class:software/src/opengonio/gantry/fluidnc.py:RecordingTransport",
+    "file:software/src/opengonio/gantry/gantry.py",
+    "file:software/src/opengonio/gantry/hub.py",
+    "class:software/src/opengonio/gantry/hub.py:SafetyInterrupt",
+    "class:software/src/opengonio/gantry/hub.py:HubBase",
+    "class:software/src/opengonio/gantry/hub.py:FakeHub",
+    "file:software/src/opengonio/gantry/kinematics.py",
+    "file:software/src/opengonio/gantry/panel.py",
+    "file:software/src/opengonio/gantry/safety.py",
+    "file:software/src/opengonio/hdr/__init__.py",
+    "file:software/src/opengonio/hdr/merge.py",
+    "file:software/src/opengonio/imageio.py",
+    "file:software/src/opengonio/plans/__init__.py",
+    "file:software/src/opengonio/plans/hemisphere.py",
+    "file:software/src/opengonio/plans/inplane.py",
+    "file:software/src/opengonio/plans/repeatability.py",
+    "file:software/src/opengonio/plot.py",
+    "file:software/src/opengonio/roi.py",
+    "file:software/src/opengonio/runrecord.py",
+    "file:software/src/opengonio/scan/__init__.py",
+    "file:software/src/opengonio/scan/calibrate.py",
+    "class:software/src/opengonio/scan/calibrate.py:CameraCalibration",
+    "file:software/src/opengonio/scan/carve.py",
+    "file:software/src/opengonio/scan/colmap.py",
+    "file:software/src/opengonio/scan/demo.py",
+    "file:software/src/opengonio/scan/geometry.py",
+    "file:software/src/opengonio/scan/photometric.py",
+    "file:software/src/opengonio/scan/plan.py",
+    "file:software/src/opengonio/scan/process.py",
+    "file:software/src/opengonio/scan/run.py",
+    "file:software/src/opengonio/sim.py",
+    "class:software/src/opengonio/sim.py:SimTransport",
+    "file:software/src/opengonio/station.py",
+    "class:software/src/opengonio/station.py:Station",
+    "file:software/src/opengonio/verify.py"
+   ]
+  },
+  {
+   "id": "layer:tools",
+   "name": "Sources of truth and tools",
+   "description": "The hand-edited files and the tools that rebuild everything from them.",
+   "nodeIds": [
+    "file:tools/bom_check.py",
+    "file:tools/bom_readme.py",
+    "file:tools/build_book.py",
+    "file:tools/check.py",
+    "file:tools/explore_graph.py",
+    "file:tools/export_machine.py",
+    "file:tools/exports.py",
+    "file:tools/grblhal_settings.py",
+    "file:tools/machine3d.py",
+    "file:tools/make_assets.py",
+    "file:tools/new.py",
+    "file:tools/optics.py",
+    "file:tools/paper_assets.py",
+    "file:tools/part_images.py",
+    "file:tools/parts_doc.py",
+    "file:tools/power_budget.py",
+    "file:tools/readme_screens.py",
+    "file:tools/refs_bib.py",
+    "file:tools/roadmap.py",
+    "file:tools/roadmap_svg.py",
+    "file:tools/site_data.py",
+    "file:tools/site_model.py",
+    "file:tools/site_pictures.py",
+    "file:tools/wiring.py",
+    "file:tools/cad/parts.py",
+    "config:.github/phases.yml",
+    "config:docs/wiring.yaml",
+    "config:docs/assembly.yaml",
+    "config:software/config/machine.yaml"
+   ]
+  },
+  {
+   "id": "layer:docs",
+   "name": "Website, wiki and paper",
+   "description": "Everything written for readers and builders.",
+   "nodeIds": [
+    "document:docs/build.html",
+    "document:docs/controller.html",
+    "document:docs/index.html",
+    "document:docs/lab.html",
+    "document:docs/power.html",
+    "document:docs/wiring.html",
+    "document:docs/explore/index.html",
+    "document:wiki/src/3D-scanning.md",
+    "document:wiki/src/Build-guide.md",
+    "document:wiki/src/CAD.md",
+    "document:wiki/src/Calibration.md",
+    "document:wiki/src/Commands.md",
+    "document:wiki/src/Extend.md",
+    "document:wiki/src/Hardware.md",
+    "document:wiki/src/Home.md",
+    "document:wiki/src/How-it-works.md",
+    "document:wiki/src/Machine.md",
+    "document:wiki/src/Paper.md",
+    "document:wiki/src/Repository-map.md",
+    "document:wiki/src/Software.md",
+    "document:wiki/src/Test-materials.md",
+    "document:wiki/src/Theory.md",
+    "document:wiki/src/Tools-and-joins.md",
+    "document:README.md",
+    "document:REFERENCES.md",
+    "document:paper/opengonio.tex",
+    "document:DESIGN.md"
+   ]
+  }
+ ],
+ "tour": [
+  {
+   "order": 1,
+   "title": "What this machine is",
+   "description": "A desk-sized instrument that measures how materials reflect light, printed and built from modules. Start with the two big ideas, then open the README.",
+   "nodeIds": [
+    "concept:brdf",
+    "concept:angles",
+    "document:README.md"
+   ]
+  },
+  {
+   "order": 2,
+   "title": "How one measurement happens",
+   "description": "A plan becomes poses, the machine moves and photographs, and a run folder keeps everything. Click each file to read what it does.",
+   "nodeIds": [
+    "concept:run",
+    "file:software/src/opengonio/plans/inplane.py",
+    "file:software/src/opengonio/gantry/gantry.py",
+    "file:software/src/opengonio/camera/uvc.py",
+    "file:software/src/opengonio/runrecord.py",
+    "file:software/src/opengonio/verify.py"
+   ]
+  },
+  {
+   "order": 3,
+   "title": "Making the numbers true",
+   "description": "Calibration turns pictures into trustworthy numbers. The simulator rehearses the whole chain with no hardware.",
+   "nodeIds": [
+    "concept:calibration",
+    "file:software/src/opengonio/calibration.py",
+    "file:software/src/opengonio/sim.py",
+    "module:phases/07-calibrate"
+   ]
+  },
+  {
+   "order": 4,
+   "title": "Built in small stages",
+   "description": "Each stage adds one working piece and ends with a check: power, controller, frame, light arm, table, camera and light, calibration.",
+   "nodeIds": [
+    "concept:build",
+    "module:phases/00-plan",
+    "module:phases/01-power",
+    "module:phases/02-controller",
+    "module:phases/03-frame",
+    "module:phases/04-light-arm",
+    "module:phases/05-table",
+    "module:phases/06-camera-light"
+   ]
+  },
+  {
+   "order": 5,
+   "title": "Power and safety first",
+   "description": "The first wires are the power and the e-stop. The walkthrough shows each wire on a drawing of the bench.",
+   "nodeIds": [
+    "concept:safety",
+    "module:phases/01-power",
+    "document:docs/power.html",
+    "file:software/src/opengonio/gantry/safety.py"
+   ]
+  },
+  {
+   "order": 6,
+   "title": "Two small computers",
+   "description": "A motor board (SKR Pico, grblHAL) moves the axes; an ESP32-S3 hub reads the buttons and sensors. The laptop talks to both over USB.",
+   "nodeIds": [
+    "file:firmware/hub/main.py",
+    "config:firmware/grblhal/settings.txt",
+    "file:software/src/opengonio/gantry/hub.py",
+    "file:software/src/opengonio/gantry/fluidnc.py",
+    "document:docs/controller.html"
+   ]
+  },
+  {
+   "order": 7,
+   "title": "Driving it",
+   "description": "The same code runs behind the command line, the control app in the browser and the standalone station.",
+   "nodeIds": [
+    "file:software/src/opengonio/cli.py",
+    "file:software/src/opengonio/app/server.py",
+    "file:software/src/opengonio/station.py"
+   ]
+  },
+  {
+   "order": 8,
+   "title": "One source, many outputs",
+   "description": "Change a parts list or a wire in one file; the tools rebuild the README, diagrams, website and paper, and the checks prove they agree.",
+   "nodeIds": [
+    "concept:truth",
+    "config:.github/phases.yml",
+    "config:docs/wiring.yaml",
+    "file:tools/wiring.py",
+    "file:tools/check.py"
+   ]
+  },
+  {
+   "order": 9,
+   "title": "Beyond materials: 3D scans",
+   "description": "The same machine photographs an object from known angles and builds a 3D model of it.",
+   "nodeIds": [
+    "module:phases/11-scan-capture",
+    "module:phases/12-scan-mesh",
+    "module:phases/13-object-material",
+    "file:software/src/opengonio/scan/run.py",
+    "file:software/src/opengonio/scan/process.py"
+   ]
+  }
+ ]
+}

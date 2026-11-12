@@ -19,6 +19,8 @@ Measures how materials reflect light — the bidirectional reflectance distribut
 - **Every control works without hardware.** A simulated machine with a hidden table error runs the whole chain; `make sim` ends `ALL PASS`.
 - **Honest numbers.** Every claim says whether it is simulated, modeled or measured ([Status](#status)).
 
+**New here?** Open the [project map](docs/explore/index.html): the whole project as a clickable map, with a 9-step tour in plain words (what it measures, how a run works, the build stages, the boards, the software) and a flows view of how things happen. Drawn from the repo by `tools/explore_graph.py` with [Understand-Anything](https://github.com/Egonex-AI/Understand-Anything) (MIT).
+
 **[How it works](wiki/How-it-works.md) · [Wiring](#wiring) · [Build steps](#build) · [Wiki](wiki/Home.md) · [Paper (PDF)](paper/build/opengonio.pdf) · [Website](docs/index.html) · [Lab](docs/lab.html) · [Parts spreadsheet](exports/bom/opengonio-bom.xlsx) · [Your parts list](PARTS.md)**
 
 <!-- budget:start -->
@@ -208,7 +210,7 @@ Black ABS (acrylonitrile butadiene styrene) on an enclosed printer, ≈ 2.7 kg, 
 <!-- wiring:start -->
 <img src="docs/assets/wiring.svg" width="100%" alt="Wiring overview">
 
-Every connection, pin by pin. No solder, no crimps: screw terminals, lever connectors (WAGO 221), plug-in leads and jumper wires. Source: [`docs/wiring.yaml`](docs/wiring.yaml) (`make build` writes this section; `make check` compares it with the firmware). **Press the e-stop and unplug the wall adapter before touching any terminal.** Step by step with pictures: [wiring guide](docs/wiring.html).
+Every connection, pin by pin. No solder, no crimps: screw terminals, lever connectors (WAGO 221), plug-in leads and jumper wires. Source: [`docs/wiring.yaml`](docs/wiring.yaml) (`make build` writes this section; `make check` compares it with the firmware). **Press the e-stop and unplug the wall adapter before touching any terminal.** Step by step with pictures: [wiring guide](docs/wiring.html); the first wires drawn as the parts sit on the bench: [power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html).
 
 **Jump to:** [Power: wall adapter, jack, e-stop](#1--power-wall-adapter-jack-e-stop) · [Motor power: e-stop → limit switch → SKR Pico](#2--motor-power-e-stop--limit-switch--skr-pico) · [SKR Pico: motors](#3--skr-pico-motors) · [SKR Pico: endstops (home switches)](#4--skr-pico-endstops-home-switches) · [Lamp (white COB)](#5--lamp-white-cob) · [Hub: keypads and motor-power sense](#6--hub-keypads-and-motor-power-sense) · [USB data](#7--usb-data) · [Optional add-ons](#8--optional-add-ons) · [Standalone station (no laptop, optional)](#9--standalone-station-no-laptop-optional) · [Not wired: colour LED bank](#10--not-wired-colour-led-bank) · [SKR Pico port map](#skr-pico-port-map) · [ESP32-S3 header map](#esp32-s3-header-map)
 
@@ -437,12 +439,12 @@ Pin numbers as in Espressif's user guide (J1 on one long edge, J3 on the other).
 ## Build
 
 <!-- next:start -->
-**Next step: [M01.1 Get the papers](phases/00-plan/README.md#m011-get-the-papers)** · 20 min · 0 of 136 steps done
+**Next step: [M01.1 Get the papers](phases/00-plan/README.md#m011-get-the-papers)** · 20 min · 0 of 140 steps done
 <!-- next:end -->
 
 Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make next` prints the next step; `make done id=M05.1` ticks it and closes its issue.
 
-**Pictures:** [build book](docs/build.html) (every printed and bought part in the order it goes on, in 3D, one step per page; [PDF](exports/build-book.pdf) to print) · [wiring guide](docs/wiring.html) (every wire, one at a time).
+**Pictures:** [build book](docs/build.html) (every printed and bought part in the order it goes on, in 3D, one step per page; [PDF](exports/build-book.pdf) to print) · [power wiring](docs/power.html) (adapter to motor board, drawn as the parts sit on the bench) · [controller wiring](docs/controller.html) (USB, bench motor, keypads, power sense, with flashing and test commands) · [wiring guide](docs/wiring.html) (every wire, one at a time).
 
 <!-- phases:start -->
 | # | Stage | Milestones | Hours | Done | Cost |
@@ -464,7 +466,7 @@ Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make
 | 14 | [Laptop app](phases/14-laptop-app/) | M38 Control page, M39 Presets and resume | 16 h | 0/6 | — |
 | 15 | [Standalone (no laptop)](phases/15-standalone/) | M40 Panel screen, M41 Pi Zero station set up, M42 Job with no laptop, M43 Laptop collects and verifies | 2.8 h | 0/8 | — |
 | 16 | [Release](phases/16-release/) | M44 Docs complete, M45 Public release | 4.2 h | 0/6 | — |
-| 17 | [Upgrades (optional)](phases/17-upgrades/) | M46 Adaptive sampling, M47 Space carving, M48 Compare with MERL / RGL data | 13 h | 0/3 | — |
+| 17 | [Upgrades (optional)](phases/17-upgrades/) | M46 Adaptive sampling, M47 Space carving, M48 Compare with MERL / RGL data, M49 Battery power | 17.2 h | 0/7 | — |
 <!-- phases:end -->
 
 ## Software

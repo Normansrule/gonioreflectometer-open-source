@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio controller wiring</title>
+<meta name="description" content="The OpenGonio controller wired step by step as the parts sit on the bench: USB to the laptop, the bench motor, the X endstop, both keypads and the power sense, with the flashing and test commands at each check. Text from docs/wiring.yaml.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/guide.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the walkthrough</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Pages">
+  <a href="./">Website</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html" aria-current="page">Controller wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="g-head" aria-labelledby="h1">
+ <h1 id="h1" class="display">Controller wiring, step by step</h1>
+ <p class="g-lead">Stage 02 on the bench, after the <a href="power.html">power wiring</a>: both boards to the laptop, the bench motor and
+  its endstop, the two keypads and the power sense. Wires already made stay drawn; the moving wire with the two rings is the one to make
+  now. The checks (✓) carry the flashing and test commands, so the board is proven before the next group of wires. Wording from
+  <code>docs/wiring.yaml</code>, the same source as the <a href="wiring.html">full wiring guide</a>.</p>
+ <p class="g-safety"><span class="patch red" aria-hidden="true"></span><span><b>Press the e-stop and keep the wall adapter unplugged while you wire.</b>
+  Plug the adapter in only where a check says live. Never plug or unplug a motor with motor power on.</span></p>
+</section>
+
+<section class="stage" aria-label="Current step">
+ <figure class="sheet pw-sheet" style="margin:0">
+  <svg id="bench" viewBox="0 0 680 530" role="img" aria-labelledby="bench-title bench-desc">
+   <title id="bench-title">Controller wiring on the bench</title>
+   <desc id="bench-desc">SKR Pico, laptop, bench motor, X endstop, PC817 opto with the MOT+ and MOT− slots above it, keypads A and B,
+    a 3-way ground lever connector and the ESP32-S3 hub with its header pins, with the wires made so far.</desc>
+      <rect class="box-r" x="500" y="8" width="160" height="42" rx="6"/>
+   <text class="box-t" x="580" y="34" text-anchor="middle">Laptop</text>
+   <rect class="box-r pw-green" x="20" y="70" width="180" height="150" rx="8"/>
+   <text class="box-t" x="110" y="208" text-anchor="middle">SKR Pico</text>
+   <text class="pin-t" x="188" y="108" text-anchor="end">USB-C</text>
+   <text class="pin-t" x="188" y="134" text-anchor="end">POWER (done)</text>
+   <text class="pin-t" x="188" y="160" text-anchor="end">X motor socket</text>
+   <text class="pin-t" x="188" y="186" text-anchor="end">X-STOP</text>
+   <circle cx="200" cy="104" r="4" class="pw-ink"/><circle cx="200" cy="130" r="4" class="pw-ink" opacity=".3"/><circle cx="200" cy="156" r="4" class="pw-ink"/><circle cx="200" cy="182" r="4" class="pw-ink"/>
+   <rect class="box-r pw-violet" x="20" y="270" width="160" height="50" rx="8"/>
+   <text class="box-t" x="100" y="292" text-anchor="middle">Bench motor</text>
+   <text class="pin-t" x="100" y="310" text-anchor="middle">M4 (LAR-02)</text>
+   <rect class="box-r pw-teal" x="20" y="350" width="160" height="56" rx="8"/>
+   <text class="box-t" x="100" y="372" text-anchor="middle">X endstop</text>
+   <text class="pin-t" x="100" y="392" text-anchor="middle">S / G / V by label</text>
+   <rect class="box-r" x="230" y="48" width="150" height="38" rx="6"/>
+   <text class="pin-t" x="265" y="71" text-anchor="middle">MOT+ 2</text>
+   <text class="pin-t" x="335" y="71" text-anchor="middle">MOT− 2</text>
+   <rect class="box-r pw-amber" x="230" y="100" width="150" height="120" rx="8"/>
+   <text class="box-t" x="290" y="210" text-anchor="middle">PC817 opto</text>
+   <text class="pin-t" x="265" y="120" text-anchor="middle">IN+</text>
+   <text class="pin-t" x="335" y="120" text-anchor="middle">IN−</text>
+   <text class="pin-t" x="368" y="144" text-anchor="end">VCC</text>
+   <text class="pin-t" x="368" y="170" text-anchor="end">GND</text>
+   <text class="pin-t" x="368" y="190" text-anchor="end">OUT</text>
+   <rect class="box-r pw-blue" x="500" y="70" width="160" height="300" rx="8"/>
+   <text class="box-t" x="580" y="93" text-anchor="middle">ESP32-S3 hub</text>
+   <text class="pin-t" x="648" y="62" text-anchor="end">USB</text>
+   <circle cx="500" cy="114" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="118" text-anchor="start">J1-1 · 3V3</text>
+   <circle cx="500" cy="140" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="144" text-anchor="start">J1-4 · HOME</text>
+   <circle cx="500" cy="166" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="170" text-anchor="start">J1-5 · START</text>
+   <circle cx="500" cy="192" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="196" text-anchor="start">J1-6 · STOP</text>
+   <circle cx="500" cy="218" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="222" text-anchor="start">J1-7 · LIGHT</text>
+   <circle cx="500" cy="244" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="248" text-anchor="start">J1-8 · NEXT</text>
+   <circle cx="500" cy="270" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="274" text-anchor="start">J1-9 · PAUSE</text>
+   <circle cx="500" cy="296" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="300" text-anchor="start">J1-10 · GPIO17</text>
+   <circle cx="500" cy="322" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="326" text-anchor="start">J1-22 · GND</text>
+   <circle cx="500" cy="348" r="4" class="pw-ink"/>
+   <text class="pin-t" x="512" y="352" text-anchor="start">J3-21 · GND</text>
+   <rect class="box-r pw-coral" x="230" y="250" width="170" height="135" rx="8"/>
+   <text class="box-t" x="300" y="272" text-anchor="middle">Keypad A</text>
+   <rect class="box-r pw-coral" x="230" y="400" width="170" height="100" rx="8"/>
+   <text class="box-t" x="300" y="422" text-anchor="middle">Keypad B</text>
+   <text class="pin-t" x="388" y="290" text-anchor="end">common</text>
+   <circle cx="400" cy="286" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="312" text-anchor="end">key 1</text>
+   <circle cx="400" cy="308" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="334" text-anchor="end">key 2</text>
+   <circle cx="400" cy="330" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="356" text-anchor="end">key 3</text>
+   <circle cx="400" cy="352" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="378" text-anchor="end">key 4</text>
+   <circle cx="400" cy="374" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="440" text-anchor="end">common</text>
+   <circle cx="400" cy="436" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="462" text-anchor="end">key 1</text>
+   <circle cx="400" cy="458" r="4" class="pw-ink"/>
+   <text class="pin-t" x="388" y="484" text-anchor="end">key 2</text>
+   <circle cx="400" cy="480" r="4" class="pw-ink"/>
+   <rect class="box-r" x="420" y="425" width="50" height="80" rx="6"/>
+   <text class="pin-t" x="445" y="446" text-anchor="middle">1</text>
+   <text class="pin-t" x="445" y="468" text-anchor="middle">2</text>
+   <text class="pin-t" x="445" y="490" text-anchor="middle">3</text>
+   <text class="pin-t" x="445" y="519" text-anchor="middle">GND WAGO</text>
+   <g id="wires"></g><g id="rings"></g>
+  </svg>
+  <div class="pw-pills" id="pills" role="group" aria-label="Steps"></div>
+ </figure>
+
+ <article class="card" aria-live="polite">
+  <div class="c-head">
+   <h2 id="s-title"></h2>
+   <p class="meta" id="k-sec"></p>
+  </div>
+  <div class="c-body" id="s-body"></div>
+  <div class="c-nav">
+   <p class="progress num" id="k-step"></p>
+   <div class="nav">
+    <button class="btn" type="button" id="back">Back</button>
+    <button class="btn btn-light" type="button" id="next">Next</button>
+   </div>
+   <p class="hint">Keys: <span class="kbd">←</span> <span class="kbd">→</span>. Each step has its own link (the address bar).</p>
+  </div>
+ </article>
+</section>
+
+<p class="foot">Nothing here has been built or measured yet: this is the design. Part numbers in brackets are the parts list IDs
+ (README → Electronics). The other motors, their endstops and the lamp are wired with their stages: <a href="wiring.html">full wiring guide</a>,
+ sections 3–5.</p>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html" aria-current="page">Controller wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
+</footer>
+<script src="wiring-guide.js"></script>
+<script src="og/walk-controller.js"></script>
+<script src="og/walk.js"></script>
+</body>
+</html>

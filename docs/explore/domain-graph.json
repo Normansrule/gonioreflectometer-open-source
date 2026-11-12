@@ -1,0 +1,632 @@
+{
+ "version": "1.0.0",
+ "project": {
+  "name": "OpenGonio (Open Source Gonioreflectometer)",
+  "languages": [
+   "python",
+   "javascript",
+   "html",
+   "css"
+  ],
+  "frameworks": [
+   "grblHAL",
+   "MicroPython",
+   "CadQuery",
+   "pytest"
+  ],
+  "description": "A printable, modular instrument that measures how materials reflect light, with the software, firmware, build guide, website and paper in one repository.",
+  "analyzedAt": "2026-11-10T00:00:00Z",
+  "gitCommitHash": ""
+ },
+ "nodes": [
+  {
+   "id": "domain:measuring",
+   "type": "domain",
+   "name": "Measuring materials",
+   "summary": "Turning a flat sample into numbers a renderer can use: calibrate once, then measure, check and fit.",
+   "tags": [],
+   "complexity": "moderate"
+  },
+  {
+   "id": "flow:calibrate",
+   "type": "flow",
+   "name": "Calibrate the machine",
+   "summary": "Calibrate the machine: 4 steps.",
+   "tags": [],
+   "complexity": "moderate",
+   "domainMeta": {
+    "entryPoint": "opengonio calibrate",
+    "entryType": "cli"
+   }
+  },
+  {
+   "id": "step:calibrate:home-every-axis",
+   "type": "step",
+   "name": "Home every axis",
+   "summary": "The machine drives each axis to its home switch so every angle starts from a known place.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/gantry.py"
+  },
+  {
+   "id": "step:calibrate:find-true-zero-with-a-mirror",
+   "type": "step",
+   "name": "Find true zero with a mirror",
+   "summary": "A mirror sweep shows where the angle really is zero; the offset is saved.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/calibration.py"
+  },
+  {
+   "id": "step:calibrate:measure-the-camera-s-darkness",
+   "type": "step",
+   "name": "Measure the camera's darkness",
+   "summary": "A photo with the lamp off records the camera's own noise, to subtract later.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/calibration.py"
+  },
+  {
+   "id": "step:calibrate:measure-a-white-reference",
+   "type": "step",
+   "name": "Measure a white reference",
+   "summary": "A known white sample turns brightness into true reflectance.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/calibration.py"
+  },
+  {
+   "id": "flow:measure",
+   "type": "flow",
+   "name": "Measure a sample",
+   "summary": "Measure a sample: 5 steps.",
+   "tags": [],
+   "complexity": "moderate",
+   "domainMeta": {
+    "entryPoint": "opengonio capture",
+    "entryType": "cli"
+   }
+  },
+  {
+   "id": "step:measure:choose-a-plan",
+   "type": "step",
+   "name": "Choose a plan",
+   "summary": "A list of light and camera angles to visit.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plans/inplane.py"
+  },
+  {
+   "id": "step:measure:move-light-and-photograph",
+   "type": "step",
+   "name": "Move, light and photograph",
+   "summary": "At each pose the lamp comes on and the camera takes a bracket of exposures.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/camera/uvc.py"
+  },
+  {
+   "id": "step:measure:save-a-run-folder",
+   "type": "step",
+   "name": "Save a run folder",
+   "summary": "Images plus a manifest of every setting, so the run can be checked later.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/runrecord.py"
+  },
+  {
+   "id": "step:measure:check-the-run",
+   "type": "step",
+   "name": "Check the run",
+   "summary": "`opengonio verify` checks the run is complete, the data valid and the lamp steady, and gives PASS or FAIL.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/verify.py"
+  },
+  {
+   "id": "step:measure:draw-the-curve",
+   "type": "step",
+   "name": "Draw the curve",
+   "summary": "`opengonio curve` turns the pixels into brightness against angle.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/cli.py"
+  },
+  {
+   "id": "flow:fit",
+   "type": "flow",
+   "name": "Fit a game material",
+   "summary": "Fit a game material: 3 steps.",
+   "tags": [],
+   "complexity": "simple",
+   "domainMeta": {
+    "entryPoint": "opengonio fit",
+    "entryType": "cli"
+   }
+  },
+  {
+   "id": "step:fit:read-the-curve",
+   "type": "step",
+   "name": "Read the curve",
+   "summary": "The measured brightness at each angle.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/fit.py"
+  },
+  {
+   "id": "step:fit:fit-a-material-model",
+   "type": "step",
+   "name": "Fit a material model",
+   "summary": "Find the base colour, roughness and metalness that reproduce the curve.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/brdf/models.py"
+  },
+  {
+   "id": "step:fit:save-the-result",
+   "type": "step",
+   "name": "Save the result",
+   "summary": "fit.json for the game engine and a chart to compare by eye.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/plot.py"
+  },
+  {
+   "id": "domain:building",
+   "type": "domain",
+   "name": "Building the machine",
+   "summary": "Each stage adds one working piece and ends with a check before the next.",
+   "tags": [],
+   "complexity": "moderate"
+  },
+  {
+   "id": "flow:power",
+   "type": "flow",
+   "name": "Power and safety",
+   "summary": "Power and safety: 3 steps.",
+   "tags": [],
+   "complexity": "simple",
+   "domainMeta": {
+    "entryPoint": "manual",
+    "entryType": "manual"
+   }
+  },
+  {
+   "id": "step:power:wire-the-power",
+   "type": "step",
+   "name": "Wire the power",
+   "summary": "Adapter, jack, e-stop, over-travel switch and the two lever connectors.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "docs/power.html"
+  },
+  {
+   "id": "step:power:check-with-the-power-off",
+   "type": "step",
+   "name": "Check with the power off",
+   "summary": "Meter checks: no short, e-stop and switch open the line.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/01-power/README.md"
+  },
+  {
+   "id": "step:power:first-power-on",
+   "type": "step",
+   "name": "First power-on",
+   "summary": "About 24 V on the motor line; the e-stop drops it to zero.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/01-power/README.md"
+  },
+  {
+   "id": "flow:controller",
+   "type": "flow",
+   "name": "Bring up the controller",
+   "summary": "Bring up the controller: 4 steps.",
+   "tags": [],
+   "complexity": "moderate",
+   "domainMeta": {
+    "entryPoint": "manual",
+    "entryType": "manual"
+   }
+  },
+  {
+   "id": "step:controller:connect-both-boards",
+   "type": "step",
+   "name": "Connect both boards",
+   "summary": "Motor board and hub to the laptop over USB.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "docs/controller.html"
+  },
+  {
+   "id": "step:controller:flash-the-motor-board",
+   "type": "step",
+   "name": "Flash the motor board",
+   "summary": "grblHAL on the SKR Pico, with the machine's settings.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "firmware/grblhal/settings.txt"
+  },
+  {
+   "id": "step:controller:flash-the-hub",
+   "type": "step",
+   "name": "Flash the hub",
+   "summary": "MicroPython firmware on the ESP32-S3.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "firmware/hub/main.py"
+  },
+  {
+   "id": "step:controller:bench-motor-keys-power-sense",
+   "type": "step",
+   "name": "Bench motor, keys, power sense",
+   "summary": "One motor turns, each key prints its name, the e-stop is seen.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "docs/controller.html"
+  },
+  {
+   "id": "flow:axes",
+   "type": "flow",
+   "name": "Add the axes",
+   "summary": "Add the axes: 5 steps.",
+   "tags": [],
+   "complexity": "moderate",
+   "domainMeta": {
+    "entryPoint": "manual",
+    "entryType": "manual"
+   }
+  },
+  {
+   "id": "step:axes:frame",
+   "type": "step",
+   "name": "Frame",
+   "summary": "Printed deck tiles bolted together.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/03-frame/README.md"
+  },
+  {
+   "id": "step:axes:light-arm",
+   "type": "step",
+   "name": "Light arm",
+   "summary": "The lamp's arm on its ring drive, homing on a switch.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/04-light-arm/README.md"
+  },
+  {
+   "id": "step:axes:table",
+   "type": "step",
+   "name": "Table",
+   "summary": "The sample table turns.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/05-table/README.md"
+  },
+  {
+   "id": "step:axes:camera-and-light",
+   "type": "step",
+   "name": "Camera and light",
+   "summary": "Camera fixed, lamp on its driver.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/06-camera-light/README.md"
+  },
+  {
+   "id": "step:axes:tilt-and-spin",
+   "type": "step",
+   "name": "Tilt and spin",
+   "summary": "Two more axes: angles out of the plane, and samples that look different along and across.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "phases/08-tilt/README.md"
+  },
+  {
+   "id": "domain:scanning",
+   "type": "domain",
+   "name": "3D scanning",
+   "summary": "The same machine photographs an object from known angles and builds a 3D model.",
+   "tags": [],
+   "complexity": "moderate"
+  },
+  {
+   "id": "flow:scan",
+   "type": "flow",
+   "name": "Scan an object",
+   "summary": "Scan an object: 3 steps.",
+   "tags": [],
+   "complexity": "simple",
+   "domainMeta": {
+    "entryPoint": "opengonio scan",
+    "entryType": "cli"
+   }
+  },
+  {
+   "id": "step:scan:plan-rings-of-views",
+   "type": "step",
+   "name": "Plan rings of views",
+   "summary": "Positions all around the object.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/plan.py"
+  },
+  {
+   "id": "step:scan:photograph-every-view",
+   "type": "step",
+   "name": "Photograph every view",
+   "summary": "Known poses, so no guessing where the camera was.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/run.py"
+  },
+  {
+   "id": "step:scan:build-the-model",
+   "type": "step",
+   "name": "Build the model",
+   "summary": "Silhouettes, shading and photogrammetry make the 3D shape.",
+   "tags": [],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/scan/process.py"
+  }
+ ],
+ "edges": [
+  {
+   "source": "domain:measuring",
+   "target": "flow:calibrate",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:calibrate",
+   "target": "step:calibrate:home-every-axis",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.2
+  },
+  {
+   "source": "flow:calibrate",
+   "target": "step:calibrate:find-true-zero-with-a-mirror",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.4
+  },
+  {
+   "source": "flow:calibrate",
+   "target": "step:calibrate:measure-the-camera-s-darkness",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.6
+  },
+  {
+   "source": "flow:calibrate",
+   "target": "step:calibrate:measure-a-white-reference",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "domain:measuring",
+   "target": "flow:measure",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:measure",
+   "target": "step:measure:choose-a-plan",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.17
+  },
+  {
+   "source": "flow:measure",
+   "target": "step:measure:move-light-and-photograph",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.33
+  },
+  {
+   "source": "flow:measure",
+   "target": "step:measure:save-a-run-folder",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.5
+  },
+  {
+   "source": "flow:measure",
+   "target": "step:measure:check-the-run",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.67
+  },
+  {
+   "source": "flow:measure",
+   "target": "step:measure:draw-the-curve",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.83
+  },
+  {
+   "source": "domain:measuring",
+   "target": "flow:fit",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:fit",
+   "target": "step:fit:read-the-curve",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.25
+  },
+  {
+   "source": "flow:fit",
+   "target": "step:fit:fit-a-material-model",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.5
+  },
+  {
+   "source": "flow:fit",
+   "target": "step:fit:save-the-result",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.75
+  },
+  {
+   "source": "domain:building",
+   "target": "flow:power",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:power",
+   "target": "step:power:wire-the-power",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.25
+  },
+  {
+   "source": "flow:power",
+   "target": "step:power:check-with-the-power-off",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.5
+  },
+  {
+   "source": "flow:power",
+   "target": "step:power:first-power-on",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.75
+  },
+  {
+   "source": "domain:building",
+   "target": "flow:controller",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:controller",
+   "target": "step:controller:connect-both-boards",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.2
+  },
+  {
+   "source": "flow:controller",
+   "target": "step:controller:flash-the-motor-board",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.4
+  },
+  {
+   "source": "flow:controller",
+   "target": "step:controller:flash-the-hub",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.6
+  },
+  {
+   "source": "flow:controller",
+   "target": "step:controller:bench-motor-keys-power-sense",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.8
+  },
+  {
+   "source": "domain:building",
+   "target": "flow:axes",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:axes",
+   "target": "step:axes:frame",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.17
+  },
+  {
+   "source": "flow:axes",
+   "target": "step:axes:light-arm",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.33
+  },
+  {
+   "source": "flow:axes",
+   "target": "step:axes:table",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.5
+  },
+  {
+   "source": "flow:axes",
+   "target": "step:axes:camera-and-light",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.67
+  },
+  {
+   "source": "flow:axes",
+   "target": "step:axes:tilt-and-spin",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.83
+  },
+  {
+   "source": "domain:scanning",
+   "target": "flow:scan",
+   "type": "contains_flow",
+   "direction": "forward",
+   "weight": 1.0
+  },
+  {
+   "source": "flow:scan",
+   "target": "step:scan:plan-rings-of-views",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.25
+  },
+  {
+   "source": "flow:scan",
+   "target": "step:scan:photograph-every-view",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.5
+  },
+  {
+   "source": "flow:scan",
+   "target": "step:scan:build-the-model",
+   "type": "flow_step",
+   "direction": "forward",
+   "weight": 0.75
+  },
+  {
+   "source": "domain:building",
+   "target": "domain:measuring",
+   "type": "cross_domain",
+   "direction": "forward",
+   "description": "a built and calibrated machine is what measures",
+   "weight": 0.6
+  },
+  {
+   "source": "domain:measuring",
+   "target": "domain:scanning",
+   "type": "cross_domain",
+   "direction": "forward",
+   "description": "the same axes and camera, used to photograph objects",
+   "weight": 0.6
+  }
+ ],
+ "layers": [],
+ "tour": []
+}
