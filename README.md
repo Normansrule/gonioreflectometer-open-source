@@ -210,7 +210,7 @@ Black ABS (acrylonitrile butadiene styrene) on an enclosed printer, ≈ 2.7 kg, 
 <!-- wiring:start -->
 <img src="docs/assets/wiring.svg" width="100%" alt="Wiring overview">
 
-Every connection, pin by pin. No solder, no crimps: screw terminals, lever connectors (WAGO 221), plug-in leads and jumper wires. Source: [`docs/wiring.yaml`](docs/wiring.yaml) (`make build` writes this section; `make check` compares it with the firmware). **Press the e-stop and unplug the wall adapter before touching any terminal.** Step by step with pictures: [wiring guide](docs/wiring.html); the first wires drawn as the parts sit on the bench: [power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html).
+Every connection, pin by pin. No solder, no crimps: screw terminals, lever connectors (WAGO 221), plug-in leads and jumper wires. Source: [`docs/wiring.yaml`](docs/wiring.yaml) (`make build` writes this section; `make check` compares it with the firmware). **Press the e-stop and unplug the wall adapter before touching any terminal.** Step by step with pictures: [wiring guide](docs/wiring.html); the first wires drawn as the parts sit on the bench: [power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html), then the [machine walkthrough](docs/machine.html).
 
 **Jump to:** [Power: wall adapter, jack, e-stop](#1--power-wall-adapter-jack-e-stop) · [Motor power: e-stop → limit switch → SKR Pico](#2--motor-power-e-stop--limit-switch--skr-pico) · [SKR Pico: motors](#3--skr-pico-motors) · [SKR Pico: endstops (home switches)](#4--skr-pico-endstops-home-switches) · [Lamp (white COB)](#5--lamp-white-cob) · [Hub: keypads and motor-power sense](#6--hub-keypads-and-motor-power-sense) · [USB data](#7--usb-data) · [Optional add-ons](#8--optional-add-ons) · [Standalone station (no laptop, optional)](#9--standalone-station-no-laptop-optional) · [Not wired: colour LED bank](#10--not-wired-colour-led-bank) · [SKR Pico port map](#skr-pico-port-map) · [ESP32-S3 header map](#esp32-s3-header-map)
 
@@ -444,7 +444,7 @@ Pin numbers as in Espressif's user guide (J1 on one long edge, J3 on the other).
 
 Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make next` prints the next step; `make done id=M05.1` ticks it and closes its issue.
 
-**Pictures:** [build book](docs/build.html) (every printed and bought part in the order it goes on, in 3D, one step per page; [PDF](exports/build-book.pdf) to print) · [power wiring](docs/power.html) (adapter to motor board, drawn as the parts sit on the bench) · [controller wiring](docs/controller.html) (USB, bench motor, keypads, power sense, with flashing and test commands) · [wiring guide](docs/wiring.html) (every wire, one at a time).
+**Pictures:** [build book](docs/build.html) (every printed and bought part in the order it goes on, in 3D, one step per page; [PDF](exports/build-book.pdf) to print) · [power wiring](docs/power.html) (adapter to motor board, drawn as the parts sit on the bench) · [controller wiring](docs/controller.html) (USB, bench motor, keypads, power sense, with flashing and test commands) · [machine wiring](docs/machine.html) (the other motors, endstops, lamp, camera and add-ons, ending with a whole-machine test) · [wiring guide](docs/wiring.html) (every wire, one at a time).
 
 <!-- phases:start -->
 | # | Stage | Milestones | Hours | Done | Cost |

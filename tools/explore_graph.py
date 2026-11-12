@@ -96,6 +96,7 @@ FLOWS = [
     ("file:software/src/opengonio/gantry/fluidnc.py", "depends_on", "config:firmware/grblhal/settings.txt", "grblHAL on the SKR Pico"),
     ("document:docs/power.html", "documents", "module:phases/01-power", "wire the power, step by step"),
     ("document:docs/controller.html", "documents", "module:phases/02-controller", "wire the controller, step by step"),
+    ("document:docs/machine.html", "documents", "module:phases/06-camera-light", "wire and test motors, endstops, lamp, camera"),
 ]
 IDEA_LINKS = {
     "brdf": ["file:software/src/opengonio/brdf/models.py", "file:software/src/opengonio/fit.py", "document:wiki/src/Theory.md"],
@@ -128,7 +129,8 @@ TOUR = [
      "file:software/src/opengonio/gantry/safety.py"]),
     ("Two small computers", "A motor board (SKR Pico, grblHAL) moves the axes; an ESP32-S3 hub reads the buttons and "
      "sensors. The laptop talks to both over USB.", ["file:firmware/hub/main.py", "config:firmware/grblhal/settings.txt",
-     "file:software/src/opengonio/gantry/hub.py", "file:software/src/opengonio/gantry/fluidnc.py", "document:docs/controller.html"]),
+     "file:software/src/opengonio/gantry/hub.py", "file:software/src/opengonio/gantry/fluidnc.py", "document:docs/controller.html",
+     "document:docs/machine.html"]),
     ("Driving it", "The same code runs behind the command line, the control app in the browser and the standalone station.",
      ["file:software/src/opengonio/cli.py", "file:software/src/opengonio/app/server.py", "file:software/src/opengonio/station.py"]),
     ("One source, many outputs", "Change a parts list or a wire in one file; the tools rebuild the README, diagrams, "
@@ -183,6 +185,8 @@ DOMAINS = [
             ("Flash the hub", "MicroPython firmware on the ESP32-S3.", "firmware/hub/main.py"),
             ("Bench motor, keys, power sense", "One motor turns, each key prints its name, the e-stop is seen.",
              "docs/controller.html"),
+            ("Everything else on the bench", "Three more motors, their switches, the lamp and the camera, each tested, "
+             "then the whole machine homes.", "docs/machine.html"),
         ]),
         ("axes", "Add the axes", "manual", [
             ("Frame", "Printed deck tiles bolted together.", "phases/03-frame/README.md"),

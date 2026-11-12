@@ -2,7 +2,7 @@
    Wire and note text come from window.WIRING (docs/wiring-guide.js, generated); only titles, drawing and checks live here.
    tools/check.py fails if a from/to below is no longer a row in docs/wiring.yaml.
    SPDX-License-Identifier: GPL-3.0-or-later */
-window.WALK = { next: "wiring.html#step-13", nextLabel: "Full wiring guide", steps: /*STEPS*/[
+window.WALK = { next: "machine.html", nextLabel: "Machine wiring", steps: /*STEPS*/[
  {
   "type": "prepare",
   "title": "Before you start",

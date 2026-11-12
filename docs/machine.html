@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio machine wiring</title>
+<meta name="description" content="The rest of the OpenGonio electronics wired and tested on the bench, step by step: table, tilt and spin motors, their endstops, the lamp, the camera and the optional fan and spectral sensor, ending with a whole-machine test. Text from docs/wiring.yaml.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/guide.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the walkthrough</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Pages">
+  <a href="./">Website</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html" aria-current="page">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="g-head" aria-labelledby="h1">
+ <h1 id="h1" class="display">Machine wiring, step by step</h1>
+ <p class="g-lead">The rest of the electronics on the bench, after the <a href="power.html">power</a> and
+  <a href="controller.html">controller</a> walkthroughs: table, tilt and spin motors, their endstops, the lamp, the camera, then the
+  optional fan and spectral sensor. Dotted wires were made on the earlier pages; the moving wire with the two rings is the one to make
+  now. Each check (✓) tests that group before the next, and the last one runs the whole machine. Wording from
+  <code>docs/wiring.yaml</code>, the same source as the <a href="wiring.html">full wiring guide</a>.</p>
+ <p class="g-safety"><span class="patch red" aria-hidden="true"></span><span><b>Press the e-stop and keep the wall adapter unplugged while you wire.</b>
+  Plug the adapter in only where a check says live. Never plug or unplug a motor with motor power on. Never light the lamp off its heatsink.</span></p>
+</section>
+
+<section class="stage" aria-label="Current step">
+ <figure class="sheet pw-sheet" style="margin:0">
+  <svg id="bench" viewBox="0 0 680 530" role="img" aria-labelledby="bench-title bench-desc">
+   <title id="bench-title">Machine wiring on the bench</title>
+   <desc id="bench-desc">SKR Pico in the middle with its motor sockets on top, endstop sockets below, lamp and fan outputs on the left
+    and USB on the right. Above it the four motors and the spin motor's lever connectors and the camera; below it the four endstops;
+    left the lamp driver, fan and COB lamp; right the laptop, the ESP32-S3 hub and the AS7341 sensor. Wires from earlier pages are dotted.</desc>
+   <path class="pw-done" d="M75 80V110H180V170"/><path class="pw-done" d="M180 380V330"/>
+   <path class="pw-done" d="M450 200H475V170H500"/><path class="pw-done" d="M580 230V190"/><path class="pw-done" d="M150 200H136"/>
+   <g class="pw-dim">
+    <rect class="box-r pw-violet" x="20" y="20" width="110" height="60" rx="8"/>
+    <text class="box-t" x="75" y="44" text-anchor="middle">M4 arm</text><text class="pin-t" x="75" y="62" text-anchor="middle">done ✓</text>
+   </g>
+   <rect class="box-r pw-violet" x="150" y="20" width="110" height="60" rx="8"/>
+   <text class="box-t" x="205" y="44" text-anchor="middle">M3 table</text><text class="pin-t" x="205" y="62" text-anchor="middle">TBL-01</text>
+   <rect class="box-r pw-violet" x="280" y="20" width="110" height="60" rx="8"/>
+   <text class="box-t" x="335" y="44" text-anchor="middle">M2 tilt</text><text class="pin-t" x="335" y="62" text-anchor="middle">TLT-01</text>
+   <rect class="box-r pw-violet" x="410" y="20" width="110" height="60" rx="8"/>
+   <text class="box-t" x="465" y="40" text-anchor="middle">M1 spin</text><text class="pin-t" x="465" y="56" text-anchor="middle">pancake, bare leads</text>
+   <text class="pin-t" x="440" y="74" text-anchor="middle">pair 1</text><text class="pin-t" x="490" y="74" text-anchor="middle">pair 2</text>
+   <rect class="box-r pw-wago" x="405" y="105" width="50" height="30" rx="5"/><text class="pin-t" x="430" y="124" text-anchor="middle">WAGO 1</text>
+   <rect class="box-r pw-wago" x="470" y="105" width="50" height="30" rx="5"/><text class="pin-t" x="495" y="124" text-anchor="middle">WAGO 2</text>
+   <rect class="box-r pw-blue" x="550" y="20" width="110" height="50" rx="8"/>
+   <text class="box-t" x="605" y="42" text-anchor="middle">Camera</text><text class="pin-t" x="605" y="59" text-anchor="middle">CAM-01 · USB</text>
+
+   <rect class="box-r pw-green" x="150" y="170" width="300" height="160" rx="8"/>
+   <text class="box-t" x="300" y="248" text-anchor="middle">SKR Pico</text><text class="pin-t" x="300" y="265" text-anchor="middle">CTL-01</text>
+   <text class="pin-t" x="180" y="188" text-anchor="middle" opacity=".55">X ✓</text><text class="pin-t" x="230" y="188" text-anchor="middle">Y</text>
+   <text class="pin-t" x="290" y="188" text-anchor="middle">Z1</text><text class="pin-t" x="340" y="188" text-anchor="middle" opacity=".55">Z2 empty</text>
+   <text class="pin-t" x="408" y="188" text-anchor="middle">E</text>
+   <circle cx="180" cy="170" r="4" class="pw-ink" opacity=".35"/><circle cx="230" cy="170" r="4" class="pw-ink"/><circle cx="290" cy="170" r="4" class="pw-ink"/>
+   <circle cx="340" cy="170" r="4" class="pw-ink" opacity=".2"/><circle cx="395" cy="170" r="4" class="pw-ink"/><circle cx="420" cy="170" r="4" class="pw-ink"/>
+   <text class="pin-t" x="160" y="204" opacity=".55">POWER ✓</text>
+   <text class="pin-t" x="160" y="232">HE + 12/24V</text><text class="pin-t" x="160" y="252">HE − IO23</text>
+   <text class="pin-t" x="160" y="284">FAN1 +</text><text class="pin-t" x="160" y="304">FAN1 − IO17</text>
+   <circle cx="150" cy="200" r="4" class="pw-ink" opacity=".35"/><circle cx="150" cy="228" r="4" class="pw-ink"/><circle cx="150" cy="248" r="4" class="pw-ink"/>
+   <circle cx="150" cy="280" r="4" class="pw-ink"/><circle cx="150" cy="300" r="4" class="pw-ink"/>
+   <text class="pin-t" x="440" y="204" text-anchor="end" opacity=".55">USB-C ✓</text><circle cx="450" cy="200" r="4" class="pw-ink" opacity=".35"/>
+   <text class="pin-t" x="180" y="322" text-anchor="middle" opacity=".55">X-STOP</text><text class="pin-t" x="240" y="322" text-anchor="middle">Y-STOP</text>
+   <text class="pin-t" x="300" y="322" text-anchor="middle">Z-STOP</text><text class="pin-t" x="410" y="322" text-anchor="middle">E0-STOP</text>
+   <circle cx="180" cy="330" r="4" class="pw-ink" opacity=".35"/><circle cx="240" cy="330" r="4" class="pw-ink"/>
+   <circle cx="300" cy="330" r="4" class="pw-ink"/><circle cx="410" cy="330" r="4" class="pw-ink"/>
+
+   <g class="pw-dim">
+    <rect class="box-r pw-teal" x="154" y="380" width="52" height="50" rx="6"/>
+    <text class="box-t" x="180" y="401" text-anchor="middle">ES4</text><text class="pin-t" x="180" y="419" text-anchor="middle">arm ✓</text>
+   </g>
+   <rect class="box-r pw-teal" x="214" y="380" width="52" height="50" rx="6"/>
+   <text class="box-t" x="240" y="401" text-anchor="middle">ES3</text><text class="pin-t" x="240" y="419" text-anchor="middle">table</text>
+   <rect class="box-r pw-teal" x="274" y="380" width="52" height="50" rx="6"/>
+   <text class="box-t" x="300" y="401" text-anchor="middle">ES2</text><text class="pin-t" x="300" y="419" text-anchor="middle">tilt</text>
+   <rect class="box-r pw-teal" x="384" y="380" width="52" height="50" rx="6"/>
+   <text class="box-t" x="410" y="401" text-anchor="middle">ES1</text><text class="pin-t" x="410" y="419" text-anchor="middle">spin</text>
+   <text class="pin-t" x="295" y="452" text-anchor="middle">endstops: S / G / V by label at the module</text>
+
+   <text class="box-t" x="70" y="207" text-anchor="middle">Lamp driver</text>
+   <rect class="box-r pw-amber" x="20" y="214" width="100" height="52" rx="6"/>
+   <text class="pin-t" x="112" y="232" text-anchor="end">+Vin</text><text class="pin-t" x="112" y="252" text-anchor="end">−Vin</text>
+   <text class="pin-t" x="40" y="259" text-anchor="middle">+Vo</text><text class="pin-t" x="66" y="259" text-anchor="middle">−Vo</text>
+   <circle cx="120" cy="228" r="4" class="pw-ink"/><circle cx="120" cy="248" r="4" class="pw-ink"/>
+   <circle cx="40" cy="266" r="4" class="pw-ink"/><circle cx="64" cy="266" r="4" class="pw-ink"/>
+   <rect class="box-r" x="82" y="272" width="48" height="40" rx="6"/>
+   <text class="box-t" x="104" y="289" text-anchor="middle">Fan</text><text class="pin-t" x="104" y="305" text-anchor="middle">opt.</text>
+   <circle cx="130" cy="280" r="4" class="pw-ink"/><circle cx="130" cy="300" r="4" class="pw-ink"/>
+   <rect class="box-r pw-amber" x="20" y="470" width="110" height="50" rx="6"/>
+   <text class="box-t" x="75" y="492" text-anchor="middle">COB lamp</text><text class="pin-t" x="75" y="509" text-anchor="middle">on its heatsink</text>
+   <circle cx="40" cy="470" r="4" class="pw-ink"/><circle cx="64" cy="470" r="4" class="pw-ink"/>
+
+   <g class="pw-dim">
+    <rect class="box-r" x="500" y="150" width="160" height="40" rx="6"/>
+    <text class="box-t" x="580" y="175" text-anchor="middle">Laptop</text>
+    <rect class="box-r pw-blue" x="500" y="230" width="160" height="110" rx="8"/>
+    <text class="box-t" x="580" y="252" text-anchor="middle">ESP32-S3 hub</text>
+    <text class="pin-t" x="580" y="270" text-anchor="middle">keypads, opto ✓</text>
+   </g>
+   <text class="pin-t" x="520" y="310" text-anchor="middle">3V3</text><text class="pin-t" x="560" y="310" text-anchor="middle">GND</text>
+   <text class="pin-t" x="600" y="310" text-anchor="middle">SCL</text><text class="pin-t" x="640" y="310" text-anchor="middle">SDA</text>
+   <text class="pin-t" x="520" y="328" text-anchor="middle">J1-2</text><text class="pin-t" x="560" y="328" text-anchor="middle">J3-22</text>
+   <text class="pin-t" x="600" y="328" text-anchor="middle">J3-5</text><text class="pin-t" x="640" y="328" text-anchor="middle">J3-4</text>
+   <circle cx="520" cy="340" r="4" class="pw-ink"/><circle cx="560" cy="340" r="4" class="pw-ink"/>
+   <circle cx="600" cy="340" r="4" class="pw-ink"/><circle cx="640" cy="340" r="4" class="pw-ink"/>
+   <rect class="box-r" x="500" y="420" width="160" height="56" rx="8"/>
+   <text class="pin-t" x="520" y="438" text-anchor="middle">VIN</text><text class="pin-t" x="560" y="438" text-anchor="middle">GND</text>
+   <text class="pin-t" x="600" y="438" text-anchor="middle">SCL</text><text class="pin-t" x="640" y="438" text-anchor="middle">SDA</text>
+   <text class="box-t" x="580" y="464" text-anchor="middle">AS7341 (optional)</text>
+   <circle cx="520" cy="420" r="4" class="pw-ink"/><circle cx="560" cy="420" r="4" class="pw-ink"/>
+   <circle cx="600" cy="420" r="4" class="pw-ink"/><circle cx="640" cy="420" r="4" class="pw-ink"/>
+   <circle cx="605" cy="150" r="4" class="pw-ink"/>
+   <g id="wires"></g><g id="rings"></g>
+  </svg>
+  <div class="pw-pills" id="pills" role="group" aria-label="Steps"></div>
+ </figure>
+ <article class="card" aria-live="polite">
+  <div class="c-head">
+   <h2 id="s-title"></h2>
+   <p class="meta" id="k-sec"></p>
+  </div>
+  <div class="c-body" id="s-body"></div>
+  <div class="c-nav">
+   <p class="progress num" id="k-step"></p>
+   <div class="nav">
+    <button class="btn" type="button" id="back">Back</button>
+    <button class="btn btn-light" type="button" id="next">Next</button>
+   </div>
+   <p class="hint">Keys: <span class="kbd">←</span> <span class="kbd">→</span>. Each step has its own link (the address bar).</p>
+  </div>
+ </article>
+</section>
+
+<p class="foot">Nothing here has been built or measured yet: this is the design. Part numbers in brackets are the parts list IDs
+ (README → Electronics). These are sections 3, 4, 5, 7 and 8 of the <a href="wiring.html">full wiring guide</a>; section 9 (standalone
+ station) comes with stage 15 and section 10 (colour LED bank) is blocked. After the last check, Next opens the <a href="build.html">build book</a>
+ for printing and assembly.</p>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html" aria-current="page">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
+</footer>
+<script src="wiring-guide.js"></script>
+<script src="og/walk-machine.js"></script>
+<script src="og/walk.js"></script>
+</body>
+</html>

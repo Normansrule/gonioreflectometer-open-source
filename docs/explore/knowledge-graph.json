@@ -1517,6 +1517,17 @@
    "filePath": "docs/lab.html"
   },
   {
+   "id": "document:docs/machine.html",
+   "type": "document",
+   "name": "OpenGonio machine wiring",
+   "summary": "The rest of the OpenGonio electronics wired and tested on the bench, step by step: table, tilt and spin motors, their endstops, the lamp, the camera and the optional fan and spectral sensor, ending with a whole-machine test. Text from docs/wiring.yaml.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/machine.html"
+  },
+  {
    "id": "document:docs/power.html",
    "type": "document",
    "name": "OpenGonio power wiring",
@@ -3850,6 +3861,14 @@
    "direction": "forward",
    "description": "wire the controller, step by step",
    "weight": 0.8
+  },
+  {
+   "source": "document:docs/machine.html",
+   "target": "module:phases/06-camera-light",
+   "type": "documents",
+   "direction": "forward",
+   "description": "wire and test motors, endstops, lamp, camera",
+   "weight": 0.8
   }
  ],
  "layers": [
@@ -4019,6 +4038,7 @@
     "document:docs/controller.html",
     "document:docs/index.html",
     "document:docs/lab.html",
+    "document:docs/machine.html",
     "document:docs/power.html",
     "document:docs/wiring.html",
     "document:docs/explore/index.html",
@@ -4115,7 +4135,8 @@
     "config:firmware/grblhal/settings.txt",
     "file:software/src/opengonio/gantry/hub.py",
     "file:software/src/opengonio/gantry/fluidnc.py",
-    "document:docs/controller.html"
+    "document:docs/controller.html",
+    "document:docs/machine.html"
    ]
   },
   {

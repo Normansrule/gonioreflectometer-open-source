@@ -155,7 +155,8 @@ def readme_block(w: dict) -> str:
            "(`make build` writes this section; `make check` compares it with the firmware). "
            "**Press the e-stop and unplug the wall adapter before touching any terminal.** "
            "Step by step with pictures: [wiring guide](docs/wiring.html); the first wires drawn as the parts sit on the bench: "
-           "[power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html).", ""]
+           "[power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html), "
+           "then the [machine walkthrough](docs/machine.html).", ""]
     toc = " · ".join(f"[{g['title'].split(' · ', 1)[1]}](#{anchor(g['title'])})" for g in w["groups"])
     out += [f"**Jump to:** {toc} · [SKR Pico port map](#skr-pico-port-map) · [ESP32-S3 header map](#esp32-s3-header-map)", ""]
     for g in w["groups"]:

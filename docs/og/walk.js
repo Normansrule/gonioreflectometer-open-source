@@ -1,4 +1,4 @@
-/* Bench walkthroughs (power.html, controller.html): one wire at a time on a drawing of the parts as they sit on the bench.
+/* Bench walkthroughs (power.html, controller.html, machine.html): one wire at a time on a drawing of the parts as they sit on the bench.
    Steps come from window.WALK (og/walk-*.js); wire and note text from window.WIRING (docs/wiring-guide.js, generated
    from docs/wiring.yaml). SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {

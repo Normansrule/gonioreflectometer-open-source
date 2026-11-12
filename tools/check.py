@@ -159,7 +159,7 @@ def check_site() -> list[str]:
     errs = []
     app = ROOT / "software" / "src" / "opengonio" / "app" / "static"
     for page in (ROOT / "docs" / "index.html", ROOT / "docs" / "lab.html", ROOT / "docs" / "wiring.html",
-                 ROOT / "docs" / "power.html", ROOT / "docs" / "controller.html", ROOT / "docs" / "build.html", app / "index.html"):
+                 ROOT / "docs" / "power.html", ROOT / "docs" / "controller.html", ROOT / "docs" / "machine.html", ROOT / "docs" / "build.html", app / "index.html"):
         for ref in re.findall(r'(?:src|href)="([^"#?]+)', page.read_text(encoding="utf-8")):
             if re.match(r"^(https?:|mailto:|data:)", ref) or ref.startswith("/api/"):
                 continue
