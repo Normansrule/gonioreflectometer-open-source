@@ -21,6 +21,8 @@ Measures how materials reflect light — the bidirectional reflectance distribut
 
 **New here?** Open the [project map](docs/explore/index.html): the whole project as a clickable map, with a 9-step tour in plain words (what it measures, how a run works, the build stages, the boards, the software) and a flows view of how things happen. Drawn from the repo by `tools/explore_graph.py` with [Understand-Anything](https://github.com/Egonex-AI/Understand-Anything) (MIT).
 
+**See inside:** [Inside OpenGonio](docs/inside.html) shows every software module, test, firmware setting, wire and roadmap step, read from the repo by `tools/inside_data.py`; the [control app](docs/app/index.html) runs the real Python in the browser on the simulated machine. Website pages need the website or a local server: `python3 -m http.server -d docs 8000`, then `http://localhost:8000/inside.html`.
+
 **[How it works](wiki/How-it-works.md) · [Wiring](#wiring) · [Build steps](#build) · [Wiki](wiki/Home.md) · [Paper (PDF)](paper/build/opengonio.pdf) · [Website](docs/index.html) · [Lab](docs/lab.html) · [Parts spreadsheet](exports/bom/opengonio-bom.xlsx) · [Your parts list](PARTS.md)**
 
 <!-- budget:start -->

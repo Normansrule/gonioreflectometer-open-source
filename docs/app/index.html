@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio control app (web demo)</title>
+<meta name="description" content="Control app for OpenGonio: connect, home, jog, light, capture and see the curve.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="../og/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../og/og.css">
+<link rel="stylesheet" href="app.css">
+<script src="../og/og.js"></script>
+<style>.demo-note{margin:0;padding:.5rem 1rem;font-size:.9rem;background:var(--ground-3);border-bottom:1px solid var(--rule)}.demo-note a{color:inherit}</style>
+</head>
+<body>
+<p class="demo-note" role="note"><b>Web demo:</b> this is the real OpenGonio software (Python, run in your browser with Pyodide) driving the <b>simulated machine</b>. Nothing here talks to hardware. First load fetches about 20 MB. <a href="../inside.html">How it works</a> · <a href="../">Website</a></p>
+<a class="skip btn btn-light" href="#controls">Skip to the controls</a>
+<header class="bar">
+ <h1 class="mark">OpenGonio<span class="mark-sub">Control</span></h1>
+ <p class="conn" id="conn" role="status"><span class="patch open" aria-hidden="true"></span><span id="conn-text">Starting…</span></p>
+ <button class="btn ghost" type="button" id="disconnect" hidden>Disconnect</button>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+ <button class="btn stop" type="button" id="stop" aria-keyshortcuts="Escape" title="Stop now (Esc)">Stop</button>
+</header>
+
+<div class="banner" id="banner" role="alert" hidden>
+ <span class="patch block" aria-hidden="true"></span><p id="banner-text"></p>
+ <button class="btn ghost" type="button" id="banner-close" aria-label="Dismiss message">Dismiss</button>
+</div>
+
+<nav class="devices" id="devices" aria-label="Devices" hidden></nav>
+
+<main class="app" id="app" aria-busy="true">
+ <!-- not connected: the empty state -->
+ <section class="connect" id="connect" aria-labelledby="h-connect" hidden>
+  <div class="connect-head">
+   <h2 class="title" id="h-connect">Connect to a machine</h2>
+   <p class="lead">Every control works on the simulated machine; nothing moves and nothing is powered.</p>
+  </div>
+  <svg class="orbit" viewBox="-120 -120 240 240" aria-hidden="true">
+   <circle class="o-ring" r="96"/><circle class="o-travel" r="96"/>
+   <line class="o-ray-out" x1="0" y1="0" x2="112" y2="0"/>
+   <g class="o-arm"><line class="o-ray-in" x1="0" y1="0" x2="96" y2="0"/><circle class="o-halo" cx="96" r="16"/><circle class="o-lamp" cx="96" r="6"/></g>
+   <line class="o-sample" x1="0" y1="-26" x2="0" y2="26"/>
+   <rect class="o-cam" x="106" y="-8" width="14" height="16"/>
+  </svg>
+  <div class="choices">
+   <form class="choice" id="f-sim">
+    <h2>Simulated machine</h2>
+    <p>A virtual OpenGonio with a known material and a 0.4° error hidden in the table, so calibration has something to find.</p>
+    <label class="field">Material <select id="material"></select></label>
+    <button class="btn btn-light" type="submit">Connect to the simulator</button>
+   </form>
+   <form class="choice" id="f-hw">
+    <h2>This machine over USB</h2>
+    <p>The SKR Pico motion board on USB-C, with the camera on USB. <strong>Untested:</strong> no OpenGonio has been built yet; this uses the same code as the command line.</p>
+    <button class="btn" type="submit">Connect to the machine</button>
+   </form>
+  </div>
+  <div class="dev-table">
+   <h3>What this app talks to</h3>
+   <ul id="dev-list"></ul>
+  </div>
+ </section>
+
+ <!-- connected -->
+ <section class="controls" id="controls" aria-labelledby="h-axes" hidden>
+  <div class="group">
+   <div class="group-head"><h2 id="h-axes">Axes</h2><button class="btn ghost" type="button" id="home">Home all</button></div>
+   <p class="note" id="homenote" hidden><span class="patch lamp" aria-hidden="true"></span>Home the axes before moving: the app only trusts positions it has homed.</p>
+   <div id="axes"></div>
+   <div class="row-2"><button class="btn ghost" type="button" id="specular">Mirror pose</button><button class="btn" type="button" id="move">Move</button></div>
+   <p class="small" id="check" aria-live="polite"></p>
+  </div>
+  <div class="group">
+   <h2>Light</h2>
+   <div id="lights"></div>
+  </div>
+ </section>
+
+ <section class="exhibit" id="exhibit" aria-labelledby="h-pose" hidden>
+  <h2 id="h-pose" class="sr-only">Pose</h2>
+  <svg id="pose" viewBox="-200 -200 400 400" role="group" aria-labelledby="pose-desc">
+   <desc id="pose-desc">Top view of the machine: the sample in the middle, the lamp on its ring, the camera fixed on the right.</desc>
+   <circle class="ring" r="150"/>
+   <g id="ticks"></g>
+   <line class="ray ray-in" id="ray-in"/>
+   <line class="ray ray-out" id="ray-out" x1="0" y1="0" x2="168" y2="0"/>
+   <path class="arc arc-in" id="arc-in"/>
+   <path class="arc arc-out" id="arc-out"/>
+   <g id="ghost" class="ghost"><line id="ghost-sample" x1="0" y1="-40" x2="0" y2="40"/><circle id="ghost-lamp" r="9"/></g>
+   <g id="sample"><line class="sample" x1="0" y1="-40" x2="0" y2="40"/><line class="normal" x1="0" y1="0" x2="62" y2="0"/></g>
+   <rect class="camera" x="164" y="-12" width="22" height="24"/>
+   <text class="lbl" x="176" y="32" text-anchor="middle">camera</text>
+   <circle class="lamp-halo" id="lamp-halo" r="20"/>
+   <circle class="lamp" id="lamp" r="9" tabindex="0" role="slider" aria-label="Lamp angle M4" aria-valuemin="20" aria-valuemax="324"/>
+  </svg>
+  <dl class="angles" id="angles" aria-label="BRDF angles at the homed pose">
+   <div><dt>Incidence θi</dt><dd id="a-ti">–</dd></div>
+   <div><dt>Reflection θr</dt><dd id="a-tr">–</dd></div>
+   <div><dt>Azimuth Δφ</dt><dd id="a-dp">–</dd></div>
+   <div><dt>Clearance</dt><dd id="a-cl">–</dd></div>
+  </dl>
+  <figure class="frame">
+   <div class="frame-img" id="frame-box"><p id="frame-empty">No frame yet</p><span class="roi" aria-hidden="true"></span></div>
+   <figcaption><span class="frame-title">Camera</span><span id="frame-cap">Camera</span><button class="btn ghost" type="button" id="grab">Grab frame</button></figcaption>
+  </figure>
+ </section>
+
+ <section class="runs" id="runs" aria-labelledby="h-run" hidden>
+  <div class="group">
+   <h2 id="h-run">Capture</h2>
+   <div class="seg" role="radiogroup" aria-label="Plan" id="plans"></div>
+   <label class="field" id="param-wrap"><span id="param-label">Specular angle θ</span>
+    <input id="param" type="number" inputmode="decimal" min="5" max="80" step="1" value="40"><span class="unit">°</span></label>
+   <p class="small" id="plan-help"></p>
+   <button class="btn btn-light wide" type="button" id="run">Run capture</button>
+   <div class="progress" id="progress" hidden>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <p class="small" id="progress-text" aria-live="polite"></p>
+   </div>
+  </div>
+  <div class="group result" id="result" hidden>
+   <div class="group-head"><h2 id="result-title">Result</h2><span class="verdict" id="verdict"></span></div>
+   <canvas id="curve" data-aspect="0.62" role="img" aria-label="Curve of the run"></canvas>
+   <ul class="notes small" id="notes"></ul>
+  </div>
+  <div class="group">
+   <h2>Earlier runs</h2>
+   <ul class="runlist" id="runlist"><li class="empty small">No runs yet. Run a capture and its curve appears here.</li></ul>
+   <p class="small dim" id="datadir"></p>
+  </div>
+ </section>
+
+ <section class="sensors" id="sensors" aria-labelledby="h-sensors" hidden>
+  <div class="group spectral">
+   <div class="group-head"><h2 id="h-sensors">Spectral sensor</h2><button class="btn ghost" type="button" id="spec-read">Read once</button></div>
+   <div class="bars" id="spec-bars" role="img" aria-label="No spectral reading yet"></div>
+   <p class="small" id="spec-note"></p>
+  </div>
+  <div class="group quality">
+   <h2>Run quality</h2>
+   <dl class="tiles">
+    <div><dt>Lamp drift</dt><dd id="q-drift">–</dd><dd class="note" id="q-drift-n">last run</dd></div>
+    <div><dt>Mirror peak</dt><dd id="q-peak">–</dd><dd class="note" id="q-peak-n">error from expected</dd></div>
+    <div><dt>Exposure</dt><dd id="q-exp">–</dd><dd class="note" id="q-exp-n">locked in M17.2</dd></div>
+    <div><dt>Homed</dt><dd id="q-homed">–</dd><dd class="note" id="q-homed-n">axes trusted</dd></div>
+   </dl>
+  </div>
+  <div class="group log-group">
+   <h2>Session</h2>
+   <ol class="log" id="log" aria-live="polite"><li class="empty small">Actions and results appear here.</li></ol>
+  </div>
+ </section>
+
+ <p class="loading" id="loading">Connecting to the app…</p>
+</main>
+<script src="browser.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -92,6 +92,8 @@ FLOWS = [
     ("file:tools/check.py", "validates", "config:docs/wiring.yaml", "pins match the hub firmware"),
     ("file:tools/check.py", "validates", "config:.github/phases.yml", ""),
     ("file:tools/explore_graph.py", "writes_to", "document:docs/explore/index.html", "this map"),
+    ("file:tools/inside_data.py", "writes_to", "document:docs/inside.html", "software, tests, firmware, roadmap"),
+    ("file:tools/site_app.py", "depends_on", "file:software/src/opengonio/app/server.py", "packs it to run in the browser (docs/app)"),
     ("file:software/src/opengonio/gantry/hub.py", "depends_on", "file:firmware/hub/main.py", "serial lines both sides agree on"),
     ("file:software/src/opengonio/gantry/fluidnc.py", "depends_on", "config:firmware/grblhal/settings.txt", "grblHAL on the SKR Pico"),
     ("document:docs/power.html", "documents", "module:phases/01-power", "wire the power, step by step"),

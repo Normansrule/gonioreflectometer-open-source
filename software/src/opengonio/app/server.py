@@ -385,38 +385,13 @@ class Handler(SimpleHTTPRequestHandler):
             raise ValueError("JSON object expected")
         return data
 
-    def _call(self, fn) -> None:
-        try:
-            out = fn() or {"ok": True}
-            if self.command == "POST":
-                self.app.last_error = None            # a successful action clears the old error
-            self._json(out)
-        except Refused as exc:
-            self._json({"error": str(exc), "kind": "refused"}, HTTPStatus.CONFLICT)
-        except GantryError as exc:                  # unsafe, not homed, controller refused: the message says what to do
-            self.app.last_error = str(exc)
-            self._json({"error": str(exc), "kind": "machine"}, HTTPStatus.CONFLICT)
-        except (ValueError, KeyError, TypeError) as exc:
-            self._json({"error": f"bad request: {exc}", "kind": "request"}, HTTPStatus.BAD_REQUEST)
-        except Exception as exc:                    # pragma: no cover - unexpected: show it, keep serving
-            traceback.print_exc()
-            self.app.last_error = str(exc)
-            self._json({"error": str(exc), "kind": "internal"}, HTTPStatus.INTERNAL_SERVER_ERROR)
-
     def do_GET(self):
         if not self._host_ok():
             return self._json({"error": "unknown host refused"}, HTTPStatus.FORBIDDEN)
         u = urlparse(self.path)
-        a = self.app
-        if u.path == "/api/state":
-            return self._call(a.state)
-        if u.path == "/api/runs":
-            return self._call(lambda: {"runs": a.runs()})
-        if u.path == "/api/curve":
-            return self._call(lambda: a.curve(parse_qs(u.query).get("run", [""])[0]))
         if u.path == "/api/frame.png":
             try:
-                png = a.frame_png()
+                png = self.app.frame_png()
             except (Refused, GantryError) as exc:
                 return self._json({"error": str(exc)}, HTTPStatus.CONFLICT)
             self.send_response(200)
@@ -426,7 +401,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.wfile.write(png)
             return
         if u.path.startswith("/api/"):
-            return self._json({"error": "not found"}, HTTPStatus.NOT_FOUND)
+            return self._json(*reversed(respond(self.app, "GET", u.path, u.query, {})))
         return super().do_GET()
 
     def do_POST(self):
@@ -435,11 +410,43 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json({"error": "unknown host refused"}, HTTPStatus.FORBIDDEN)
         if self.headers.get("Origin") and urlparse(self.headers["Origin"]).netloc != self.headers.get("Host"):
             return self._json({"error": "cross-origin request refused"}, HTTPStatus.FORBIDDEN)   # another site can't drive the machine
-        a = self.app
         try:
             b = self._body()
         except ValueError as exc:
             return self._json({"error": f"bad request: {exc}"}, HTTPStatus.BAD_REQUEST)
+        self._json(*reversed(respond(self.app, "POST", u.path, u.query, b)))
+
+
+def call(app: App, fn, post: bool) -> tuple[int, dict]:
+    """Run one endpoint function; Refused, machine and request errors become (status, {error, kind})."""
+    try:
+        out = fn() or {"ok": True}
+        if post:
+            app.last_error = None                  # a successful action clears the old error
+        return HTTPStatus.OK, out
+    except Refused as exc:
+        return HTTPStatus.CONFLICT, {"error": str(exc), "kind": "refused"}
+    except GantryError as exc:                    # unsafe, not homed, controller refused: the message says what to do
+        app.last_error = str(exc)
+        return HTTPStatus.CONFLICT, {"error": str(exc), "kind": "machine"}
+    except (ValueError, KeyError, TypeError) as exc:
+        return HTTPStatus.BAD_REQUEST, {"error": f"bad request: {exc}", "kind": "request"}
+    except Exception as exc:                      # pragma: no cover - unexpected: show it, keep serving
+        traceback.print_exc()
+        app.last_error = str(exc)
+        return HTTPStatus.INTERNAL_SERVER_ERROR, {"error": str(exc), "kind": "internal"}
+
+
+def respond(app: App, method: str, path: str, query: str, b: dict) -> tuple[int, dict]:
+    """The JSON endpoints, shared by the local server and the in-browser demo (docs/app runs this file in Pyodide)."""
+    a = app
+    if method == "GET":
+        routes = {
+            "/api/state": a.state,
+            "/api/runs": lambda: {"runs": a.runs()},
+            "/api/curve": lambda: a.curve(parse_qs(query).get("run", [""])[0]),
+        }
+    else:
         routes = {
             "/api/connect": lambda: a.connect(b.get("mode", "sim"), b.get("material")),
             "/api/disconnect": a.disconnect,
@@ -451,10 +458,10 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/spectral": a.spectral,
             "/api/run": lambda: {"job": a.run(b.get("plan", "mirror"), b.get("theta", 30), b.get("step", 10)).__dict__},
         }
-        fn = routes.get(u.path)
-        if fn is None:
-            return self._json({"error": "not found"}, HTTPStatus.NOT_FOUND)
-        self._call(fn)
+    fn = routes.get(path)
+    if fn is None:
+        return HTTPStatus.NOT_FOUND, {"error": "not found"}
+    return call(a, fn, method == "POST")
 
 
 def serve(app: App, host: str = "127.0.0.1", port: int = 8747) -> ThreadingHTTPServer:

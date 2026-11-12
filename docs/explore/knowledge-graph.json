@@ -1242,6 +1242,17 @@
    "filePath": "tools/grblhal_settings.py"
   },
   {
+   "id": "file:tools/inside_data.py",
+   "type": "file",
+   "name": "inside_data.py",
+   "summary": "docs/inside.html data: the project's software, tests, firmware, wiring and roadmap, read from the sources.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/inside_data.py"
+  },
+  {
    "id": "file:tools/machine3d.py",
    "type": "file",
    "name": "machine3d.py",
@@ -1374,6 +1385,17 @@
    "filePath": "tools/roadmap_svg.py"
   },
   {
+   "id": "file:tools/site_app.py",
+   "type": "file",
+   "name": "site_app.py",
+   "summary": "The control app on the website: docs/app/ runs the real opengonio package (simulated machine) in the browser.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/site_app.py"
+  },
+  {
    "id": "file:tools/site_data.py",
    "type": "file",
    "name": "site_data.py",
@@ -1504,6 +1526,17 @@
    ],
    "complexity": "simple",
    "filePath": "docs/index.html"
+  },
+  {
+   "id": "document:docs/inside.html",
+   "type": "document",
+   "name": "Inside OpenGonio",
+   "summary": "Inside OpenGonio: the control app running in your browser, every software module and test, both firmwares, the wiring and the full roadmap, read from the repository's own sources.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/inside.html"
   },
   {
    "id": "document:docs/lab.html",
@@ -3831,6 +3864,22 @@
    "weight": 0.8
   },
   {
+   "source": "file:tools/inside_data.py",
+   "target": "document:docs/inside.html",
+   "type": "writes_to",
+   "direction": "forward",
+   "description": "software, tests, firmware, roadmap",
+   "weight": 0.8
+  },
+  {
+   "source": "file:tools/site_app.py",
+   "target": "file:software/src/opengonio/app/server.py",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "packs it to run in the browser (docs/app)",
+   "weight": 0.8
+  },
+  {
    "source": "file:software/src/opengonio/gantry/hub.py",
    "target": "file:firmware/hub/main.py",
    "type": "depends_on",
@@ -4006,6 +4055,7 @@
     "file:tools/export_machine.py",
     "file:tools/exports.py",
     "file:tools/grblhal_settings.py",
+    "file:tools/inside_data.py",
     "file:tools/machine3d.py",
     "file:tools/make_assets.py",
     "file:tools/new.py",
@@ -4018,6 +4068,7 @@
     "file:tools/refs_bib.py",
     "file:tools/roadmap.py",
     "file:tools/roadmap_svg.py",
+    "file:tools/site_app.py",
     "file:tools/site_data.py",
     "file:tools/site_model.py",
     "file:tools/site_pictures.py",
@@ -4037,6 +4088,7 @@
     "document:docs/build.html",
     "document:docs/controller.html",
     "document:docs/index.html",
+    "document:docs/inside.html",
     "document:docs/lab.html",
     "document:docs/machine.html",
     "document:docs/power.html",

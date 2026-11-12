@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside OpenGonio</title>
+<meta name="description" content="Inside OpenGonio: the control app running in your browser, every software module and test, both firmwares, the wiring and the full roadmap, read from the repository's own sources.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/guide.css">
+<link rel="stylesheet" href="og/inside.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the content</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Pages">
+  <a href="./">Website</a><a href="inside.html" aria-current="page">Inside</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="g-head" aria-labelledby="h1">
+ <h1 id="h1" class="display">Inside OpenGonio</h1>
+ <p class="g-lead">Everything that makes the machine work, opened up: the control app running in your browser, every software module
+  and the tests that check it, the firmware on both boards, every wire and the whole plan from first print to release. All of it is
+  read from the repository's own files by <code>tools/inside_data.py</code>, so this page changes when the code does.</p>
+ <p class="in-state"><i aria-hidden="true"></i>Design stage: the software runs and is tested on a simulated machine; no OpenGonio has been built or measured yet.</p>
+ <div class="in-stats" id="stats"></div>
+</section>
+<nav class="in-jump" aria-label="On this page">
+ <a href="#app">Control app</a><a href="#how">How it fits</a><a href="#software">Software</a><a href="#tests">Tests</a>
+ <a href="#firmware">Firmware</a><a href="#wiring">Wiring</a><a href="#roadmap">Roadmap</a>
+</nav>
+
+<section class="in-sec" id="app" aria-labelledby="h-app">
+ <h2 id="h-app">Control app, live</h2>
+ <p class="lead">The same app a builder opens with <code>opengonio app</code>, here running the real Python in your browser
+  (Pyodide, Python compiled to WebAssembly) against the simulated machine. Every number on it comes from the software.</p>
+ <div class="in-two">
+  <a class="in-fig in-door" href="app/"><img src="assets/screens/app-light.jpg" alt="The control app: axes, light, camera frame, capture with the mirror sweep curve, spectral sensor and run quality." loading="lazy" width="1440" height="900">
+   <figcaption><span class="go">Open the control app →</span> First load fetches about 20 MB (Python and numpy), then it runs offline in the tab.</figcaption></a>
+  <div class="in-card">
+   <h3>Try this</h3>
+   <ol class="in-list">
+    <li>Choose a material and <b>Connect to the simulator</b>.</li>
+    <li><b>Home all</b>: the simulated motors run to their switches.</li>
+    <li><b>Run capture</b> with the mirror sweep: 33 photos, then the software checks the run (verify) and draws the curve.</li>
+    <li>The peak sits 0.4° from where it should: the simulator hid that error in the table, and the run finds it. Calibration removes it.</li>
+    <li>Move the sliders: the app checks every pose for collisions before it moves.</li>
+   </ol>
+   <h3>How the web version works</h3>
+   <ul class="in-flow" aria-label="Request path">
+    <li>app.js</li><li>browser.js</li><li>worker.js (Pyodide)</li><li><code>server.respond()</code></li><li>simulated machine</li>
+   </ul>
+   <p>On a laptop the same <code>respond()</code> answers over HTTP. Here a web worker answers instead; nothing talks to hardware.</p>
+  </div>
+ </div>
+</section>
+
+<section class="in-sec" id="how" aria-labelledby="h-how">
+ <h2 id="h-how">How the pieces fit</h2>
+ <p class="lead">A laptop (or a Raspberry Pi Zero, stage 15) runs the software. It talks over USB to two small boards: the SKR Pico
+  moves the four motors and switches the lamp, and the ESP32-S3 hub reads the keys, the e-stop sense and the sensors. The camera is on USB too.</p>
+ <div class="in-two">
+  <figure class="in-fig"><img src="assets/architecture.svg" alt="Architecture: power, laptop or Pi, USB camera, SKR Pico with grblHAL driving the four motors, ESP32-S3 hub with buttons, OLED and e-stop sense." loading="lazy"></figure>
+  <div class="in-grid">
+   <a class="in-card in-door" href="#software"><h3>Laptop software</h3><p>Python: plans, motion, camera, checks, calibration, fitting, 3D scans.</p><span class="go">Modules →</span></a>
+   <a class="in-card in-door" href="#firmware"><h3>Two firmwares</h3><p>grblHAL on the SKR Pico; MicroPython on the hub.</p><span class="go">Settings and commands →</span></a>
+   <a class="in-card in-door" href="#wiring"><h3>Wiring</h3><p>One source file, drawn as bench walkthroughs with a test after each group.</p><span class="go">Wires →</span></a>
+   <a class="in-card in-door" href="explore/"><h3>Project map</h3><p>Every file as a clickable map, with a plain-words tour.</p><span class="go">Open the map →</span></a>
+  </div>
+ </div>
+</section>
+
+<section class="in-sec" id="software" aria-labelledby="h-sw">
+ <h2 id="h-sw">Software</h2>
+ <p class="lead">The <code>opengonio</code> Python package. Open a module to see what it does, its public functions and classes (each
+  links to its line on GitHub), what it uses, what uses it and which test files check it.</p>
+ <div class="in-tools"><input id="sw-search" type="search" placeholder="Search modules, e.g. calibrate" aria-label="Search modules">
+  <span class="in-note" id="sw-count" aria-live="polite"></span></div>
+ <div class="in-tools" id="sw-groups" role="group" aria-label="Filter by area"></div>
+ <div class="in-grid" id="sw-list"></div>
+ <h3 id="tools" style="margin-top:var(--s-6)">Build and check tools</h3>
+ <p class="in-note">The repository writes its own README tables, diagrams, website numbers and paper figures from a few source files, then checks they agree.</p>
+ <ul class="in-list" id="tool-list"></ul>
+</section>
+
+<section class="in-sec" id="tests" aria-labelledby="h-tests">
+ <h2 id="h-tests">Tests</h2>
+ <p class="lead"><span id="t-sum"></span> They run with <code>make test</code> and on every push to GitHub, against the simulated machine.</p>
+ <div class="in-two">
+  <div class="in-grid" id="t-list" style="grid-template-columns:1fr"></div>
+  <div class="in-grid" style="grid-template-columns:1fr">
+   <div class="in-card"><h3>The simulated test bench</h3>
+    <p>A virtual machine with the real geometry, a camera model and known materials. It hides a 0.4° error in the table so calibration has something to find.</p>
+    <ul class="in-flow"><li>plan poses</li><li>move and photograph</li><li>verify the run</li><li>calibrate</li><li>reflectance curve</li><li>fit a material</li></ul>
+    <p>Try it: <code>make sim</code>, or the control app above. <a href="./#results">Its real outputs</a> are on the website.</p></div>
+   <div class="in-card"><h3>The bench tests on the machine</h3>
+    <p><b id="bench-n"></b> checks across the stages, each a measurable pass (a voltage, a key printing its name, a motor returning to its mark).
+     They run as you build: see the <a href="#roadmap">roadmap</a> and the wiring walkthroughs.</p></div>
+  </div>
+ </div>
+</section>
+
+<section class="in-sec" id="firmware" aria-labelledby="h-fw">
+ <h2 id="h-fw">Firmware</h2>
+ <p class="lead">Two boards, two firmwares, one USB cable each. Read straight from <code>firmware/</code>.</p>
+ <div class="in-two">
+  <div class="in-card"><h3>SKR Pico · grblHAL</h3>
+   <p>BTT SKR Pico V1.0 (RP2040, 4 × TMC2209). Moves the four axes in degrees, homes each to its switch, switches the lamp and fan. Settings from <code>firmware/grblhal/settings.txt</code>, sent with <code>bash scripts/controller.sh settings</code>.</p>
+   <div class="in-table-wrap"><table class="in-table" id="grbl-axes"></table></div>
+   <details class="in-item" style="margin-top:var(--s-3)"><summary><span class="t">General settings</span></summary><div><ul class="in-list" id="grbl-general"></ul></div></details>
+  </div>
+  <div class="in-card"><h3>ESP32-S3 hub · MicroPython</h3>
+   <p id="hub-meta"></p>
+   <div class="in-table-wrap"><table class="in-table" id="hub-cmds"></table></div>
+   <div class="in-table-wrap" style="margin-top:var(--s-3)"><table class="in-table" id="hub-events"></table></div>
+   <details class="in-item" style="margin-top:var(--s-3)"><summary><span class="t">Pins (GPIO)</span><span class="m">grey rows are reserved and stay unwired</span></summary><div>
+    <div class="in-table-wrap"><table class="in-table" id="hub-pins"></table></div></div></details>
+   <details class="in-item" style="margin-top:var(--s-2)"><summary><span class="t">I2C devices</span></summary><div><ul class="in-list" id="hub-i2c"></ul></div></details>
+   <p style="margin-top:var(--s-3)"><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/firmware/hub/main.py">Read firmware/hub/main.py on GitHub</a></p>
+  </div>
+ </div>
+</section>
+
+<section class="in-sec" id="wiring" aria-labelledby="h-w">
+ <h2 id="h-w">Wiring</h2>
+ <p class="lead">Every wire lives in <code>docs/wiring.yaml</code>. The build turns it into the README tables, these diagrams and three
+  bench walkthroughs that draw one wire at a time, with a test after each group. <code>make check</code> compares the hub pins with the firmware.</p>
+ <div class="in-two">
+  <figure class="in-fig"><img src="assets/wiring.svg" alt="Wiring overview: power, SKR Pico, hub, motors, endstops, lamp and sensors." loading="lazy"></figure>
+  <div class="in-card"><div class="in-table-wrap"><table class="in-table" id="w-table"></table></div>
+   <p style="margin-top:var(--s-3)">Order: <a href="power.html">power</a> → <a href="controller.html">controller</a> → <a href="machine.html">machine</a>. Every wire, one per page: <a href="wiring.html">wiring guide</a>.</p></div>
+ </div>
+</section>
+
+<section class="in-sec" id="roadmap" aria-labelledby="h-r">
+ <h2 id="h-r">Roadmap</h2>
+ <p class="lead">Eighteen stages, each ending with checks before the next starts. Open a stage for its milestones, steps and the pass
+  for each step. <span id="r-sum"></span></p>
+ <div class="in-road" id="r-list"></div>
+</section>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html" aria-current="page">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
+</footer>
+<script src="inside-data.js"></script>
+<script src="og/inside.js"></script>
+</body>
+</html>

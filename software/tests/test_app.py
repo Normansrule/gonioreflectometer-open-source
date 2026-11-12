@@ -145,3 +145,27 @@ def test_devices_and_spectral_reading(api):
     assert code == 200 and r["simulated"] and len(r["counts"]) == len(r["channels"]) == 10
     s = api("/api/state")[1]
     assert s["spectral"]["counts"] == r["counts"] and {d["id"]: d["status"] for d in s["devices"]}["spectral"] == "simulated"
+
+
+def test_respond_is_the_one_route_table(tmp_path):
+    """The web demo (docs/app, Pyodide) calls respond() directly: same answers as over HTTP, no server needed."""
+    from opengonio.app.server import respond
+    app = App(load_config(), tmp_path / "runs", str(tmp_path / "calibration.yaml"))
+    code, s = respond(app, "GET", "/api/state", "", {})
+    assert code == 200 and s["mode"] == "disconnected"
+    assert respond(app, "POST", "/api/home", "", {})[0] == 409            # refused: not connected
+    assert respond(app, "POST", "/api/connect", "", {"mode": "sim", "material": "mirror"})[0] == 200
+    assert respond(app, "POST", "/api/move", "", {})[0] == 400              # bad request: no pose
+    assert respond(app, "GET", "/api/nope", "", {})[0] == 404
+
+
+def test_web_demo_package_is_reproducible():
+    """docs/app/opengonio.zip: same bytes for the same sources, with the server and both config files inside."""
+    import io
+    import zipfile
+    import site_app
+    a, b = site_app.package_zip(), site_app.package_zip()
+    assert a == b
+    names = zipfile.ZipFile(io.BytesIO(a)).namelist()
+    assert "software/src/opengonio/app/server.py" in names and "software/config/machine.yaml" in names
+    assert not any("static/" in n or "__pycache__" in n for n in names)
