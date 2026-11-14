@@ -34,8 +34,14 @@ jobs:
           cd build/desktop/dist
           exe=./OpenGonio; [ -f OpenGonio.exe ] && exe=./OpenGonio.exe
           "$exe" --sim mirror --no-browser --port 8790 --data "$RUNNER_TEMP/runs" &
-          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8790/api/state > /tmp/state.json && break; sleep 1; done
-          python -c "import json; s=json.load(open('/tmp/state.json')); assert s['mode']=='sim', s; print('app answers:', s['mode'], s['material'])"
+          app=$!
+          # answers go through pipes, never /tmp: on Windows, Git Bash's /tmp and Python's /tmp are different folders
+          state=""
+          for i in $(seq 1 60); do state=$(curl -sf http://127.0.0.1:8790/api/state) && break; sleep 1; done
+          echo "$state" | python -c "import json, sys; s = json.load(sys.stdin); assert s['mode'] == 'sim', s; print('app answers:', s['mode'], s['material'])"
+          js=$(curl -sf http://127.0.0.1:8790/og/render-gl.js); [ ${#js} -gt 10000 ]; echo "render-gl.js shipped: ${#js} bytes"
+          curl -s http://127.0.0.1:8790/api/material?run=none | python -c "import json, sys; e = json.load(sys.stdin); assert 'no run' in e['error'], e; print('render package loads:', e['error'])"
+          kill $app 2>/dev/null || true
       - uses: actions/upload-artifact@v6
         with:
           name: OpenGonio-${{ runner.os }}
@@ -45,7 +51,7 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with: {path: dist, merge-multiple: true}
       - name: Attach to the release
         env: {GH_TOKEN: "${{ github.token }}"}
