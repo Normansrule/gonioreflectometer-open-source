@@ -3,7 +3,7 @@
 PY := $(shell [ -x .venv/bin/python ] && echo .venv/bin/python || echo python3)
 m ?= update
 
-.PHONY: help setup build check test parts cad cad-check cad-zip publish all sim release done next paper export ci
+.PHONY: help setup build check test parts cad cad-check cad-zip publish all sim render release done next paper export ci
 
 help:            ## list commands
 	@grep -E '^[a-z-]+:.*## ' Makefile | sed 's/:.*## /\t/'
@@ -35,7 +35,7 @@ build:           ## regenerate checklists, README tables, figures, budgets, 3D i
 	$(PY) tools/refs_bib.py
 	$(PY) tools/site_data.py > /dev/null
 	mkdir -p software/src/opengonio/app/static/og/fonts   # the app shares the website's tokens, script and fonts
-	cp docs/og/og.css docs/og/og.js docs/og/icon.svg software/src/opengonio/app/static/og/
+	cp docs/og/og.css docs/og/og.js docs/og/icon.svg docs/og/render-gl.js software/src/opengonio/app/static/og/
 	cp docs/og/fonts/* software/src/opengonio/app/static/og/fonts/
 
 parts:           ## regenerate every printed part (STEP + STL) and the parts picture (needs cadquery)
@@ -87,6 +87,9 @@ ci:              ## replay the GitHub checks (clean clone, fresh venv) before pu
 	bash scripts/ci_local.sh
 
 all: build check test paper export   ## everything before a commit
+
+render:          ## offline graphics pipeline (simulated fit + scan) -> docs/render-data.js, docs/assets/render/
+	$(PY) tools/render_assets.py
 
 sim:             ## simulated machine: capture -> verify -> calibrate -> curve, ends with ALL PASS
 	$(PY) -m opengonio.cli sim-demo --out data/sim

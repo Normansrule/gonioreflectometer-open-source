@@ -186,6 +186,14 @@ input[type=range]:disabled { cursor: not-allowed; }
 .runlist button[aria-current="true"] { color: var(--light-text); }
 @media (hover: hover) and (pointer: fine) { .runlist button:not(:disabled):hover { color: var(--light-text); } }
 .runlist .empty { padding: var(--s-2) 0; }
+.runlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-2); }
+.runlist .dl { width: 40px; min-height: 40px; display: inline-grid; place-items: center; color: var(--ink-2); }
+@media (hover: hover) and (pointer: fine) { .runlist .dl:hover { color: var(--light-text); } }
+dialog.pair { max-width: min(92vw, 26rem); border: 0; border-radius: var(--radius); background: var(--ground-2); color: var(--ink); padding: var(--s-5); }
+dialog.pair::backdrop { background: rgb(0 0 0 / 0.55); }
+dialog.pair h2 { margin-top: 0; }
+dialog.pair .qr { display: block; width: 100%; max-width: 280px; margin: var(--s-3) auto; image-rendering: pixelated; }
+dialog.pair code { overflow-wrap: anywhere; }
 
 /* ---------- sensors, run quality, session ---------- */
 .sensors { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-4); }
@@ -272,3 +280,8 @@ input[type=range]:disabled { cursor: not-allowed; }
   .tiles dd { font-size: 1.375rem; }
 }
 @media (prefers-reduced-motion: reduce) { .patch.live, .o-arm, .log li:first-child { animation: none; } }
+
+/* material preview (opengonio/render, og/render-gl.js): a small studio in both themes */
+.mat-stage { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; margin: var(--s-3) 0;
+  background: radial-gradient(120% 90% at 50% 30%, #2a2825 0%, #161513 55%, #0b0a09 100%); }
+.mat-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: grab; }

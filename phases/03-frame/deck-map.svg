@@ -56,6 +56,10 @@
 <circle cx="350.0" cy="380.0" r="4" fill="#b80"/>
 <circle cx="350.0" cy="340.0" r="4" fill="#b80"/>
 <circle cx="350.0" cy="300.0" r="4" fill="#b80"/>
+<circle cx="95.0" cy="249.0" r="4" fill="#46c"/>
+<circle cx="95.0" cy="197.0" r="4" fill="#46c"/>
+<circle cx="132.0" cy="249.0" r="4" fill="#46c"/>
+<circle cx="132.0" cy="197.0" r="4" fill="#46c"/>
 <path d="M610.0 340.0h40" stroke="#06c" stroke-width="3" marker-end="url(#a)"/><text x="614.0" y="332.0" font-size="12" fill="#06c">+X camera</text>
 <text x="1020.0" y="25" text-anchor="middle" font-size="16">From below: how the tiles lie while you bolt them</text>
 <rect x="1120.0" y="440.0" width="200.0" height="200.0" fill="#f4f4f4" stroke="#000" stroke-width="1.5"/>
@@ -85,5 +89,6 @@
 <circle cx="895" cy="685.0" r="5" fill="#088"/><text x="905" y="689.0" font-size="12">controller tray</text>
 <circle cx="1070" cy="685.0" r="5" fill="#555"/><text x="1080" y="689.0" font-size="12">ring scale</text>
 <circle cx="1245" cy="685.0" r="5" fill="#b80"/><text x="1255" y="689.0" font-size="12">table endstop riser</text>
+<circle cx="1420" cy="685.0" r="5" fill="#46c"/><text x="1430" y="689.0" font-size="12">screen stand</text>
 <text x="10" y="715.0" font-size="12">Origin = deck centre under the zero point; 200 mm tiles; spare pilots on a 40 mm grid in every tile (not drawn) take endstops, switches and cable clips.</text>
 </svg>

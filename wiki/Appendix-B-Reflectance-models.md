@@ -83,3 +83,6 @@ Background papers and sources, by topic. Format: APA reference — *what this pr
 - Jakob, W., & Hanika, J. (2019). A low-dimensional function space for efficient spectral upsampling. *Computer Graphics Forum*, *38*(2), 147–155. https://doi.org/10.1111/cgf.13626 — *Smooth spectra from fitted RGB albedo (phase 10)* `[T53]`
 - Peters, C., Merzbach, S., Hanika, J., & Dachsbacher, C. (2019). Using moments to represent bounded signals for spectral rendering. *ACM Transactions on Graphics*, *38*(4), 136. https://doi.org/10.1145/3306346.3322964 — *Compact storage of 8-band reflectance (phase 10)* `[T54]`
 - Wilkie, A., Nawaz, S., Droske, M., Weidlich, A., & Hanika, J. (2014). Hero wavelength spectral sampling. *Computer Graphics Forum*, *33*(4), 123–131. https://doi.org/10.1111/cgf.12419 — *Spectral preview render of measured bands (phases 10, 14)* `[T55]`
+- Taubin, G. (1995). A signal processing approach to fair surface design. *SIGGRAPH*. — *λ/μ mesh smoothing without shrinkage: scanned visual hull → mesh (`render/mesh.py`)* `[T56]`
+- Karis, B. (2014). *Physically based shading on mobile*. — *Analytic environment-BRDF fit for the viewer's approximate studio light (`render/raster.py`, `render-gl.js`)* `[T57]`
+- Narkowicz, K. (2016). *ACES filmic tone mapping curve*. — *Tone curve shared by the software and WebGL renderers* `[T58]`

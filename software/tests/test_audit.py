@@ -669,6 +669,8 @@ def test_hub_firmware_avoids_esp32s3_reserved_pins():
     reserved = {0, 3, 45, 46, 19, 20, 43, 44, *range(26, 38)}                 # strapping, USB, flash/PSRAM, UART0 [R86]
     assert len(pins) == len(set(pins)) and not set(pins) & reserved and all(0 < p <= 48 for p in pins)
     assert "PAUSE" in vals["BUTTONS"]
+    screen = set(vals["SCREEN_PINS"].values())                                # status screen: I2C pairs 3-4 only
+    assert screen == {p for pair in vals["I2C_PAIRS"][2:] for p in pair} and not screen & reserved
 
 
 def test_controller_script_pins_firmware_and_settings():

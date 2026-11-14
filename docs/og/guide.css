@@ -245,3 +245,9 @@ code { font-size: 0.9em; background: var(--ground-3); padding: 0 4px; border-rad
 .pw-pass { margin: var(--s-3) 0 0; padding: var(--s-2) var(--s-3); border-left: 3px solid var(--patch-green); background: var(--ground-3); }
 .pw-done { fill: none; stroke: var(--ink-3); stroke-width: 2.5; stroke-dasharray: 2 6; stroke-linecap: round; stroke-linejoin: round; }
 .pw-dim { opacity: 0.55; }
+.pw-buy { margin: var(--s-3) 0 0; font-size: var(--step-small); }
+.pw-buy summary { cursor: pointer; color: var(--ink-2); font-weight: 600; min-height: 32px; display: flex; align-items: center; }
+.pw-buy ul { list-style: none; margin: var(--s-2) 0 0; padding: 0; display: grid; gap: var(--s-1); }
+.pw-buy li { overflow-wrap: anywhere; }
+.pw-id { font-family: ui-monospace, monospace; font-size: 0.85em; color: var(--ink-2); margin-right: var(--s-1); }
+.pw-where { color: var(--ink-3); }

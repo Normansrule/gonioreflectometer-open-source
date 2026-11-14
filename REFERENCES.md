@@ -271,6 +271,9 @@
 | **T53** | W. Jakob, J. Hanika, "A Low-Dimensional Function Space for Efficient Spectral Upsampling," *Computer Graphics Forum* 38(2):147–155, 2019 — [doi:10.1111/cgf.13626](https://doi.org/10.1111/cgf.13626) · [RGL](https://rgl.epfl.ch/publications/Jakob2019Spectral) | Smooth spectra from fitted RGB albedo (phase 10) |
 | **T54** | C. Peters, S. Merzbach, J. Hanika, C. Dachsbacher, "Using Moments to Represent Bounded Signals for Spectral Rendering," *ACM TOG* 38(4):136, 2019 — [doi:10.1145/3306346.3322964](https://doi.org/10.1145/3306346.3322964) | Compact storage of 8-band reflectance (phase 10) |
 | **T55** | A. Wilkie, S. Nawaz, M. Droske, A. Weidlich, J. Hanika, "Hero Wavelength Spectral Sampling," *Computer Graphics Forum* 33(4):123–131, 2014 — [doi:10.1111/cgf.12419](https://doi.org/10.1111/cgf.12419) | Spectral preview render of measured bands (phases 10, 14) |
+| **T56** | G. Taubin, "A Signal Processing Approach to Fair Surface Design," *SIGGRAPH* 1995 (bibliographic; not fetched) | λ/μ mesh smoothing without shrinkage: scanned visual hull → mesh (`render/mesh.py`) |
+| **T57** | B. Karis, "Physically Based Shading on Mobile," Unreal Engine blog, 2014 (bibliographic; not fetched) | Analytic environment-BRDF fit for the viewer's approximate studio light (`render/raster.py`, `render-gl.js`) |
+| **T58** | K. Narkowicz, "ACES Filmic Tone Mapping Curve," blog, 2016 (bibliographic; not fetched) | Tone curve shared by the software and WebGL renderers |
 
 ## Calibration, HDR, photometric stereo and 3D scanning
 
@@ -790,6 +793,12 @@
 | **L22** | Citizen CLU7A3-0403E1-303H7X5 — [Digi-Key](https://www.digikey.com/en/products/detail/citizen/CLU7A3-0403E1-303H7X5/17053751), [datasheet](https://ce.citizen.co.jp/cms/ce/lighting_led/dl_data/COB_High_Intensity_Type_Version4/datasheet/CLU7A3-0403E1_0824P-202110.pdf) | White COB: $5.91, CRI 97, 12.2 V, 4.2 mm LES, Tc ≤ 120 °C |
 | **L23** | TE LUMAWISE Z35 2213678-5 — [Digi-Key](https://www.digikey.com/en/products/detail/te-connectivity-amp-connectors/2213678-5/6174915), [Z35 overview](https://www.digikey.com/en/product-highlight/t/te-connectivity-amp/lumawise-led-holders-type-z35) | Solderless COB holder: $3.50, 13.5 mm boards (Citizen CLU700), Ø35 × 3.6 mm, poke-in 18–20 AWG |
 | **L24** | MEAN WELL LDH-45B-350 — [Digi-Key](https://www.digikey.com/en/products/detail/mean-well-usa-inc/LDH-45B-350/7704773), [spec](https://files.trcelectronics.com/datasheets/ldh45.pdf) | Compared: 24 V boost driver for a 37 V COB; not needed with the 12 V CLU7A3 |
+| **L25** | Citizen CLU701-0303C4-273H5K2 — [Digi-Key](https://www.digikey.com/en/products/detail/citizen/CLU701-0303C4-273H5K2/5820601), [datasheet](https://www.endrich.com/sixcms/media.php/2/CLU701-0303C4_0035P_201710.pdf) | White COB (bought): 13.5 × 13.5 × 1.4 mm, Vf 8.6 / 9.4 / 10.2 V at 525 mA, max 690 mA, Tc ≤ 105 °C, Rj-c 3.5 °C/W, H5 = Ra ≥ 90 |
+| **L26** | TE 114-32208 Rev F, LUMAWISE holder cross-reference — [PDF](https://www.mouser.lt/pdfDocs/ENG_SS_114-32208_F.pdf) | Lists Citizen CLU701 for the Z35 2213678-5 |
+| **L27** | MEAN WELL NLDD-350HW — [Digi-Key](https://www.digikey.com/en/products/detail/mean-well-usa-inc/NLDD-350HW/13913611), [NLDD-H spec](https://www.meanwell.com/Upload/PDF/NLDD-H/NLDD-H-SPEC.PDF) | Wire-lead driver (bought): 32.1 × 20.5 × 12.5 mm, 22 AWG leads 100 mm, input 10–56 V, DIM open = on |
+| **L28** | Wakefield 910-40-2-12-2-B-0 — [Digi-Key](https://www.digikey.com/en/products/detail/wakefield-thermal-solutions/910-40-2-12-2-B-0/4815166), [maker page](https://wakefieldthermal.com/wakefield-thermal-heatsink-40x40x12mm-pin-910-40-2-12-2-b-0/), [Octopart](https://octopart.com/part/wakefield-vette/910-40-2-12-2-B-0) | Pin-fin heatsink (bought): 40 × 40 × 11.6 mm, 9.2 °C/W natural convection, clip mount (no tape) |
+| **L29** | 3M 8810 tape 19 mm × 4.57 m — [Digi-Key](https://www.digikey.com/en/products/detail/3m-tc/8810-0-75-5/2649863) | Thermal adhesive transfer tape, COB to heatsink |
+| **L30** | Waveshare 2inch LCD Module (SKU 17344) — [maker page](https://www.waveshare.com/2inch-LCD-Module.htm), [wiki](https://www.waveshare.com/wiki/2inch_LCD_Module), [Amazon](https://www.amazon.com/dp/B081Q79X2F) | Status screen: ST7789VW, 240 × 320, 58 × 35 mm, PH2.0 8-pin, 20 cm cable in the box |
 
 ## Parts: mechanics and frame
 

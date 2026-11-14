@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio hub add-ons</title>
+<meta name="description" content="The OpenGonio hub add-ons wired and tested on the bench, step by step: the AS7341 spectral sensor and the 2 in status screen that shows the machine state without the laptop app. Text from docs/wiring.yaml.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/guide.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the walkthrough</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Pages">
+  <a href="./">Website</a><a href="inside.html">Inside</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html" aria-current="page">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="g-head" aria-labelledby="h1">
+ <h1 id="h1" class="display">Hub add-ons, step by step</h1>
+ <p class="g-lead">Two optional parts on the ESP32-S3 hub: the AS7341 spectral sensor, and a 2 in status screen that shows the
+  machine's state on the machine itself (motor power, keys, supply, laptop link, run lines), so you can still see what is going
+  on if the laptop app has a problem. Two lever connectors share the hub's 3V3 and GND. Wording from <code>docs/wiring.yaml</code>,
+  the same source as the <a href="wiring.html">full wiring guide</a> (section 8).</p>
+ <p class="g-safety"><span class="patch red" aria-hidden="true"></span><span><b>Unplug the hub's USB while you wire it.</b>
+  Nothing here touches the 24 V side.</span></p>
+</section>
+
+<section class="stage" aria-label="Current step">
+ <figure class="sheet pw-sheet" style="margin:0">
+  <svg id="bench" viewBox="0 0 680 470" role="img" aria-labelledby="bench-title bench-desc">
+   <title id="bench-title">Hub add-ons on the bench</title>
+   <desc id="bench-desc">The ESP32-S3 hub on the left with its pins, a 3V3 and a GND lever connector in the middle, the AS7341 sensor
+    top right and the status screen bottom right, with the wires made so far.</desc>
+   <rect class="box-r pw-blue" x="30" y="25" width="220" height="430" rx="8"/>
+   <text class="box-t" x="70" y="200">ESP32-S3 hub</text><text class="pin-t" x="70" y="218">CTL-02</text>
+   <text class="pin-t" x="70" y="236" opacity=".6">keypads, opto ✓</text>
+   <text class="pin-t" x="240" y="54" text-anchor="end">SCL · J3-5 (GPIO2)</text><circle cx="250" cy="50" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="71" text-anchor="end">SDA · J3-4 (GPIO1)</text><circle cx="250" cy="67" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="104" text-anchor="end">GND · J3-22</text><circle cx="250" cy="100" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="154" text-anchor="end">3V3 · J1-2</text><circle cx="250" cy="150" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="364" text-anchor="end">CLK · J3-6 (GPIO42)</text><circle cx="250" cy="360" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="389" text-anchor="end">DIN · J3-7 (GPIO41)</text><circle cx="250" cy="385" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="414" text-anchor="end">DC · J1-11 (GPIO18)</text><circle cx="250" cy="410" r="4" class="pw-ink"/>
+   <text class="pin-t" x="240" y="439" text-anchor="end">CS · J3-10 (GPIO38)</text><circle cx="250" cy="435" r="4" class="pw-ink"/>
+   <rect class="box-r pw-wago" x="300" y="78" width="50" height="42" rx="5"/><text class="box-t" x="325" y="103" text-anchor="middle">GND</text>
+   <circle cx="300" cy="100" r="4" class="pw-ink"/>
+   <circle cx="350" cy="88" r="4" class="pw-ink"/>
+   <circle cx="350" cy="110" r="4" class="pw-ink"/>
+   <rect class="box-r pw-wago" x="300" y="135" width="50" height="80" rx="5"/><text class="box-t" x="325" y="172" text-anchor="middle">3V3</text>
+   <text class="pin-t" x="325" y="189" text-anchor="middle">5-way</text>
+   <circle cx="300" cy="150" r="4" class="pw-ink"/>
+   <circle cx="350" cy="145" r="4" class="pw-ink"/>
+   <circle cx="350" cy="165" r="4" class="pw-ink"/>
+   <circle cx="350" cy="185" r="4" class="pw-ink"/>
+   <circle cx="350" cy="205" r="4" class="pw-ink"/>
+   <rect class="box-r pw-violet" x="470" y="25" width="180" height="140" rx="8"/>
+   <text class="box-t" x="575" y="80" text-anchor="middle">AS7341</text><text class="pin-t" x="575" y="98" text-anchor="middle">spectral sensor</text>
+   <text class="pin-t" x="478" y="49">SCL</text><circle cx="470" cy="45" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="66">SDA</text><circle cx="470" cy="62" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="92">GND</text><circle cx="470" cy="88" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="149">VIN</text><circle cx="470" cy="145" r="4" class="pw-ink"/>
+   <rect class="box-r pw-teal" x="470" y="240" width="180" height="215" rx="8"/>
+   <text class="box-t" x="585" y="300" text-anchor="middle">Status screen</text><text class="pin-t" x="585" y="318" text-anchor="middle">2 in ST7789</text>
+   <text class="pin-t" x="585" y="336" text-anchor="middle">320 × 240</text>
+   <text class="pin-t" x="478" y="264">GND</text><circle cx="470" cy="260" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="286">VCC</text><circle cx="470" cy="282" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="308">RST</text><circle cx="470" cy="304" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="330">BL</text><circle cx="470" cy="326" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="364">CLK</text><circle cx="470" cy="360" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="389">DIN</text><circle cx="470" cy="385" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="414">DC</text><circle cx="470" cy="410" r="4" class="pw-ink"/>
+   <text class="pin-t" x="478" y="439">CS</text><circle cx="470" cy="435" r="4" class="pw-ink"/>
+   <g id="wires"></g><g id="rings"></g>
+  </svg>
+  <div class="pw-pills" id="pills" role="group" aria-label="Steps"></div>
+ </figure>
+ <article class="card" aria-live="polite">
+  <div class="c-head">
+   <h2 id="s-title"></h2>
+   <p class="meta" id="k-sec"></p>
+  </div>
+  <div class="c-body" id="s-body"></div>
+  <div class="c-nav">
+   <p class="progress num" id="k-step"></p>
+   <div class="nav">
+    <button class="btn" type="button" id="back">Back</button>
+    <button class="btn btn-light" type="button" id="next">Next</button>
+   </div>
+   <p class="hint">Keys: <span class="kbd">←</span> <span class="kbd">→</span>. Each step has its own link (the address bar).</p>
+  </div>
+ </article>
+</section>
+
+<p class="foot">Nothing here has been built or measured yet: this is the design. Status screen: Waveshare 2inch LCD Module (STA-09,
+ price [TBD]) on the printed stand and bezel (STA-10: four M2 × 12 into the deck pilots beside the controller tray, four M2 × 8
+ through the bezel). It uses the hub pins of encoders 2 and 3; <code>SCREEN OFF</code> gives them back.</p>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html" aria-current="page">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
+</footer>
+<script src="wiring-guide.js"></script>
+<script src="og/walk-addons.js"></script>
+<script src="og/walk.js"></script>
+</body>
+</html>

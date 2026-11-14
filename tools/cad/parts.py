@@ -109,7 +109,7 @@ ESP = (62.74, 25.4)               # CTL-02 ESP32-S3-DevKitC-1, Espressif board [
 ESP_AT = (55.0, -40.0)            # USB end toward +X (tray edge); module end toward -X
 ESP_PED = 6.0                     # pedestal under the module can: board upside down, header pins UP for the jumpers
 OPTO_MOD = (66.0, 16.5)           # PWR-10 PC817 24 V module, 66 x 16.5 x 12 mm (listing); screw terminals both ends
-LED_DRV = (32.0, 20.3)            # LSR-02 MEAN WELL NLDD-350H, 32.0 x 20.3 x 12.4 mm; pins up, female jumpers on them
+LED_DRV = (32.1, 20.5)            # LSR-02 MEAN WELL NLDD-350HW, 32.1 x 20.5 x 12.5 mm [L27]; five 100 mm wire leads, taped in
 
 
 def _pocket(w: float, h: float, wall: float, height: float, at: tuple[float, float]) -> cq.Workplane:
@@ -120,7 +120,7 @@ def _pocket(w: float, h: float, wall: float, height: float, at: tuple[float, flo
 
 def controller_tray():
     """Base for the SKR Pico, the ESP32-S3 hub and two modules: the PC817 opto module (motion-power sense, screw
-    terminals) and the LED driver (pins up, female jumper ends). No breadboard. SKR Pico holes from the maker STEP [C12]:
+    terminals) and the LED driver (wire leads, double-sided tape). No breadboard. SKR Pico holes from the maker STEP [C12]:
     4 x 2.7 mm on 58 x 49 mm, M2 x 8 + washer into 1.7 mm pilots on 6 mm standoffs. The ESP32-S3 board lies upside down
     in a locating frame on a pedestal under its module can (double-sided foam tape), so its header pins point up and the
     female jumpers plug in from above; the USB end faces an opening at +X. Corners: M2 x 12 into the deck pilots."""
@@ -681,7 +681,7 @@ def camera_plate():
     return _camera_face().union(_post_clamp())
 
 
-HS_H, PAD_T, COB_H = 11.0, 0.25, 1.4          # LSR-03 heatsink, LSR-04 3M 8810 tape, LSR-01 Citizen CLU7A3 [L22]
+HS_H, PAD_T, COB_H = 11.6, 0.25, 1.4          # LSR-03 Wakefield 910-40-2-12-2-B-0 [L28], LSR-04 3M 8810, LSR-01 Citizen CLU701 [L25]
 HOLDER_D, HOLDER_H, PRELOAD = 35.0, 3.6, 0.3  # LSR-06 TE Z35 2213678-5 [L23]; the stack stands 0.3 mm proud so the cap clamps it
 LAMP_POCKET = HS_H + HOLDER_H - PRELOAD       # lamp back face -> pocket front wall (the holder face bears on it)
 LAMP_COB_Z = HS_H - PRELOAD + PAD_T + COB_H   # lamp back face -> COB emitter: 300 mm from the zero point
@@ -854,6 +854,58 @@ def pi_mount():
     return p
 
 
+# ---------------- hub add-on: status screen (STA-09) ----------------
+# Waveshare 2inch LCD Module [L30]: 58.0 x 35.0 mm. Its hole positions and thickness are only in a drawing image, so
+# nothing here depends on them: the module lies in a 1.2 mm pocket and the bezel clamps its two short ends (4 mm each).
+TFT = (58.0, 35.0)
+TFT_POCKET = 1.2                  # less than any PCB, so the bezel always presses the board
+TFT_WIN = (50.0, 39.0)            # bezel window: full height, 50 of the 58 mm length (active area 40.8 x 30.6)
+SCREEN_TILT = 30.0                # face leans back 30 deg from vertical
+SCREEN_FACE = (74.0, 50.0, 4.0)   # face width (along the module), height up the slope, thickness
+SCREEN_C = 27.0                   # module centre, up the slope from the face's bottom edge
+SCREEN_HOLES = [(sx * 33.2, sy * 18.0) for sx in (-1, 1) for sy in (-1, 1)]   # bezel screws, outside the module
+SCREEN_BASE = (-30.0, 22.5)       # base x range: user side (-x) to the back
+SCREEN_XY = (-190.0, 117.0)       # NW tile, outside the ring scale (r 175), 2 mm short of the controller tray; ~8 cm from the hub
+SCREEN_PILOTS = [(x, sy * 26.0) for x in (-25.0, 12.0) for sy in (-1, 1)]   # deck pilots, local
+
+
+def _screen_face() -> cq.Workplane:
+    """The face standing upright, front (pocket side) at x = 0 facing -x, bottom edge at z = 0."""
+    fw, fh, ft = SCREEN_FACE
+    f = cq.Workplane("XY").box(ft, fw, fh, centered=(False, True, False))
+    f = f.cut(cq.Workplane("XY").box(TFT_POCKET, TFT[0] + CLEAR, TFT[1] + CLEAR, centered=(False, True, True)).translate((0, 0, SCREEN_C)))
+    f = f.cut(cq.Workplane("XY").box(ft, TFT[0] - 8, TFT[1] - 6, centered=(False, True, True)).translate((0, 0, SCREEN_C)))   # back parts, cable
+    for u, v in SCREEN_HOLES:
+        f = f.union(cq.Workplane("YZ").circle(3).extrude(4).translate((ft, u, SCREEN_C + v)))                         # 8 mm of thread
+        f = f.cut(cq.Workplane("YZ").circle(M2_TAP / 2).extrude(ft + 4).translate((0, u, SCREEN_C + v)))
+    return f
+
+
+def screen_stand():
+    """Status screen stand: base on 4 deck pilots (M2 x 12), face at 30 deg from vertical toward -x (the laptop side),
+    two side cheeks. The 8-pin cable leaves through the face window and out of the open back toward the hub."""
+    fw = SCREEN_FACE[0]
+    x0, x1 = SCREEN_BASE
+    s = cq.Workplane("XY").box(x1 - x0, fw, 3, centered=(False, True, False)).translate((x0, 0, 0))
+    s = s.faces(">Z").workplane().pushPoints([(x, y) for x, y in SCREEN_PILOTS]).cboreHole(M2, M2_HEAD, 1.5)
+    a = math.radians(SCREEN_TILT)
+    fx = -18.0
+    s = s.union(_screen_face().rotate((0, 0, 0), (0, 1, 0), SCREEN_TILT).translate((fx, 0, 3)))
+    top = (fx + SCREEN_FACE[1] * math.sin(a), 3 + SCREEN_FACE[1] * math.cos(a))
+    for sy in (-1, 1):
+        cheek = cq.Workplane("XZ").polyline([(fx, 3), top, (x1, 3)]).close().extrude(-3)
+        s = s.union(cheek.translate((0, sy * (fw / 2 - 1.5) - 1.5, 0)))
+    return s
+
+
+def screen_bezel():
+    """Bezel: presses the module's short ends into the face pocket, 4 x M2 x 8 into the face pilots."""
+    fw, fh = SCREEN_FACE[0], 46.0
+    b = cq.Workplane("XY").box(fw, fh, 2, centered=(True, True, False))
+    b = b.cut(cq.Workplane("XY").rect(*TFT_WIN).extrude(2))
+    return b.faces(">Z").workplane().pushPoints(SCREEN_HOLES).hole(M2)
+
+
 PLACE = {   # part: deck pilot positions (x, y), mm from the zero point; deck_tile() puts a boss under each
     "table post": [_polar(22.2, a) for a in (45, 135, 225, 315)],
     "table motor bracket": [(-TABLE_BELT_C, s * 34.3) for s in (-1, 1)],
@@ -863,6 +915,7 @@ PLACE = {   # part: deck pilot positions (x, y), mm from the zero point; deck_ti
     "controller tray": [(TRAY_XY[0] + x, TRAY_XY[1] + y) for x, y in TRAY_HOLES],
     "ring scale": [_polar(RING_SCREW_R, 20 + 80 * k + a) for k in range(4) for a in RING_SCREW_A],
     "table endstop riser": ENDSTOP_FEET,
+    "screen stand": [(SCREEN_XY[0] + x, SCREEN_XY[1] + y) for x, y in SCREEN_PILOTS],
 }
 _DECK_EDGES = [-DECK_HALF + DECK_TILE * k for k in range(DECK_N + 1)]
 
@@ -935,6 +988,8 @@ PARTS = {   # id: (stage folder, file stem, function, what)
     "SCN-03c": ("11-scan-capture", "riser_60", lambda: riser(60), "Riser 60 mm"),
     "SCN-03d": ("11-scan-capture", "scan_camera_plate_15", scan_camera_plate, "Scan camera plate, looks 15 deg down"),
     "STA-07a": ("15-standalone", "pi_zero_mount", pi_mount, "Pi Zero 2 W mount"),
+    "STA-10a": ("15-standalone", "screen_stand", screen_stand, "Status screen stand (4 deck pilots)"),
+    "STA-10b": ("15-standalone", "screen_bezel", screen_bezel, "Status screen bezel"),
 }
 
 

@@ -46,8 +46,9 @@ def _grey(a) -> np.ndarray:
 def hull(cfg: Machine, folder: str | Path, voxel_mm: float = 1.0, downscale: int = 4, threshold: float = 12.0,
          clip_below_mm: float | None = None, read=None, min_coverage: float = 0.8, min_views: int = 8) -> dict:
     """Visual hull from object + empty-platter image pairs. Refuses to run with fewer than min_views pairs or under
-    min_coverage of the planned views (a hull from a few views is far larger than the object). Output is a POINT CLOUD
-    of the hull surface (hull.ply), not a mesh, and the hull can't see concavities."""
+    min_coverage of the planned views (a hull from a few views is far larger than the object). Output: the hull surface
+    as points (hull.ply) and as a smoothed mesh (hull_mesh.ply, hull.glb for `opengonio render`); the hull can't see
+    concavities."""
     folder = Path(folder)
     meta, read = _meta(folder), read or default_reader()
     K = Intrinsics(**meta["intrinsics"]).scaled(1.0 / downscale)
@@ -74,11 +75,21 @@ def hull(cfg: Machine, folder: str | Path, voxel_mm: float = 1.0, downscale: int
     grid = carve(masks, views, K.K, half_size_mm=half, n=int(2 * half / voxel_mm), clip_below_z=clip_below_mm, dist=dist)
     pts = grid.centers()
     write_ply(folder / "hull.ply", grid.surface_points())
+    mesh_out = {}
+    if grid.occ.any():                                   # the same hull as a mesh: Blender / engines / `opengonio render`
+        from ..render.gltf import write_glb
+        from ..render.material import Material
+        from ..render.mesh import from_voxels, write_ply_mesh
+        m = from_voxels(grid.occ, grid.origin, grid.voxel_mm)
+        write_ply_mesh(folder / "hull_mesh.ply", m)
+        write_glb(folder / "hull.glb", m, Material("unmeasured_grey", (0.5, 0.5, 0.5), 0.6, 0.0, "placeholder: no fit yet"))
+        mesh_out = {"mesh_ply": str(folder / "hull_mesh.ply"), "glb": str(folder / "hull.glb"), "triangles": m.triangles}
     size = (pts.max(0) - pts.min(0) + grid.voxel_mm) if len(pts) else np.zeros(3)
     return {"views": len(masks), "planned_views": planned, "missing_views": missing, "voxel_mm": round(grid.voxel_mm, 3),
             "size_mm": [round(float(v), 1) for v in size], "volume_cm3": round(grid.volume_mm3 / 1000, 2),
             "camera_model": meta.get("intrinsics_source", "nominal") + (" + distortion" if dist and any(dist) else ""),
-            "output": "visual-hull surface points (not a mesh; concavities are not recovered)", "ply": str(folder / "hull.ply")}
+            "output": "visual-hull surface points (hull.ply) and the same hull as a smoothed mesh (hull_mesh.ply, hull.glb); "
+                      "concavities are not recovered", "ply": str(folder / "hull.ply"), **mesh_out}
 
 
 def ps(cfg: Machine, folder: str | Path, station: int = 0, gamma: float = 1.0, sphere: bool = False, read=None) -> dict:

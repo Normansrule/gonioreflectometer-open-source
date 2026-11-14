@@ -18,7 +18,7 @@
 <header class="bar">
  <a class="mark display" href="./">OpenGonio</a>
  <nav aria-label="Pages">
-  <a href="./">Website</a><a href="inside.html" aria-current="page">Inside</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+  <a href="./">Website</a><a href="inside.html" aria-current="page">Inside</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
  </nav>
  <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
 </header>
@@ -57,6 +57,13 @@
     <li>app.js</li><li>browser.js</li><li>worker.js (Pyodide)</li><li><code>server.respond()</code></li><li>simulated machine</li>
    </ul>
    <p>On a laptop the same <code>respond()</code> answers over HTTP. Here a web worker answers instead; nothing talks to hardware.</p>
+   <h3>Everywhere else</h3>
+   <ul class="in-list">
+    <li><b>Desktop:</b> Windows, macOS and Linux apps from the GitHub releases (PyInstaller, <code>software/packaging/</code>).</li>
+    <li><b>Phones and tablets:</b> <code>opengonio app --lan</code>, scan the QR code under Phone; add it to the home screen.</li>
+    <li><b>Data:</b> every run downloads as a zip from the run list.</li>
+    <li><b>On the machine:</b> the optional <a href="addons.html">status screen</a> on the hub, independent of any app.</li>
+   </ul>
   </div>
  </div>
 </section>
@@ -146,7 +153,7 @@
 </section>
 </main>
 <footer class="site-foot">
- <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html" aria-current="page">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html" aria-current="page">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
  <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
 </footer>
 <script src="inside-data.js"></script>

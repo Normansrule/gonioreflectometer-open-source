@@ -16,21 +16,24 @@ Measures how materials reflect light — the bidirectional reflectance distribut
 - **A material at the end.** `opengonio` turns a run into a reflectance curve (CSV, comma-separated values) and fits base colour, roughness and metallic for glTF, Blender, Unity and Unreal.
 - **3D scans** of small objects from the same machine (stages 11–13).
 - **A control app** in the browser or a desktop window: connect, home, jog, light, capture and see the curve ([Website and app](#website-and-app)).
+- **Graphics:** the fitted material on the scanned object as a `.glb` for Blender, Unity, Unreal or three.js, and a live renderer in the browser ([Render page](docs/render.html), `opengonio render`).
 - **Every control works without hardware.** A simulated machine with a hidden table error runs the whole chain; `make sim` ends `ALL PASS`.
 - **Honest numbers.** Every claim says whether it is simulated, modeled or measured ([Status](#status)).
 
 **New here?** Open the [project map](docs/explore/index.html): the whole project as a clickable map, with a 9-step tour in plain words (what it measures, how a run works, the build stages, the boards, the software) and a flows view of how things happen. Drawn from the repo by `tools/explore_graph.py` with [Understand-Anything](https://github.com/Egonex-AI/Understand-Anything) (MIT).
 
+**Website:** <https://normansrule.github.io/gonioreflectometer-open-source/> (live once Pages is on: `bash scripts/pages.sh`). **Desktop app** for Windows, macOS and Linux: the zips under [Releases](https://github.com/Normansrule/gonioreflectometer-open-source/releases) (built by `.github/workflows/desktop.yml`). **Phones:** `opengonio app --lan`, then scan the QR code under Phone.
+
 **See inside:** [Inside OpenGonio](docs/inside.html) shows every software module, test, firmware setting, wire and roadmap step, read from the repo by `tools/inside_data.py`; the [control app](docs/app/index.html) runs the real Python in the browser on the simulated machine. Website pages need the website or a local server: `python3 -m http.server -d docs 8000`, then `http://localhost:8000/inside.html`.
 
-**[How it works](wiki/How-it-works.md) · [Wiring](#wiring) · [Build steps](#build) · [Wiki](wiki/Home.md) · [Paper (PDF)](paper/build/opengonio.pdf) · [Website](docs/index.html) · [Lab](docs/lab.html) · [Parts spreadsheet](exports/bom/opengonio-bom.xlsx) · [Your parts list](PARTS.md)**
+**[How it works](wiki/How-it-works.md) · [Wiring](#wiring) · [Build steps](#build) · [Wiki](wiki/Home.md) · [Paper (PDF)](paper/build/opengonio.pdf) · [Website](docs/index.html) · [Lab](docs/lab.html) · [Render](docs/render.html) · [Parts spreadsheet](exports/bom/opengonio-bom.xlsx) · [Your parts list](PARTS.md)**
 
 <!-- budget:start -->
 | Plan (every core part bought) | Still to buy | Have / ordered | Paid so far | Decided | Tools to buy (kept, separate) |
 |---:|---:|---:|---:|---:|---:|
-| $495.19 | $450.21 | $44.98 | $0.00 | 4/103 parts | $469.76 |
+| $511.60 | $440.85 | $70.75 | $0.00 | 8/105 parts | $469.76 |
 
-Optional spectral sensor +\$19.90 · Optional standalone kit +\$71.68 · Optional no-switching camera kit +\$90.10 · Optional colour kit (bands + polarizers) +\$103.95
+Optional spectral sensor +\$19.90 · Optional standalone kit +\$71.68 · Optional no-switching camera kit +\$90.10 · Optional colour kit (bands + polarizers) +\$114.62
 <!-- budget:end -->
 
 **Cost scope.** "Plan" is every core part for the white-light instrument at listed prices (October 2026), before shipping and tax. It leaves out the tools (bought once, kept), the optional kits on the line above, and the laptop.
@@ -79,7 +82,7 @@ Click a picture for the 3D view. **STEP** / **STL**: true-size model to download
 | <a href="cad/bought/PWR-28_estop_station_1no1nc.stl"><img src="docs/assets/parts/PWR-28_estop_station_1no1nc.png" width="48" height="48" alt="PWR-28"></a> | **PWR-28** Emergency stop in its own box, latching, 1 NO + 1 NC, screw terminals | 1 | \$8.99 | [Amazon](https://www.amazon.com/dp/B00NTT91Y0) | [STEP](cad/bought/PWR-28_estop_station_1no1nc.step?raw=true) · [STL](cad/bought/PWR-28_estop_station_1no1nc.stl?raw=true) |
 | <a href="cad/bought/PWR-10_pc817_opto_module_24v.stl"><img src="docs/assets/parts/PWR-10_pc817_opto_module_24v.png" width="48" height="48" alt="PWR-10"></a> | **PWR-10** Optocoupler module PC817, 24 V input, screw terminals (2-pack) | 1 | \$6.99 | [Amazon](https://www.amazon.com/dp/B0B5382ZT7) | [STEP](cad/bought/PWR-10_pc817_opto_module_24v.step?raw=true) · [STL](cad/bought/PWR-10_pc817_opto_module_24v.stl?raw=true) |
 | <a href="cad/bought/PWR-15_wire_18awg_pair.stl"><img src="docs/assets/parts/PWR-15_wire_18awg_pair.png" width="48" height="48" alt="PWR-15"></a> | **PWR-15** 18 AWG silicone wire red/black, 1.5 m (5 ft) each colour | 1 | \$7.98 | [Amazon](https://www.amazon.com/dp/B01708AYYQ) | [STEP](cad/bought/PWR-15_wire_18awg_pair.step?raw=true) · [STL](cad/bought/PWR-15_wire_18awg_pair.stl?raw=true) |
-| <a href="cad/bought/PWR-20_wago_221_assortment_12.stl"><img src="docs/assets/parts/PWR-20_wago_221_assortment_12.png" width="48" height="48" alt="PWR-20"></a> | **PWR-20** Lever wire connectors, WAGO 221 assortment (12) | 1 | \$12.45 | [Amazon](https://www.amazon.com/dp/B0CJ5QF4Z2) | [STEP](cad/bought/PWR-20_wago_221_assortment_12.step?raw=true) · [STL](cad/bought/PWR-20_wago_221_assortment_12.stl?raw=true) · [maker](https://www.wago.com/ch-de/installationsklemmen/compact-verbindungsklemme/p/221-412) |
+| <a href="cad/bought/PWR-20_wago_221_assortment_12.stl"><img src="docs/assets/parts/PWR-20_wago_221_assortment_12.png" width="48" height="48" alt="PWR-20"></a> | **PWR-20** Lever wire connectors, WAGO 221 assortment (12) | 2 | 2 × \$12.45 | [Amazon](https://www.amazon.com/dp/B0CJ5QF4Z2) | [STEP](cad/bought/PWR-20_wago_221_assortment_12.step?raw=true) · [STL](cad/bought/PWR-20_wago_221_assortment_12.stl?raw=true) · [maker](https://www.wago.com/ch-de/installationsklemmen/compact-verbindungsklemme/p/221-412) |
 | <a href="cad/bought/CTL-01_btt_skr_pico_envelope.stl"><img src="docs/assets/parts/CTL-01_btt_skr_pico_envelope.png" width="48" height="48" alt="CTL-01"></a> | **CTL-01** BIGTREETECH SKR Pico V1.0 (RP2040, 4 × TMC2209 UART, USB-C) | 1 | \$35.99 | [Amazon](https://www.amazon.com/dp/B09MYKL9MP) | [STEP](cad/bought/CTL-01_btt_skr_pico_envelope.step?raw=true) · [STL](cad/bought/CTL-01_btt_skr_pico_envelope.stl?raw=true) · [maker](https://github.com/bigtreetech/SKR-Pico/blob/master/3D/BTT%20SKR%20Pico%20V1.0.step) |
 | <a href="cad/bought/CTL-03_usb_cable_e4.stl"><img src="docs/assets/parts/CTL-03_usb_cable_e4.png" width="48" height="48" alt="CTL-03"></a> | **CTL-03** USB-A to USB-C data cables, 3 ft (2-pack) | 1 | \$8.99 | [Amazon](https://www.amazon.com/dp/B07DD5YHMH) | [STEP](cad/bought/CTL-03_usb_cable_e4.step?raw=true) · [STL](cad/bought/CTL-03_usb_cable_e4.stl?raw=true) |
 | <a href="cad/bought/CTL-05_membrane_keypad_1x4.stl"><img src="docs/assets/parts/CTL-05_membrane_keypad_1x4.png" width="48" height="48" alt="CTL-05"></a> | **CTL-05** Membrane keypad 1 x 4 | 1 | \$7.89 | [Amazon](https://www.amazon.com/dp/B076WS74VN) | [STEP](cad/bought/CTL-05_membrane_keypad_1x4.step?raw=true) · [STL](cad/bought/CTL-05_membrane_keypad_1x4.stl?raw=true) |
@@ -89,11 +92,11 @@ Click a picture for the 3D view. **STEP** / **STL**: true-size model to download
 | <a href="cad/bought/LAR-05_tcst2103_endstop_module.stl"><img src="docs/assets/parts/LAR-05_tcst2103_endstop_module.png" width="48" height="48" alt="LAR-05"></a> | **LAR-05** Optical endstop module, slot type (6-pack) | 1 | \$8.99 | [Amazon](https://www.amazon.com/dp/B0719K9Z9R) | [STEP](cad/bought/LAR-05_tcst2103_endstop_module.step?raw=true) · [STL](cad/bought/LAR-05_tcst2103_endstop_module.stl?raw=true) · [maker](https://www.vishay.com/en/product/81147/) |
 | <a href="cad/bought/LAR-06_limit_switch_sealed_prewired.stl"><img src="docs/assets/parts/LAR-06_limit_switch_sealed_prewired.png" width="48" height="48" alt="LAR-06"></a> | **LAR-06** Roller-lever limit switch, sealed, 3 wires attached (2-pack) | 1 | \$9.88 | [Amazon](https://www.amazon.com/dp/B09VGL29HS) | [STEP](cad/bought/LAR-06_limit_switch_sealed_prewired.step?raw=true) · [STL](cad/bought/LAR-06_limit_switch_sealed_prewired.stl?raw=true) |
 | <a href="cad/bought/CAM-01_arducam_b0433_imx477_usb.stl"><img src="docs/assets/parts/CAM-01_arducam_b0433_imx477_usb.png" width="48" height="48" alt="CAM-01"></a> | **CAM-01** USB camera 12 MP IMX477, M12 mount (UVC) | 1 | \$59.99 | [Amazon](https://www.amazon.com/dp/B0C1G73QZD) | [STEP](cad/bought/CAM-01_arducam_b0433_imx477_usb.step?raw=true) · [STL](cad/bought/CAM-01_arducam_b0433_imx477_usb.stl?raw=true) |
-| <a href="cad/bought/LSR-06_te_lumawise_z35_2213678_5.stl"><img src="docs/assets/parts/LSR-06_te_lumawise_z35_2213678_5.png" width="48" height="48" alt="LSR-06"></a> | **LSR-06** Solderless COB holder 13.5 mm (TE LUMAWISE Z35) | 1 | \$3.50 | [Digi-Key](https://www.digikey.com/en/products/detail/te-connectivity-amp-connectors/2213678-5/6174915) | [STEP](cad/bought/LSR-06_te_lumawise_z35_2213678_5.step?raw=true) · [STL](cad/bought/LSR-06_te_lumawise_z35_2213678_5.stl?raw=true) · [maker](https://www.te.com/) |
-| <a href="cad/bought/LSR-01_citizen_clu7a3_cob.stl"><img src="docs/assets/parts/LSR-01_citizen_clu7a3_cob.png" width="48" height="48" alt="LSR-01"></a> | **LSR-01** COB LED CRI 97, 12 V, 13.5 mm (Citizen CLU7A3) | 1 | \$5.91 | [Digi-Key](https://www.digikey.com/en/products/detail/citizen/CLU7A3-0403E1-303H7X5/17053751) | [STEP](cad/bought/LSR-01_citizen_clu7a3_cob.step?raw=true) · [STL](cad/bought/LSR-01_citizen_clu7a3_cob.stl?raw=true) |
-| <a href="cad/bought/LSR-02_meanwell_nldd_350h.stl"><img src="docs/assets/parts/LSR-02_meanwell_nldd_350h.png" width="48" height="48" alt="LSR-02"></a> | **LSR-02** Constant-current driver 350 mA | 1 | \$5.41 | [Digi-Key](https://www.digikey.com/en/products/detail/mean-well-usa-inc/NLDD-350H/13913618) | [STEP](cad/bought/LSR-02_meanwell_nldd_350h.step?raw=true) · [STL](cad/bought/LSR-02_meanwell_nldd_350h.stl?raw=true) · [maker](https://www.meanwellusa.com/) |
+| <a href="cad/bought/LSR-06_te_lumawise_z35_2213678_5.stl"><img src="docs/assets/parts/LSR-06_te_lumawise_z35_2213678_5.png" width="48" height="48" alt="LSR-06"></a> | **LSR-06** Solderless COB holder 13.5 mm (TE LUMAWISE Z35) | 1 | \$3.30 | [Digi-Key](https://www.digikey.com/en/products/detail/te-connectivity-amp-connectors/2213678-5/6174915) | [STEP](cad/bought/LSR-06_te_lumawise_z35_2213678_5.step?raw=true) · [STL](cad/bought/LSR-06_te_lumawise_z35_2213678_5.stl?raw=true) · [maker](https://www.te.com/) |
+| <a href="cad/bought/LSR-01_citizen_clu701_cob.stl"><img src="docs/assets/parts/LSR-01_citizen_clu701_cob.png" width="48" height="48" alt="LSR-01"></a> | **LSR-01** COB LED CRI 90, 9 V, 13.5 mm (Citizen CLU701) | 1 | \$4.60 | [Digi-Key](https://www.digikey.com/en/products/detail/citizen/CLU701-0303C4-273H5K2/5820601) | [STEP](cad/bought/LSR-01_citizen_clu701_cob.step?raw=true) · [STL](cad/bought/LSR-01_citizen_clu701_cob.stl?raw=true) |
+| <a href="cad/bought/LSR-02_meanwell_nldd_350hw.stl"><img src="docs/assets/parts/LSR-02_meanwell_nldd_350hw.png" width="48" height="48" alt="LSR-02"></a> | **LSR-02** Constant-current driver 350 mA, wire leads (MEAN WELL NLDD-350HW) | 1 | \$7.20 | [Digi-Key](https://www.digikey.com/en/products/detail/mean-well-usa-inc/NLDD-350HW/13913611) | [STEP](cad/bought/LSR-02_meanwell_nldd_350hw.step?raw=true) · [STL](cad/bought/LSR-02_meanwell_nldd_350hw.stl?raw=true) · [maker](https://www.meanwellusa.com/) |
 | <a href="cad/bought/SPN-01_nema17_17hs08_1004s_pancake.stl"><img src="docs/assets/parts/SPN-01_nema17_17hs08_1004s_pancake.png" width="48" height="48" alt="SPN-01"></a> | **SPN-01** NEMA 17 pancake stepper 16 Ncm 1 A (direct drive) | 1 | \$11.99 | [Amazon](https://www.amazon.com/dp/B00PNEQ79Q) | [STEP](cad/bought/SPN-01_nema17_17hs08_1004s_pancake.step?raw=true) · [STL](cad/bought/SPN-01_nema17_17hs08_1004s_pancake.stl?raw=true) · [maker](https://files.omc-stepperonline.com/17HS08-1004S.STEP) |
-| | **Total** | | **\$263.76** | | |
+| | **Total** | | **\$276.49** | | |
 <!-- bom-electronics:end -->
 
 ## Mechanical
@@ -111,7 +114,7 @@ Click a picture for the 3D view. **STEP** / **STL**: true-size model to download
 | <a href="cad/bought/TBL-02_gt2_belt_232_loop.stl"><img src="docs/assets/parts/TBL-02_gt2_belt_232_loop.png" width="48" height="48" alt="TBL-02"></a> | **TBL-02** GT2 6 mm closed belt 232 mm | 1 | \$8.19 | [Amazon](https://www.amazon.com/dp/B0FRFGBS6J) | [STEP](cad/bought/TBL-02_gt2_belt_232_loop.step?raw=true) · [STL](cad/bought/TBL-02_gt2_belt_232_loop.stl?raw=true) |
 | <a href="cad/bought/TBL-05_bolt_m8x75_nut.stl"><img src="docs/assets/parts/TBL-05_bolt_m8x75_nut.png" width="48" height="48" alt="TBL-05"></a> | **TBL-05** M8 x 75 hex bolt, partial thread + M8 nut (fixed table axle) | 1 | \$15.37 | [Amazon](https://www.amazon.com/dp/B0D83HW8ZM) | [STEP](cad/bought/TBL-05_bolt_m8x75_nut.step?raw=true) · [STL](cad/bought/TBL-05_bolt_m8x75_nut.stl?raw=true) |
 | <a href="cad/bought/CAM-02_m12_lens_16mm.stl"><img src="docs/assets/parts/CAM-02_m12_lens_16mm.png" width="48" height="48" alt="CAM-02"></a> | **CAM-02** M12 lens 16 mm, ≥ 1/2 in format, low distortion | 1 | \$30.11 | [Amazon](https://www.amazon.com/dp/B0HJWVFD7R) | [STEP](cad/bought/CAM-02_m12_lens_16mm.step?raw=true) · [STL](cad/bought/CAM-02_m12_lens_16mm.stl?raw=true) |
-| <a href="cad/bought/LSR-03_heatsink_40x40x11.stl"><img src="docs/assets/parts/LSR-03_heatsink_40x40x11.png" width="48" height="48" alt="LSR-03"></a> | **LSR-03** Heatsink 40 x 40 mm (from a pack) | 1 | \$6.99 | [Amazon](https://www.amazon.com/dp/B07D4FVC61) | [STEP](cad/bought/LSR-03_heatsink_40x40x11.step?raw=true) · [STL](cad/bought/LSR-03_heatsink_40x40x11.stl?raw=true) |
+| <a href="cad/bought/LSR-03_wakefield_910_40_2_12_2_b0.stl"><img src="docs/assets/parts/LSR-03_wakefield_910_40_2_12_2_b0.png" width="48" height="48" alt="LSR-03"></a> | **LSR-03** Heatsink 40 x 40 x 11.6 mm, pin fin (Wakefield 910) | 1 | \$10.67 | [Digi-Key](https://www.digikey.com/en/products/detail/wakefield-thermal-solutions/910-40-2-12-2-B-0/4815166) | [STEP](cad/bought/LSR-03_wakefield_910_40_2_12_2_b0.step?raw=true) · [STL](cad/bought/LSR-03_wakefield_910_40_2_12_2_b0.stl?raw=true) |
 | <a href="cad/bought/ENC-02_felt_9x12in.stl"><img src="docs/assets/parts/ENC-02_felt_9x12in.png" width="48" height="48" alt="ENC-02"></a> | **ENC-02** Black felt sheet | 1 | \$6.99 | [Amazon](https://www.amazon.com/dp/B0FXKGNV95) | [STEP](cad/bought/ENC-02_felt_9x12in.step?raw=true) · [STL](cad/bought/ENC-02_felt_9x12in.stl?raw=true) |
 | <a href="cad/bought/CAL-01_ptfe_tile_50mm_3x3mm.stl"><img src="docs/assets/parts/CAL-01_ptfe_tile_50mm_3x3mm.png" width="48" height="48" alt="CAL-01"></a> | **CAL-01** PTFE sheets 100 x 100 x 3 mm (2): white tile = 3 stacked 50 mm squares | 1 | \$16.99 | [Amazon](https://www.amazon.com/dp/B0F83XRXTV) | [STEP](cad/bought/CAL-01_ptfe_tile_50mm_3x3mm.step?raw=true) · [STL](cad/bought/CAL-01_ptfe_tile_50mm_3x3mm.stl?raw=true) |
 | <a href="cad/bought/CAL-02_mirror_tile_50mm.stl"><img src="docs/assets/parts/CAL-02_mirror_tile_50mm.png" width="48" height="48" alt="CAL-02"></a> | **CAL-02** Glass mirror tile ~50 mm | 1 | \$11.49 | [Amazon](https://www.amazon.com/dp/B01H0ZU1QA) | [STEP](cad/bought/CAL-02_mirror_tile_50mm.step?raw=true) · [STL](cad/bought/CAL-02_mirror_tile_50mm.stl?raw=true) |
@@ -119,7 +122,7 @@ Click a picture for the 3D view. **STEP** / **STL**: true-size model to download
 | <a href="cad/bought/TLT-02_gt2_belt_280_loop.stl"><img src="docs/assets/parts/TLT-02_gt2_belt_280_loop.png" width="48" height="48" alt="TLT-02"></a> | **TLT-02** GT2 6 mm closed belt 280 mm | 1 | \$7.49 | [Amazon](https://www.amazon.com/dp/B07RK1TX8C) | [STEP](cad/bought/TLT-02_gt2_belt_280_loop.step?raw=true) · [STL](cad/bought/TLT-02_gt2_belt_280_loop.stl?raw=true) |
 | <a href="cad/bought/TLT-05_bolt_m8x35_nut.stl"><img src="docs/assets/parts/TLT-05_bolt_m8x35_nut.png" width="48" height="48" alt="TLT-05"></a> | **TLT-05** M8 x 35 hex bolts, half thread (10-pack; 2 used) | 1 | \$9.19 | [Amazon](https://www.amazon.com/dp/B08KSVMT7W) | [STEP](cad/bought/TLT-05_bolt_m8x35_nut.step?raw=true) · [STL](cad/bought/TLT-05_bolt_m8x35_nut.stl?raw=true) |
 | <a href="cad/bought/SCN-01_mounting_putty_blob.stl"><img src="docs/assets/parts/SCN-01_mounting_putty_blob.png" width="48" height="48" alt="SCN-01"></a> | **SCN-01** Mounting putty 2 oz | 1 | \$2.33 | [Amazon](https://www.amazon.com/dp/B003LZMHIY) | [STEP](cad/bought/SCN-01_mounting_putty_blob.step?raw=true) · [STL](cad/bought/SCN-01_mounting_putty_blob.stl?raw=true) |
-| | **Total** | | **\$231.43** | | |
+| | **Total** | | **\$235.11** | | |
 <!-- bom-mechanical:end -->
 
 ## Printed parts
@@ -185,6 +188,8 @@ Black ABS (acrylonitrile butadiene styrene) on an enclosed printer, ≈ 2.7 kg, 
 | <a href="phases/11-scan-capture/3d/SCN-03c_riser_60.stl"><img src="docs/assets/parts/SCN-03c_riser_60.png" width="48" height="48" alt="SCN-03c"></a> | **SCN-03c** riser 60 | [11 3D scan: capture](phases/11-scan-capture/) | [STL](phases/11-scan-capture/3d/SCN-03c_riser_60.stl?raw=true) · [STEP](phases/11-scan-capture/3d/SCN-03c_riser_60.step?raw=true) |
 | <a href="phases/11-scan-capture/3d/SCN-03d_scan_camera_plate_15.stl"><img src="docs/assets/parts/SCN-03d_scan_camera_plate_15.png" width="48" height="48" alt="SCN-03d"></a> | **SCN-03d** scan camera plate 15 | [11 3D scan: capture](phases/11-scan-capture/) | [STL](phases/11-scan-capture/3d/SCN-03d_scan_camera_plate_15.stl?raw=true) · [STEP](phases/11-scan-capture/3d/SCN-03d_scan_camera_plate_15.step?raw=true) |
 | <a href="phases/15-standalone/3d/STA-07a_pi_zero_mount.stl"><img src="docs/assets/parts/STA-07a_pi_zero_mount.png" width="48" height="48" alt="STA-07a"></a> | **STA-07a** pi zero mount | [15 Standalone (no laptop)](phases/15-standalone/) | [STL](phases/15-standalone/3d/STA-07a_pi_zero_mount.stl?raw=true) · [STEP](phases/15-standalone/3d/STA-07a_pi_zero_mount.step?raw=true) |
+| <a href="phases/15-standalone/3d/STA-10a_screen_stand.stl"><img src="docs/assets/parts/STA-10a_screen_stand.png" width="48" height="48" alt="STA-10a"></a> | **STA-10a** screen stand | [15 Standalone (no laptop)](phases/15-standalone/) | [STL](phases/15-standalone/3d/STA-10a_screen_stand.stl?raw=true) · [STEP](phases/15-standalone/3d/STA-10a_screen_stand.step?raw=true) |
+| <a href="phases/15-standalone/3d/STA-10b_screen_bezel.stl"><img src="docs/assets/parts/STA-10b_screen_bezel.png" width="48" height="48" alt="STA-10b"></a> | **STA-10b** screen bezel | [15 Standalone (no laptop)](phases/15-standalone/) | [STL](phases/15-standalone/3d/STA-10b_screen_bezel.stl?raw=true) · [STEP](phases/15-standalone/3d/STA-10b_screen_bezel.step?raw=true) |
 <!-- bom-printed:end -->
 
 ## Tools
@@ -212,7 +217,7 @@ Black ABS (acrylonitrile butadiene styrene) on an enclosed printer, ≈ 2.7 kg, 
 <!-- wiring:start -->
 <img src="docs/assets/wiring.svg" width="100%" alt="Wiring overview">
 
-Every connection, pin by pin. No solder, no crimps: screw terminals, lever connectors (WAGO 221), plug-in leads and jumper wires. Source: [`docs/wiring.yaml`](docs/wiring.yaml) (`make build` writes this section; `make check` compares it with the firmware). **Press the e-stop and unplug the wall adapter before touching any terminal.** Step by step with pictures: [wiring guide](docs/wiring.html); the first wires drawn as the parts sit on the bench: [power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html), then the [machine walkthrough](docs/machine.html).
+Every connection, pin by pin. No solder, no crimps: screw terminals, lever connectors (WAGO 221), plug-in leads and jumper wires. Source: [`docs/wiring.yaml`](docs/wiring.yaml) (`make build` writes this section; `make check` compares it with the firmware). **Press the e-stop and unplug the wall adapter before touching any terminal.** Step by step with pictures: [wiring guide](docs/wiring.html); the first wires drawn as the parts sit on the bench: [power wiring walkthrough](docs/power.html), then the [controller walkthrough](docs/controller.html), then the [machine walkthrough](docs/machine.html) and the [hub add-ons](docs/addons.html).
 
 **Jump to:** [Power: wall adapter, jack, e-stop](#1--power-wall-adapter-jack-e-stop) · [Motor power: e-stop → limit switch → SKR Pico](#2--motor-power-e-stop--limit-switch--skr-pico) · [SKR Pico: motors](#3--skr-pico-motors) · [SKR Pico: endstops (home switches)](#4--skr-pico-endstops-home-switches) · [Lamp (white COB)](#5--lamp-white-cob) · [Hub: keypads and motor-power sense](#6--hub-keypads-and-motor-power-sense) · [USB data](#7--usb-data) · [Optional add-ons](#8--optional-add-ons) · [Standalone station (no laptop, optional)](#9--standalone-station-no-laptop-optional) · [Not wired: colour LED bank](#10--not-wired-colour-led-bank) · [SKR Pico port map](#skr-pico-port-map) · [ESP32-S3 header map](#esp32-s3-header-map)
 
@@ -279,17 +284,17 @@ Every connection, pin by pin. No solder, no crimps: screw terminals, lever conne
 
 ### 5 · Lamp (white COB)
 
-*Stage 06.* The driver sits pins-up in its frame on the tray; female jumper ends push onto its pins. A cut jumper = one female end, the other end stripped. HE is a low-side switch: its `IO23` terminal is the switched `−`.
+*Stage 06.* The driver (NLDD-350HW) has five 22 AWG leads, 100 mm, stripped 5 mm: read which colour is which on its label. It is taped into its frame on the tray. HE is a low-side switch: its `IO23` terminal is the switched `−`. The holder's own leads are 15 cm of 18 AWG (PWR-15) pushed into its poke-in terminals (M18.1). Jumper ends that go into a lever connector: cut off the plug, strip 11 mm, fold double.
 
 <img src="docs/assets/wiring/wiring-05.svg" width="100%" alt="5 · Lamp (white COB): pin-by-pin diagram">
 
 | # | From | To | Wire | Notes |
 |---:|---|---|---|---|
-| 1 | **Lamp driver NLDD-350H (LSR-02)** · +Vin | **SKR Pico (CTL-01)** · HE 12/24V | cut M-F jumper, bare end under the HE screw | HE `+`: always at motor-power voltage |
-| 2 | **Lamp driver NLDD-350H (LSR-02)** · −Vin | **SKR Pico (CTL-01)** · HE IO23 | cut M-F jumper, bare end under the HE screw | HE `−`, switched: `M62 P4` on / `M63 P4` off (check with `$PINS`) |
-| 3 | **Lamp driver NLDD-350H (LSR-02)** · +Vo | **COB lamp in holder (LSR-01 + LSR-06)** · red (+) lead | chain of 5 M-F jumpers + lever connector at the lamp | slack for 20–324° of arm travel |
-| 4 | **Lamp driver NLDD-350H (LSR-02)** · −Vo | **COB lamp in holder (LSR-01 + LSR-06)** · black (−) lead | chain of 5 M-F jumpers + lever connector |  |
-| 5 | **Lamp driver NLDD-350H (LSR-02)** · DIM | — | not connected | no dimming: on/off only |
+| 1 | **Lamp driver NLDD-350HW (LSR-02)** · +Vin | **SKR Pico (CTL-01)** · HE 12/24V | driver lead, bare end under the HE screw | HE `+`: always at motor-power voltage |
+| 2 | **Lamp driver NLDD-350HW (LSR-02)** · −Vin | **SKR Pico (CTL-01)** · HE IO23 | driver lead, bare end under the HE screw | HE `−`, switched: `M62 P4` on / `M63 P4` off (check with `$PINS`) |
+| 3 | **Lamp driver NLDD-350HW (LSR-02)** · +Vo | **COB lamp in holder (LSR-01 + LSR-06)** · + terminal | driver lead → lever connector → chain of 5 M-F jumpers along the arm → lever connector → holder's red lead | slack for 20–324° of arm travel |
+| 4 | **Lamp driver NLDD-350HW (LSR-02)** · −Vo | **COB lamp in holder (LSR-01 + LSR-06)** · − terminal | driver lead → lever connector → chain of 5 M-F jumpers → lever connector → holder's black lead |  |
+| 5 | **Lamp driver NLDD-350HW (LSR-02)** · DIM | — | its lead alone in a 2-way lever connector (insulated cap) | open = on: never tie it to −Vin (that turns the lamp off) |
 
 ### 6 · Hub: keypads and motor-power sense
 
@@ -329,7 +334,7 @@ Every connection, pin by pin. No solder, no crimps: screw terminals, lever conne
 
 ### 8 · Optional add-ons
 
-*Stage 02, 10, 15.* Only when you fit the part. The OLED and the AS7341 share one I2C bus (OLED 0x3C: check, some are 0x3D; AS7341 0x39): with both fitted, wire the AS7341 to the hub and plug the OLED into the AS7341's second STEMMA QT socket (a STEMMA QT cable, not in the parts list yet [TBD]). Fan plug: check it fits FAN1 before relying on it.
+*Stage 02, 10, 15.* Only when you fit the part. The OLED and the AS7341 share one I2C bus (OLED 0x3C: check, some are 0x3D; AS7341 0x39): with both fitted, wire the AS7341 to the hub and plug the OLED into the AS7341's second STEMMA QT socket (a STEMMA QT cable, not in the parts list yet [TBD]). Fan plug: check it fits FAN1 before relying on it. The hub has only two 3V3 and four GND pins, so the sensor and the status screen take 3V3 and GND from two lever connectors fed from J1-2 and J3-22 (cut jumper or cable ends, 11 mm stripped, folded double). Status screen (STA-09): Waveshare 2inch LCD Module, ST7789, 8-pin cable to female jumpers, on its printed stand (STA-10); it takes the pins of encoders 2-3, so send `SCREEN ON` to the hub once (it restarts) after wiring.
 
 <img src="docs/assets/wiring/wiring-08.svg" width="100%" alt="8 · Optional add-ons: pin-by-pin diagram">
 
@@ -337,15 +342,25 @@ Every connection, pin by pin. No solder, no crimps: screw terminals, lever conne
 |---:|---|---|---|---|
 | 1 | **40 mm fan (CTL-08, optional)** · red (+) | **SKR Pico (CTL-01)** · FAN1 12/24V | fan lead | `M62 P2` (check with `$PINS`); advised above 0.8 A per motor |
 | 2 | **40 mm fan (CTL-08, optional)** · black (−) | **SKR Pico (CTL-01)** · FAN1 IO17 | fan lead | switched side |
-| 3 | **AS7341 sensor (SPC-01, optional)** · VIN (red) | **ESP32-S3 hub (CTL-02)** · J1-2 (3V3) | SPC-02 JST-SH to female | 3V3 |
-| 4 | **AS7341 sensor (SPC-01, optional)** · GND (black) | **ESP32-S3 hub (CTL-02)** · J3-22 (GND) | SPC-02 | GND |
-| 5 | **AS7341 sensor (SPC-01, optional)** · SCL (yellow) | **ESP32-S3 hub (CTL-02)** · J3-5 (GPIO2) | SPC-02 | first I2C pair |
-| 6 | **AS7341 sensor (SPC-01, optional)** · SDA (blue) | **ESP32-S3 hub (CTL-02)** · J3-4 (GPIO1) | SPC-02 | first I2C pair |
-| 7 | **OLED (STA-05, optional)** · VIN | **ESP32-S3 hub (CTL-02)** · J1-2 (3V3) | female–female jumper (STA-06) | only without the AS7341; with it, chain the OLED as above |
-| 8 | **OLED (STA-05, optional)** · GND | **ESP32-S3 hub (CTL-02)** · J3-22 (GND) | F-F jumper | only without the AS7341 |
-| 9 | **OLED (STA-05, optional)** · SCL | **ESP32-S3 hub (CTL-02)** · J3-5 (GPIO2) | F-F jumper | only without the AS7341 |
-| 10 | **OLED (STA-05, optional)** · SDA | **ESP32-S3 hub (CTL-02)** · J3-4 (GPIO1) | F-F jumper | only without the AS7341 |
-| 11 | **Alignment laser (LAR-09, tool)** · + / − | **SKR Pico (CTL-01)** · RGB pin 3 (5V) / RGB pin 1 (GND) | 2 jumpers | bench tool: 5 V and GND of the unused RGB port |
+| 3 | **ESP32-S3 hub (CTL-02)** · J1-2 (3V3) | **Lever connector hub 3V3 (WAGO 221-415, 5-way)** · 1 | M-F jumper, male end cut and stripped | 3V3 for the sensor and the screen |
+| 4 | **ESP32-S3 hub (CTL-02)** · J3-22 (GND) | **Lever connector sensor GND (WAGO 221-413, 3-way)** · 1 | M-F jumper, male end cut and stripped | GND for the sensor and the screen |
+| 5 | **AS7341 sensor (SPC-01, optional)** · VIN (red) | **Lever connector hub 3V3 (WAGO 221-415, 5-way)** · 2 | SPC-02 JST-SH to female, female end cut and stripped | 3V3 |
+| 6 | **AS7341 sensor (SPC-01, optional)** · GND (black) | **Lever connector sensor GND (WAGO 221-413, 3-way)** · 2 | SPC-02, female end cut and stripped | GND |
+| 7 | **AS7341 sensor (SPC-01, optional)** · SCL (yellow) | **ESP32-S3 hub (CTL-02)** · J3-5 (GPIO2) | SPC-02 | first I2C pair |
+| 8 | **AS7341 sensor (SPC-01, optional)** · SDA (blue) | **ESP32-S3 hub (CTL-02)** · J3-4 (GPIO1) | SPC-02 | first I2C pair |
+| 9 | **OLED (STA-05, optional)** · VIN | **Lever connector hub 3V3 (WAGO 221-415, 5-way)** · 2 | female–female jumper (STA-06), one end cut | only without the AS7341; with it, chain the OLED as above |
+| 10 | **OLED (STA-05, optional)** · GND | **Lever connector sensor GND (WAGO 221-413, 3-way)** · 2 | F-F jumper, one end cut | only without the AS7341 |
+| 11 | **OLED (STA-05, optional)** · SCL | **ESP32-S3 hub (CTL-02)** · J3-5 (GPIO2) | F-F jumper | only without the AS7341 |
+| 12 | **OLED (STA-05, optional)** · SDA | **ESP32-S3 hub (CTL-02)** · J3-4 (GPIO1) | F-F jumper | only without the AS7341 |
+| 13 | **Status screen, Waveshare 2 in (STA-09, optional)** · VCC | **Lever connector hub 3V3 (WAGO 221-415, 5-way)** · 3 | screen cable, female end cut and stripped | 3V3 |
+| 14 | **Status screen, Waveshare 2 in (STA-09, optional)** · GND | **Lever connector sensor GND (WAGO 221-413, 3-way)** · 3 | screen cable, female end cut and stripped | GND |
+| 15 | **Status screen, Waveshare 2 in (STA-09, optional)** · RST | **Lever connector hub 3V3 (WAGO 221-415, 5-way)** · 4 | screen cable, female end cut and stripped | held high: the firmware resets the screen by command |
+| 16 | **Status screen, Waveshare 2 in (STA-09, optional)** · BL | **Lever connector hub 3V3 (WAGO 221-415, 5-way)** · 5 | screen cable, female end cut and stripped | backlight always on |
+| 17 | **Status screen, Waveshare 2 in (STA-09, optional)** · CLK | **ESP32-S3 hub (CTL-02)** · J3-6 (GPIO42) | screen cable | SPI clock · `SCREEN ON` |
+| 18 | **Status screen, Waveshare 2 in (STA-09, optional)** · DIN | **ESP32-S3 hub (CTL-02)** · J3-7 (GPIO41) | screen cable | SPI data |
+| 19 | **Status screen, Waveshare 2 in (STA-09, optional)** · DC | **ESP32-S3 hub (CTL-02)** · J1-11 (GPIO18) | screen cable | data / command |
+| 20 | **Status screen, Waveshare 2 in (STA-09, optional)** · CS | **ESP32-S3 hub (CTL-02)** · J3-10 (GPIO38) | screen cable | chip select |
+| 21 | **Alignment laser (LAR-09, tool)** · + / − | **SKR Pico (CTL-01)** · RGB pin 3 (5V) / RGB pin 1 (GND) | 2 jumpers | bench tool: 5 V and GND of the unused RGB port |
 
 ### 9 · Standalone station (no laptop, optional)
 
@@ -398,7 +413,7 @@ Ports as named on the board; pins in the maker pin diagram's order [C12]. `·` =
 | Y-STOP | IO3 · GND · 5V | M3 endstop |
 | Z-STOP | IO25 · GND · 5V | M2 endstop |
 | E0-STOP | IO16 · GND · 5V | M1 endstop |
-| HE | MOSFET output: IO23 (switched −) · 12/24V | Lamp driver NLDD-350H |
+| HE | MOSFET output: IO23 (switched −) · 12/24V | Lamp driver NLDD-350HW |
 | HB | MOSFET output: IO21 (switched −) · 12/24V | Colour LED bank (blocked) |
 | FAN1 | IO17 (switched −) · 12/24V | 40 mm fan |
 | FAN2 | IO18 · 12/24V | · |
@@ -414,16 +429,16 @@ Pin numbers as in Espressif's user guide (J1 on one long edge, J3 on the other).
 | J1 pin | Label | Used by | | J3 pin | Label | Used by |
 |---:|---|---|---|---:|---|---|
 | 1 | 3V3 | Opto module | | 1 | GND | Pi Zero 2 W |
-| 2 | 3V3 | AS7341 sensor / OLED | | 2 | TX | avoid: UART0 console |
+| 2 | 3V3 | Lever connector hub 3V3 | | 2 | TX | avoid: UART0 console |
 | 3 | RST | avoid: reset (EN) | | 3 | RX | avoid: UART0 console |
 | 4 | GPIO4 | Keypad A | | 4 | GPIO1 | AS7341 sensor / OLED |
 | 5 | GPIO5 | Keypad A | | 5 | GPIO2 | AS7341 sensor / OLED |
-| 6 | GPIO6 | Keypad A | | 6 | GPIO42 | *AS5600 encoder 2 SCL (optional)* |
-| 7 | GPIO7 | Keypad A | | 7 | GPIO41 | *AS5600 encoder 2 SDA (optional)* |
+| 6 | GPIO6 | Keypad A | | 6 | GPIO42 | Status screen, Waveshare 2 in |
+| 7 | GPIO7 | Keypad A | | 7 | GPIO41 | Status screen, Waveshare 2 in |
 | 8 | GPIO15 | Keypad B | | 8 | GPIO40 | *AS5600 encoder 1 SCL (optional)* |
 | 9 | GPIO16 | Keypad B | | 9 | GPIO39 | *AS5600 encoder 1 SDA (optional)* |
-| 10 | GPIO17 | Opto module | | 10 | GPIO38 | *AS5600 encoder 3 SDA (optional; RGB LED on v1.1 boards)* |
-| 11 | GPIO18 | *AS5600 encoder 3 SCL (optional)* | | 11 | GPIO37 | avoid: flash / PSRAM (octal modules) |
+| 10 | GPIO17 | Opto module | | 10 | GPIO38 | Status screen, Waveshare 2 in |
+| 11 | GPIO18 | Status screen, Waveshare 2 in | | 11 | GPIO37 | avoid: flash / PSRAM (octal modules) |
 | 12 | GPIO8 | Colour LED bank (blocked) | | 12 | GPIO36 | avoid: flash / PSRAM (octal modules) |
 | 13 | GPIO3 | avoid: strapping pin | | 13 | GPIO35 | avoid: flash / PSRAM (octal modules) |
 | 14 | GPIO46 | avoid: strapping pin | | 14 | GPIO0 | avoid: strapping pin (BOOT button) |
@@ -434,30 +449,30 @@ Pin numbers as in Espressif's user guide (J1 on one long edge, J3 on the other).
 | 19 | GPIO13 | Colour LED bank (blocked) | | 19 | GPIO20 | avoid: USB D+ (the USB connector) |
 | 20 | GPIO14 | Colour LED bank (blocked) | | 20 | GPIO19 | avoid: USB D− (the USB connector) |
 | 21 | 5V | Pi Zero 2 W | | 21 | GND | Opto module |
-| 22 | GND | Lever connector keypad GND | | 22 | GND | AS7341 sensor / OLED |
+| 22 | GND | Lever connector keypad GND | | 22 | GND | Lever connector sensor GND |
 
 <!-- wiring:end -->
 
 ## Build
 
 <!-- next:start -->
-**Next step: [M01.1 Get the papers](phases/00-plan/README.md#m011-get-the-papers)** · 20 min · 0 of 140 steps done
+**Next step: [M01.1 Get the papers](phases/00-plan/README.md#m011-get-the-papers)** · 20 min · 0 of 141 steps done
 <!-- next:end -->
 
 Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make next` prints the next step; `make done id=M05.1` ticks it and closes its issue.
 
-**Pictures:** [build book](docs/build.html) (every printed and bought part in the order it goes on, in 3D, one step per page; [PDF](exports/build-book.pdf) to print) · [power wiring](docs/power.html) (adapter to motor board, drawn as the parts sit on the bench) · [controller wiring](docs/controller.html) (USB, bench motor, keypads, power sense, with flashing and test commands) · [machine wiring](docs/machine.html) (the other motors, endstops, lamp, camera and add-ons, ending with a whole-machine test) · [wiring guide](docs/wiring.html) (every wire, one at a time).
+**Pictures:** [build book](docs/build.html) (every printed and bought part in the order it goes on, in 3D, one step per page; [PDF](exports/build-book.pdf) to print) · [power wiring](docs/power.html) (adapter to motor board, drawn as the parts sit on the bench) · [controller wiring](docs/controller.html) (USB, bench motor, keypads, power sense, with flashing and test commands) · [machine wiring](docs/machine.html) (the other motors, endstops, lamp, camera and fan, ending with a whole-machine test) · [hub add-ons](docs/addons.html) (spectral sensor and the status screen) · [wiring guide](docs/wiring.html) (every wire, one at a time).
 
 <!-- phases:start -->
 | # | Stage | Milestones | Hours | Done | Cost |
 |---:|---|---|---:|---:|---:|
 | 00 | [Plan](phases/00-plan/) | M01 Read and decide, M02 Software runs on the laptop, M03 CAD and printer ready | 6.7 h | 0/12 | $64 |
-| 01 | [Power](phases/01-power/) | M04 Order and check power parts, M05 Wire the power, M06 First power-on | 2.5 h | 0/8 | $54 |
+| 01 | [Power](phases/01-power/) | M04 Order and check power parts, M05 Wire the power, M06 First power-on | 2.5 h | 0/8 | $67 |
 | 02 | [Controller and buttons](phases/02-controller/) | M07 Order controller parts, M08 One motor turns from the laptop, M09 Keypads work with the laptop, M10 Controller box closed | 4.5 h | 0/12 | $71 |
 | 03 | [Frame](phases/03-frame/) | M11 Print and join the deck, M12 Assemble the frame | 2.8 h | 0/5 | $22 |
 | 04 | [Light arm (M4)](phases/04-light-arm/) | M13 Ring drive built, M14 Light arm homes and repeats | 5.4 h | 0/9 | $77 |
 | 05 | [Table (M3)](phases/05-table/) | M15 Table axis built, M16 Table homes and repeats | 3.2 h | 0/7 | $24 |
-| 06 | [Camera and light](phases/06-camera-light/) | M17 Camera sees the zero point, M18 Lamp on and safe, M19 Mirror test, M20 First reflectance curves | 5.8 h | 0/11 | $112 |
+| 06 | [Camera and light](phases/06-camera-light/) | M17 Camera sees the zero point, M18 Lamp on and safe, M19 Mirror test, M20 First reflectance curves | 5.8 h | 0/11 | $116 |
 | 07 | [Calibrate → game material](phases/07-calibrate/) | M21 Dark box, M22 Camera response and angle calibration, M23 Brightness calibration, M24 First game material | 4.8 h | 0/11 | $40 |
 | 08 | [Tilt (M2)](phases/08-tilt/) | M25 Tilt yoke built and homed, M26 Full isotropic scan | 3.8 h | 0/8 | $17 |
 | 09 | [Spin (M1)](phases/09-spin/) | M27 Spin wired and homed, M28 Anisotropic material measured | 2.3 h | 0/5 | $12 |
@@ -466,7 +481,7 @@ Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make
 | 12 | [3D scan: mesh](phases/12-scan-mesh/) | M34 Quick 3D preview, M35 Full mesh | 2.2 h | 0/6 | — |
 | 13 | [Material on the 3D model](phases/13-object-material/) | M36 Textures on the mesh, M37 Object in a game engine | 6 h | 0/4 | — |
 | 14 | [Laptop app](phases/14-laptop-app/) | M38 Control page, M39 Presets and resume | 16 h | 0/6 | — |
-| 15 | [Standalone (no laptop)](phases/15-standalone/) | M40 Panel screen, M41 Pi Zero station set up, M42 Job with no laptop, M43 Laptop collects and verifies | 2.8 h | 0/8 | — |
+| 15 | [Standalone (no laptop)](phases/15-standalone/) | M40 Panel screen, M41 Pi Zero station set up, M42 Job with no laptop, M43 Laptop collects and verifies | 3.4 h | 0/9 | — |
 | 16 | [Release](phases/16-release/) | M44 Docs complete, M45 Public release | 4.2 h | 0/6 | — |
 | 17 | [Upgrades (optional)](phases/17-upgrades/) | M46 Adaptive sampling, M47 Space carving, M48 Compare with MERL / RGL data, M49 Battery power | 17.2 h | 0/7 | — |
 <!-- phases:end -->
@@ -488,7 +503,7 @@ One look, two places: the website explains the instrument, the app drives it. Bo
 
 <img src="docs/assets/screens/app-dark.jpg" width="100%" alt="The control app on the simulated machine: the device strip, axis sliders, the lamp switch with the colour LED bank shown as blocked, a top view of the pose, the camera frame, and a mirror sweep curve marked verify PASS">
 
-**Website** ([`docs/`](docs/index.html), published with GitHub Pages; also opens straight from disk). The first screen is a Web Graphics Library (WebGL) render of three samples (white PTFE, a mirror and printed black ABS) under one lamp that circles on its own and follows your pointer or the arrow keys, shaded with the same model the software fits. Scrolling on pins the whole CAD assembly in place and builds it: its parts fly in from an exploded view, then each axis plays in turn and the view swings round behind the fixed camera, with the captions changing as you go (the motion uses the same rotations as the CAD clash check). After that you can drive each axis with a slider, and the big numbers count up. Below that: the machine, how a measurement happens, real outputs of the simulated machine, the evidence table, and the eighteen build stages. [`docs/lab.html`](docs/lab.html) keeps the interactive tools: the machine simulator, the BRDF explorer, the calibration lab and the 3D-scan planner. Two step-by-step guides: [`docs/wiring.html`](docs/wiring.html) (one wire per step) and [`docs/build.html`](docs/build.html) (the build book: the CAD parts one step at a time).
+**Website** ([`docs/`](docs/index.html), published with GitHub Pages by `.github/workflows/pages.yml`; turn it on once with `bash scripts/pages.sh`; also opens from a local server). The first screen is a Web Graphics Library (WebGL) render of three samples (white PTFE, a mirror and printed black ABS) under one lamp that circles on its own and follows your pointer or the arrow keys, shaded with the same model the software fits. Scrolling on pins the whole CAD assembly in place and builds it: its parts fly in from an exploded view, then each axis plays in turn and the view swings round behind the fixed camera, with the captions changing as you go (the motion uses the same rotations as the CAD clash check). After that you can drive each axis with a slider, and the big numbers count up. Below that: the machine, how a measurement happens, real outputs of the simulated machine, the evidence table, and the eighteen build stages. [`docs/lab.html`](docs/lab.html) keeps the interactive tools: the machine simulator, the BRDF explorer, the calibration lab and the 3D-scan planner. [`docs/render.html`](docs/render.html) shows the path to computer graphics: the fitted material on a shader ball or the scanned object, live in WebGL with the same GGX as the fit, measured vs fitted curves, and a `.glb` download (data: `make render`, simulated). Two step-by-step guides: [`docs/wiring.html`](docs/wiring.html) (one wire per step) and [`docs/build.html`](docs/build.html) (the build book: the CAD parts one step at a time).
 
 **App** (`opengonio app`, stage 14). Connect, home, jog each axis (or drag the lamp in the top view), switch the lamp, grab a camera frame, run a mirror sweep, in-plane grid or isotropic set, and read `verify`'s verdict and the curve. A strip under the header shows each device (motion board, camera, lamp, spectral sensor, button hub) as simulated, connected, offline or not built yet; the sensors panel holds a spectral reading (simulator only for now), run-quality figures and a log of the session. STOP (or Esc) is always live; the colour LED bank stays blocked. On the simulated machine everything works; on a real machine it uses the same code as the command line and is **untested**, because no machine has been built yet.
 
@@ -497,9 +512,16 @@ make setup && source .venv/bin/activate         # once
 opengonio app --sim mirror                       # simulated machine in your browser (materials: mirror, ptfe, matte, paper, plastic)
 pip install "./software[desktop]" && opengonio app --sim mirror --window   # the same app in a desktop window (pywebview)
 opengonio app                                    # the machine over USB (untested)
+pip install "./software[lan]" && opengonio app --lan   # also phones and tablets on this Wi-Fi: scan the QR code under Phone
+opengonio render demo                            # measure -> fit -> scan -> .glb + pictures, simulated (data/render_demo/)
+opengonio render data/<run> --mesh scan_out/hull_mesh.ply   # your fit on your scan -> .glb for Blender / Unity / Unreal
 ```
 
-The app listens on `127.0.0.1:8747` only and refuses requests from other web pages and other host names; runs go to `data/app/` (`--data` to change). Its application programming interface (API) is a few JavaScript Object Notation (JSON) endpoints, listed at the top of [`software/src/opengonio/app/server.py`](software/src/opengonio/app/server.py).
+The app listens on `127.0.0.1:8747` only and refuses requests from other web pages and other host names; runs go to `data/app/` (`--data` to change). Each run in the list has a download button (↓): the whole run folder as a zip. Under a run's curve, **Material** shows its fit on a shader ball (or why it can't be fitted) and saves it as a `.glb`. With `--lan` it also listens on the Wi-Fi address: a phone or tablet must first open the pairing address (the QR code under **Phone**), which sets a cookie; without it every request is refused, other host names are refused, and STOP works from every paired device. On the phone, Share → Add to Home Screen (iPhone) or Install app (Android) keeps it as an app.
+
+**Desktop app.** Pushing `software/` or a version tag builds `OpenGonio-windows.zip`, `OpenGonio-macos.zip` and `OpenGonio-linux.zip` with PyInstaller (`software/packaging/`); a tag (`bash scripts/release.sh NN`) attaches them to the release. Runs go to `~/OpenGonio/runs`. The apps are not code-signed: Windows asks "More info → Run anyway", macOS "right-click → Open" the first time. Built on GitHub's runners; only the Linux build has been run here.
+
+**On the machine itself:** the optional 2 in status screen on the ESP32-S3 hub shows motor power, keys, supply, the laptop link and the run lines without any app ([hub add-ons](docs/addons.html)). Its application programming interface (API) is a few JavaScript Object Notation (JSON) endpoints, listed at the top of [`software/src/opengonio/app/server.py`](software/src/opengonio/app/server.py).
 
 | | |
 |---|---|

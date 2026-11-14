@@ -3,6 +3,7 @@
 #   bash scripts/hub.sh flash oct     erase + write MicroPython (pinned in firmware/hub/MICROPYTHON_VERSION) [C13]:
 #                                      "oct" if the module's can says N8R8 / N16R8 (octal PSRAM), "plain" otherwise
 #   bash scripts/hub.sh           copy firmware/hub/main.py, then PING it
+#   bash scripts/hub.sh send "SCREEN ON"     send one line to the hub and print its reply (any command in main.py)
 # If flash can't connect: hold BOOT, tap RST, release BOOT (download mode), run it again.
 # SPDX-License-Identifier: GPL-3.0-or-later
 set -euo pipefail
@@ -21,6 +22,14 @@ if [ "${1:-}" = "flash" ]; then
   echo "Flashed. Press RST, then: bash scripts/hub.sh"; exit 0
 fi
 P=$(port); [ -n "$P" ] || { echo "hub not found (VID 0x303A): plug in its USB connector (not UART)"; exit 1; }
+if [ "${1:-}" = "send" ]; then
+  python3 - "$P" "${2:?say what: bash scripts/hub.sh send \"SCREEN ON\"}" <<'PY'
+import serial, sys, time
+with serial.Serial(sys.argv[1], 115200, timeout=1) as s:
+    s.write(sys.argv[2].encode() + b"\n"); time.sleep(0.5); print(s.read(400).decode(errors="ignore").strip() or "no reply")
+PY
+  exit 0
+fi
 mpremote connect "$P" mip install ssd1306 || echo "no OLED driver (display optional)"   # this board only, never the SKR Pico
 mpremote connect "$P" cp firmware/hub/main.py :main.py
 mpremote connect "$P" reset

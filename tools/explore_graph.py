@@ -99,6 +99,7 @@ FLOWS = [
     ("document:docs/power.html", "documents", "module:phases/01-power", "wire the power, step by step"),
     ("document:docs/controller.html", "documents", "module:phases/02-controller", "wire the controller, step by step"),
     ("document:docs/machine.html", "documents", "module:phases/06-camera-light", "wire and test motors, endstops, lamp, camera"),
+    ("document:docs/addons.html", "documents", "file:firmware/hub/main.py", "wire the spectral sensor and the status screen"),
 ]
 IDEA_LINKS = {
     "brdf": ["file:software/src/opengonio/brdf/models.py", "file:software/src/opengonio/fit.py", "document:wiki/src/Theory.md"],

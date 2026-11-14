@@ -1,0 +1,29 @@
+# The website (docs/) on GitHub Pages: landing page, lab, Inside, wiring walkthroughs, build book, project map and the
+# control app running in the browser. Turn it on once with: bash scripts/pages.sh
+name: pages
+on:
+  push:
+    branches: [main]
+    paths: ["docs/**", ".github/workflows/pages.yml"]
+  workflow_run:                       # the docs workflow commits regenerated files as the bot: deploy those too
+    workflows: [docs]
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency: {group: pages, cancel-in-progress: true}
+jobs:
+  deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-24.04
+    environment: {name: github-pages, url: "${{ steps.deploy.outputs.page_url }}"}
+    steps:
+      - uses: actions/checkout@v6
+        with: {ref: main}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: {path: docs}
+      - id: deploy
+        uses: actions/deploy-pages@v4

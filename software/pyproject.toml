@@ -13,6 +13,7 @@ dependencies = ["numpy>=1.24", "pyyaml>=6"]
 [project.optional-dependencies]
 hw = ["pyserial>=3.5", "opencv-python>=4.8"]
 desktop = ["pywebview>=5"]                 # `opengonio app --window`: the control app in a native window
+lan = ["segno>=1.5"]                       # `opengonio app --lan`: QR code for pairing phones
 dev = ["pytest>=7"]
 
 [project.scripts]
@@ -26,7 +27,8 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 opengonio = ["data/machine.yaml",          # synced from config/machine.yaml by `make build`; tests/test_audit.py checks it
-             "app/static/*.html", "app/static/*.css", "app/static/*.js", "app/static/*.svg",
+             "app/static/*.html", "app/static/*.css", "app/static/*.js", "app/static/*.svg", "app/static/*.webmanifest",
+             "app/static/icons/*",
              "app/static/og/*", "app/static/og/fonts/*"]   # og/ copied from docs/og by `make build`
 
 [tool.pytest.ini_options]

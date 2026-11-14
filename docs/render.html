@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio render</title>
+<meta name="description" content="From the gonioreflectometer and 3D scanner to realistic computer graphics: the fitted material on the scanned shape, rendered live with the same equations as Blender, Unity and Unreal. Simulated data: no machine has been built yet.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/lab.css">
+<link rel="stylesheet" href="og/render.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the renderer</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Render sections">
+  <a href="#path">Path</a><a href="#viewer">Viewer</a><a href="#fit">Measured vs fitted</a><a href="#scan">Scan</a>
+  <a href="#two">Two renderers</a><a href="#engines">Engines</a><a href="#yours">Your files</a><a href="#limits">Limits</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="intro">
+ <div>
+  <h1 class="display">Render</h1>
+  <p class="lead">What the machine measures, on a real shape. The fitted material and the scanned object, drawn with the
+   equations Blender, Unity and Unreal use.</p>
+  <p class="note">Simulated: no machine has been built yet. Every number on this page comes from the project's software
+   run on simulated samples and a simulated scan (<code>opengonio render demo</code>).</p>
+ </div>
+ <figure><img src="assets/render/mug_plastic_fit.png" width="300" height="300" alt="A grey glossy mug, drawn by the project's software renderer from a simulated scan and a fitted plastic material.">
+  <figcaption>Scanned mug, fitted plastic. Drawn by <code>opengonio.render</code> (numpy, no GPU).</figcaption></figure>
+</section>
+
+<section id="path">
+ <h2>From light to pictures</h2>
+ <p class="sub">Five steps; each is one command and leaves one file the next step reads.</p>
+ <ol class="path">
+  <li><b>Measure</b><span>The lamp and sample move; the camera reads brightness at each pair of angles. That is the
+   Bidirectional Reflectance Distribution Function (BRDF).</span><code>opengonio capture inplane</code><i>curve.csv</i></li>
+  <li><b>Fit</b><span>Three numbers that describe the curve: base colour, roughness, metallic (the glTF material model).
+   One row in five is held back to check the fit.</span><code>opengonio fit data/&lt;run&gt;</code><i>fit.json</i></li>
+  <li><b>Scan</b><span>The same machine turns the object on its platter; 144 photos give its silhouettes, which carve
+   its shape out of a block of voxels.</span><code>opengonio scan run</code> <code>scan hull</code><i>hull_mesh.ply, hull.glb</i></li>
+  <li><b>Combine</b><span>Shape + material into one glTF file, at real size (millimetres to metres), Z-up to Y-up.</span>
+   <code>opengonio render data/&lt;run&gt; --mesh hull_mesh.ply</code><i>hull_mesh.glb, picture</i></li>
+  <li><b>Render</b><span>Here in the browser, or drag the <code>.glb</code> into Blender, Unity, Unreal or three.js.</span>
+   <code>render.html</code><i>pixels</i></li>
+ </ol>
+</section>
+
+<section id="viewer">
+ <h2>Viewer</h2>
+ <p class="sub">Drag to orbit, Shift + drag to move the lamp, wheel or pinch to zoom. Arrow keys orbit, + and − zoom, 0 resets.</p>
+ <div class="grid">
+  <div class="stage" id="stage">
+   <canvas id="gl" tabindex="0" role="img" aria-label="Live 3D view of the object in the chosen material; the values are given beside it"></canvas>
+   <p class="nogl" id="nogl" hidden>This browser has no WebGL 2, so the live view is off. The pictures under
+    <a href="#two">Two renderers</a> come from the same model.</p>
+   <p class="drop" id="drop" hidden>Drop fit.json, a .glb or a .ply</p>
+  </div>
+  <div class="card controls" data-ui>
+   <label>Object <select id="obj">
+     <option value="ball">Shader ball</option><option value="mug">Scanned mug (visual hull)</option>
+     <option value="sphere">Sphere</option><option value="file" disabled>Your mesh</option></select><span></span></label>
+   <label>Material <select id="mat"></select><span></span></label>
+   <div class="seg" role="radiogroup" aria-label="Which values" id="which">
+    <button type="button" role="radio" aria-checked="true" data-w="fit">Fitted</button>
+    <button type="button" role="radio" aria-checked="false" data-w="truth">Simulated truth</button>
+   </div>
+   <label>Base colour <input id="base" type="range" min="0" max="1" step="0.005"><output></output></label>
+   <label>Tint <input id="tint" type="color" value="#ffffff" aria-label="Colour tint: the fit is grey, one camera channel"><span class="small">×</span></label>
+   <label>Roughness <input id="rough" type="range" min="0.03" max="1" step="0.005"><output></output></label>
+   <label>Metallic <input id="metal" type="range" min="0" max="1" step="0.005"><output></output></label>
+   <label>Lamp θi <input id="lth" type="range" min="2" max="88" step="1" value="50"><output></output></label>
+   <label>Lamp azimuth <input id="laz" type="range" min="-180" max="180" step="1" value="35"><output></output></label>
+   <label>Exposure <input id="exp" type="range" min="0.25" max="3" step="0.01" value="1"><output></output></label>
+   <label>Sky <input id="sky" type="range" min="0" max="2" step="0.01" value="1"><output></output></label>
+   <div class="checks">
+    <label class="check"><input type="checkbox" id="dirs" checked> Measured directions</label>
+    <label class="check"><input type="checkbox" id="shadows" checked> Shadows</label>
+    <label class="check"><input type="checkbox" id="turn"> Turntable</label>
+   </div>
+   <div class="buttons">
+    <button class="btn btn-light" type="button" id="dl-glb">Download .glb</button>
+    <button class="btn" type="button" id="dl-png">Save picture</button>
+   </div>
+   <div class="buttons">
+    <label class="btn file">Open fit.json<input type="file" id="f-fit" accept=".json,application/json"></label>
+    <label class="btn file">Open mesh<input type="file" id="f-mesh" accept=".glb,.ply"></label>
+   </div>
+   <p class="status" id="vstat" role="status">Loading…</p>
+  </div>
+ </div>
+ <p class="note"><span class="key lamp"></span> lamp angles the plan measured &nbsp; <span class="key cam"></span> camera angles
+  &nbsp; <span class="key now"></span> the lamp now. Beyond those angles the material is the model's guess.</p>
+</section>
+
+<section id="fit">
+ <h2>Measured vs fitted</h2>
+ <p class="sub">Dots: simulated samples (in-plane plan, θi 15 / 30 / 45 / 60°, θr every 5°, 2 % noise). Lines: the fitted
+  model. A good fit runs through the dots; the holdout error checks it on rows the fit never saw.</p>
+ <div class="grid">
+  <div class="card"><canvas id="chart" width="900" height="460" role="img" aria-label="BRDF against reflection angle: samples as dots, fitted model as lines; the numbers are in the table"></canvas></div>
+  <div class="card">
+   <div class="scrollx"><table class="tbl" id="fit-table"><caption class="sr-only">Simulated truth and fitted values per material</caption></table></div>
+   <p class="small dim">RMS is of all rows, as % of the curve's peak. Holdout: fit on 4 of every 5 rows, scored on the 5th.</p>
+  </div>
+ </div>
+</section>
+
+<section id="scan">
+ <h2>Scan to mesh</h2>
+ <p class="sub">A mug with a cavity and a handle, seen by the scan plan's real camera poses. Silhouettes carve a block of
+  voxels (the visual hull); the boundary becomes triangles, smoothed so the voxel steps don't read as texture.</p>
+ <div class="pics three">
+  <figure><img src="assets/render/mug_plastic_fit.png" width="300" height="300" loading="lazy" alt="Scanned mug in fitted plastic."><figcaption>Plastic, fitted</figcaption></figure>
+  <figure><img src="assets/render/mug_paper_fit.png" width="300" height="300" loading="lazy" alt="Scanned mug in fitted paper."><figcaption>Paper, fitted</figcaption></figure>
+  <figure><img src="assets/render/mug_mirror_fit.png" width="300" height="300" loading="lazy" alt="Scanned mug in fitted mirror metal."><figcaption>Mirror, fitted</figcaption></figure>
+ </div>
+ <dl class="read wide" id="scan-read"></dl>
+ <p class="note" id="scan-why"></p>
+</section>
+
+<section id="two">
+ <h2>Two renderers, one model</h2>
+ <p class="sub">Top row: simulated truth. Bottom row: what the fit recovered. Drawn on the CPU by <code>opengonio.render</code>;
+  the viewer above draws the same formula on the GPU. The lamp term is the fitted model exactly; the soft sky is an
+  approximation, there only so shadowed sides are not black.</p>
+ <div class="pics four" id="balls"></div>
+</section>
+
+<section id="engines">
+ <h2>Engines</h2>
+ <p class="sub">The material in the viewer, typed into each tool. The <code>.glb</code> carries the same values, so dragging it in
+  is enough.</p>
+ <div class="grid">
+  <div class="card"><div class="scrollx"><table class="tbl" id="eng"></table></div></div>
+  <div class="card">
+   <ul class="howto">
+    <li><b>Blender</b> File → Import → glTF 2.0. The material lands in a Principled BSDF.</li>
+    <li><b>Unity</b> Add the glTFast package, then drop the <code>.glb</code> into Assets.</li>
+    <li><b>Unreal Engine 5</b> Drag the <code>.glb</code> into the Content Browser.</li>
+    <li><b>three.js</b> <code>GLTFLoader</code>; the material arrives as <code>MeshStandardMaterial</code>.</li>
+   </ul>
+   <p class="small dim">Unity's URP takes smoothness = 1 − roughness. glTF is in metres and Y-up; the file's node holds that
+    conversion, so the scanner's millimetres stay exact.</p>
+  </div>
+ </div>
+</section>
+
+<section id="yours">
+ <h2>Your files</h2>
+ <p class="sub">Open or drop them on the viewer. Nothing leaves this page.</p>
+ <div class="scrollx"><table class="tbl files">
+  <tr><th>File</th><th>Made by</th><th>Gives the viewer</th></tr>
+  <tr><td><code>data/&lt;run&gt;/fit.json</code></td><td><code>opengonio fit</code></td><td>the material (base colour, roughness, metallic, holdout)</td></tr>
+  <tr><td><code>scan_out/hull_mesh.ply</code>, <code>hull.glb</code></td><td><code>opengonio scan hull</code></td><td>the scanned shape</td></tr>
+  <tr><td><code>*.glb</code></td><td><code>opengonio render</code>, Blender, any glTF tool</td><td>shape and, if present, its material</td></tr>
+  <tr><td><code>material_*.json</code></td><td><code>opengonio render demo</code></td><td>a demo material</td></tr>
+ </table></div>
+</section>
+
+<section id="limits">
+ <h2>Limits</h2>
+ <ul class="limits">
+  <li><b>Grey.</b> One camera channel: the fit has no colour. The tint is typed by hand.</li>
+  <li><b>One material per object.</b> No texture: the sample is uniform, so the whole object gets the same values.</li>
+  <li><b>Isotropic.</b> Brushed metal needs the anisotropic plan; the glTF model here has no direction.</li>
+  <li><b>Visual hull.</b> Silhouettes can't see a cavity: the mug's inside comes out filled
+   (<span id="vol"></span>). Photometric stereo and photogrammetry add the detail.</li>
+  <li><b>The model, not the measurement.</b> Between and beyond the measured angles the picture shows the fitted model.
+   Check the holdout before trusting it.</li>
+ </ul>
+</section>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="render.html" aria-current="page">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span><span>Renders are simulated.</span></p>
+</footer>
+<script src="render-data.js"></script>
+<script src="og/render-gl.js"></script>
+<script src="og/render-page.js"></script>
+</body>
+</html>

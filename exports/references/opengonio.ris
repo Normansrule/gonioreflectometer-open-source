@@ -1595,6 +1595,28 @@ DO  - 10.1111/cgf.12419
 SP  - 123-131
 ER  - 
 
+TY  - CPAPER
+ID  - T56
+AU  - Taubin, G.
+TI  - A signal processing approach to fair surface design
+T2  - SIGGRAPH
+PY  - 1995
+ER  - 
+
+TY  - GEN
+ID  - T57
+AU  - Karis, B.
+TI  - Physically based shading on mobile
+PY  - 2014
+ER  - 
+
+TY  - GEN
+ID  - T58
+AU  - Narkowicz, K.
+TI  - ACES filmic tone mapping curve
+PY  - 2016
+ER  - 
+
 TY  - JOUR
 ID  - V1
 AU  - Zhang, Z.

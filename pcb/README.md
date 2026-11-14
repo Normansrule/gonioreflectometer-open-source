@@ -9,9 +9,9 @@ One board on the controller tray that replaces the loose modules and most jumper
 | Today (modules, stage) | On the board |
 |---|---|
 | PC817 opto module PWR-10 + 5 jumpers (02) | PC817 + 10 kΩ, motion-power sense to ESP32-S3 GPIO 17 |
-| LED driver LSR-02 in a printed frame + female jumpers (06) | footprint for the same MEAN WELL NLDD-350H (2.54 mm pins) |
+| LED driver LSR-02 (NLDD-350HW, wire leads) taped in a printed frame + lever connectors (06) | footprint for the pin version MEAN WELL NLDD-350H (2.54 mm pins, same circuit) |
 | Two 4-channel MOSFET modules MSK-03 (10, optional, BLOCKED) | footprints only until a reviewed colour-LED driver exists |
-| Keypad, OLED, sensor jumpers to the ESP32-S3 (02, 10, 15) | keyed headers; keypad commons joined on the board (no lever connector) |
+| Keypad, OLED, sensor and status-screen jumpers to the ESP32-S3, 3V3 / GND lever connectors for the add-ons (02, 10, 15) | keyed headers; keypad commons and add-on 3V3 / GND joined on the board (no lever connectors); 8-pin header for the status screen (SCK 42, MOSI 41, DC 18, CS 38) |
 | Nothing (trade-off in stage 01) | reverse-polarity MOSFET, transient-voltage-suppression (TVS) diode, bulk capacitor |
 | INA219 power monitor BAT-05 + hub GND jumper (17, battery upgrade) | INA219 + 0.1 Ω shunt between TB1 `+` and the e-stop line, on I2C0 at 0x40; ground shared on the board |
 

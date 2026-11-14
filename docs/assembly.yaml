@@ -172,3 +172,12 @@ steps:
     add: [SCN-03d_scan_camera_plate, CAM-04_camera_scan, CAM-05_lens_scan]
     from: +x
     view: [-30, 15]
+
+  - title: Status screen (optional)
+    section: Hub add-ons
+    ref: M40.3
+    lines: [1, 2]
+    add: [STA-10a_screen_stand, STA-09_status_screen, STA-10b_screen_bezel]
+    from: -x
+    stack: true
+    view: [160, 25]

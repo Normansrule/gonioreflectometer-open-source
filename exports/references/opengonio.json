@@ -3511,6 +3511,63 @@
     "volume": "33"
   },
   {
+    "author": [
+      {
+        "family": "Taubin",
+        "given": "G."
+      }
+    ],
+    "container-title": "SIGGRAPH",
+    "id": "T56",
+    "issued": {
+      "date-parts": [
+        [
+          1995
+        ]
+      ]
+    },
+    "title": "A signal processing approach to fair surface design",
+    "type": "paper-conference"
+  },
+  {
+    "author": [
+      {
+        "family": "Karis",
+        "given": "B."
+      }
+    ],
+    "id": "T57",
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "note": "Unreal Engine blog, 2014",
+    "title": "Physically based shading on mobile",
+    "type": ""
+  },
+  {
+    "author": [
+      {
+        "family": "Narkowicz",
+        "given": "K."
+      }
+    ],
+    "id": "T58",
+    "issued": {
+      "date-parts": [
+        [
+          2016
+        ]
+      ]
+    },
+    "note": "blog, 2016",
+    "title": "ACES filmic tone mapping curve",
+    "type": ""
+  },
+  {
     "DOI": "10.1109/34.888718",
     "author": [
       {

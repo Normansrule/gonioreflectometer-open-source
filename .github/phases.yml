@@ -1143,7 +1143,7 @@ milestones:
     - LSR-06 holder
     - LSR-02 driver
     - LSR-03 heatsink
-    - LSR-04 tape
+    - LSR-04 tape (3M 8810; the Wakefield heatsink comes without it)
     - LSR-05 print
     - PWR-15 18 AWG offcuts (2 × 15 cm)
     - PWR-20 lever connectors
@@ -1154,13 +1154,13 @@ milestones:
     - Holder face-down in the body's round seat, wire entries toward the lead groove (the side away from the clamp), leads along the groove. COB into the holder's square seat, light-emitting face down through
       the window. Thermal tape (LSR-04) on the COB's back; heatsink on top, fins out. Cap on with 4 × M2 × 12, leads through its slot; tighten evenly until the heatsink no longer turns.
     - Lamp clamp onto the arm bar's outer pilot (M2 × 16), aperture facing the zero point.
-    - 'E-stop pressed, adapter unplugged (HE `+` carries motor-power voltage). Driver (LSR-02) pins up in the short frame on the controller tray (double-sided tape). Female jumper ends onto its pins: +Vin ← SKR Pico HE `+` (terminal marked 12/24V; cut jumper, bare end under
-      the screw); −Vin → SKR Pico HE `−` (terminal marked IO23; output port from M08.2, normally `M62 P4`).'
-    - Driver +Vo / −Vo pins → two chains of 5 male–female jumpers along the arm (slack for 20–324°); at the lamp, lever connectors join each chain's last end (cut off, stripped, folded double) to the lamp's
-      red (+) / black (−) lead.
+    - 'E-stop pressed, adapter unplugged (HE `+` carries motor-power voltage). Driver (LSR-02, NLDD-350HW) into the short frame on the controller tray (double-sided tape). Read which lead colour is which on its label.
+      +Vin lead (bare 5 mm end) under the SKR Pico HE `+` screw (terminal marked 12/24V); −Vin lead under HE `−` (terminal marked IO23; output port from M08.2, normally `M62 P4`).'
+    - 'Driver +Vo / −Vo leads → one lever connector each on the tray → two chains of 5 male–female jumpers along the arm (slack for 20–324°) → lever connectors at the lamp → the holder''s red (+) / black (−)
+      lead. Jumper ends into lever connectors: plug cut off, stripped 11 mm, folded double. DIM lead alone in a 2-way lever connector (open = on; never tie it to −Vin).'
     verify:
-    - Each lead holds when tugged (poke-in locked).
-    - 'Polarity checked with the meter before power: +Vo pin → red lead beeps.'
+    - Each lead holds when tugged (poke-in locked, levers closed).
+    - 'Polarity checked with the meter before power: +Vo lead → holder red lead beeps.'
     record: Tick the boxes; `make done id=M18.1`.
   - id: M18.2
     title: Switch and heat
@@ -1661,7 +1661,7 @@ milestones:
     needs:
     - SPC-02 cable
     do:
-    - 'SPC-02 cable: SDA (blue) → ESP32-S3 J3-4 (GPIO 1), SCL (yellow) → J3-5 (GPIO 2), VIN (red) → J1-2 (3V3), GND (black) → J3-22 (same bus as the OLED: README → Wiring → 8).'
+    - 'SPC-02 cable: SDA (blue) → ESP32-S3 J3-4 (GPIO 1), SCL (yellow) → J3-5 (GPIO 2), VIN (red) → 3V3 lever connector (fed from J1-2), GND (black) → sensor GND lever connector (fed from J3-22) (same bus as the OLED: README → Wiring → 8).'
     - '`bash scripts/hub.sh`; `python -m serial.tools.miniterm /dev/ttyACM1 115200` (the hub''s port); type `SPEC?`.'
     verify:
     - Reply `SPEC` + 10 numbers; covering the tube drops all to < 5 % of uncovered.
@@ -2102,7 +2102,7 @@ milestones:
     - STA-05 OLED
     - STA-06 jumpers
     do:
-    - 'OLED SDA → ESP32-S3 J3-4 (GPIO 1), SCL → J3-5 (GPIO 2), VIN → J1-2 (3V3), GND → J3-22. With the AS7341 fitted: plug the OLED into the sensor''s second STEMMA QT socket instead (README → Wiring →
+    - 'OLED SDA → ESP32-S3 J3-4 (GPIO 1), SCL → J3-5 (GPIO 2), VIN → 3V3 lever connector (fed from J1-2), GND → sensor GND lever connector (fed from J3-22). With the AS7341 fitted: plug the OLED into the sensor''s second STEMMA QT socket instead (README → Wiring →
       8).'
     - '`bash scripts/hub.sh`'
     verify:
@@ -2110,6 +2110,27 @@ milestones:
     fail:
     - 'Blank: address not 0x3C — some boards are 0x3D; change it in `firmware/hub/main.py`.'
     record: Tick the boxes; `make done id=M40.2`.
+  - id: M40.3
+    title: Status screen (optional)
+    time: 40 min
+    wait: print 2 h
+    needs:
+    - STA-09 status screen
+    - STA-10 print
+    - FRM-06 M2 screws (4 × 12, 4 × 8)
+    - PWR-20 lever connectors (221-415, 221-413)
+    do:
+    - Print `STA-10a_screen_stand` and `STA-10b_screen_bezel`. Before printing, lay the module on the bezel drawing (50 mm window, 4 mm at each short end) and check the display sits inside the window.
+    - 'Module into the stand''s pocket, display outward, cable socket through the window behind it; bezel on, 4 × M2 × 8 snug (it presses only the two short ends: stop when the module no longer moves).'
+    - Stand onto its 4 deck pilots on the NW tile beside the controller tray (M2 × 12), face toward the laptop side; cable out of the open back to the hub.
+    - 'Wire it with the hub add-ons walkthrough (docs/addons.html, README → Wiring → 8): VCC, RST, BL to the 3V3 lever connector; GND to the sensor GND lever connector; CLK J3-6, DIN J3-7, DC J1-11, CS J3-10.'
+    - '`bash scripts/hub.sh send "SCREEN ON"` (the hub restarts), then `bash scripts/hub.sh send "SHOW Bench test|line two"`.'
+    verify:
+    - Screen shows the status lines, and `Bench test` / `line two` after SHOW.
+    - Key presses and power changes appear on the screen within 1 s.
+    fail:
+    - 'Blank, backlight on: CLK / DIN / DC / CS swapped or `SCREEN ON` not sent. Backlight off: BL or VCC not on 3V3.'
+    record: Tick the boxes; `make done id=M40.3`.
 - id: M41
   stage: 15-standalone
   title: Pi Zero station set up

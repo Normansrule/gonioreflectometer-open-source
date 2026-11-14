@@ -9,7 +9,7 @@ window.WALK = { next: "build.html", nextLabel: "Build book", steps: /*STEPS*/[
   "warn": "<b>E-stop pressed, adapter unplugged</b> for every wire on this page. Never plug or unplug a motor with motor power on.",
   "items": [
    "Done first: the <a href=\"power.html\">power walkthrough</a> and the <a href=\"controller.html\">controller walkthrough</a> (USB, both boards flashed, M4 on X, its endstop, keypads, power sense). Those wires are drawn dotted.",
-   "This page wires and tests everything else on the bench, parts loose, before any printing: three motors, three endstops, the lamp, the camera, then the optional fan and spectral sensor.",
+   "This page wires and tests everything else on the bench, parts loose, before any printing: three motors, three endstops, the lamp, the camera, then the optional fan. The spectral sensor and status screen have their own <a href=\"addons.html\">hub add-ons walkthrough</a>.",
    "Per motor: a tape flag on the shaft to see it turn and come back. Per endstop: a piece of card to block its slot.",
    "Ends: plugs push into their sockets; bare ends 11 mm in lever connectors (thin wire folded double), 8 mm under screws. Tug-test every wire."
   ]
@@ -202,7 +202,7 @@ window.WALK = { next: "build.html", nextLabel: "Build book", steps: /*STEPS*/[
   "type": "wire",
   "title": "Lamp driver +Vin → SKR Pico HE +",
   "from": [
-   "Lamp driver NLDD-350H (LSR-02)",
+   "Lamp driver NLDD-350HW (LSR-02)",
    "+Vin"
   ],
   "to": [
@@ -216,7 +216,7 @@ window.WALK = { next: "build.html", nextLabel: "Build book", steps: /*STEPS*/[
   "type": "wire",
   "title": "Lamp driver −Vin → SKR Pico HE IO23",
   "from": [
-   "Lamp driver NLDD-350H (LSR-02)",
+   "Lamp driver NLDD-350HW (LSR-02)",
    "−Vin"
   ],
   "to": [
@@ -228,28 +228,28 @@ window.WALK = { next: "build.html", nextLabel: "Build book", steps: /*STEPS*/[
  },
  {
   "type": "wire",
-  "title": "Lamp driver +Vo → lamp red",
+  "title": "Lamp driver +Vo → holder +",
   "from": [
-   "Lamp driver NLDD-350H (LSR-02)",
+   "Lamp driver NLDD-350HW (LSR-02)",
    "+Vo"
   ],
   "to": [
    "COB lamp in holder (LSR-01 + LSR-06)",
-   "red (+) lead"
+   "+ terminal"
   ],
   "d": "M40 266V470",
   "colour": "red"
  },
  {
   "type": "wire",
-  "title": "Lamp driver −Vo → lamp black",
+  "title": "Lamp driver −Vo → holder −",
   "from": [
-   "Lamp driver NLDD-350H (LSR-02)",
+   "Lamp driver NLDD-350HW (LSR-02)",
    "−Vo"
   ],
   "to": [
    "COB lamp in holder (LSR-01 + LSR-06)",
-   "black (−) lead"
+   "− terminal"
   ],
   "d": "M64 266V470",
   "colour": "black"
@@ -259,7 +259,7 @@ window.WALK = { next: "build.html", nextLabel: "Build book", steps: /*STEPS*/[
   "title": "Check: lamp (M18.1, M18.2)",
   "items": [
    "COB in its holder, thermal tape and heatsink on (M18.1). Never light it bare.",
-   "Power off: meter from the driver's +Vo pin to the lamp's red lead beeps. DIM stays unconnected (on/off only).",
+   "Power off: meter from the driver's +Vo lead to the holder's <code>+</code> wire beeps. The DIM lead stays capped alone in its lever connector (open = on).",
    "Lamp facing the bench, not your eyes. <code>installed_phase</code> ≥ 6 in <code>software/config/machine.yaml</code>. Adapter in, e-stop released:"
   ],
   "cmd": [
@@ -328,76 +328,18 @@ window.WALK = { next: "build.html", nextLabel: "Build book", steps: /*STEPS*/[
   "colour": "black"
  },
  {
-  "type": "wire",
-  "title": "Optional: AS7341 VIN → hub J1-2 (3V3)",
-  "from": [
-   "AS7341 sensor (SPC-01, optional)",
-   "VIN (red)"
-  ],
-  "to": [
-   "ESP32-S3 hub (CTL-02)",
-   "J1-2 (3V3)"
-  ],
-  "d": "M520 420V340",
-  "colour": "red"
- },
- {
-  "type": "wire",
-  "title": "Optional: AS7341 GND → hub J3-22",
-  "from": [
-   "AS7341 sensor (SPC-01, optional)",
-   "GND (black)"
-  ],
-  "to": [
-   "ESP32-S3 hub (CTL-02)",
-   "J3-22 (GND)"
-  ],
-  "d": "M560 420V340",
-  "colour": "black"
- },
- {
-  "type": "wire",
-  "title": "Optional: AS7341 SCL → hub J3-5",
-  "from": [
-   "AS7341 sensor (SPC-01, optional)",
-   "SCL (yellow)"
-  ],
-  "to": [
-   "ESP32-S3 hub (CTL-02)",
-   "J3-5 (GPIO2)"
-  ],
-  "d": "M600 420V340",
-  "colour": "amber"
- },
- {
-  "type": "wire",
-  "title": "Optional: AS7341 SDA → hub J3-4",
-  "from": [
-   "AS7341 sensor (SPC-01, optional)",
-   "SDA (blue)"
-  ],
-  "to": [
-   "ESP32-S3 hub (CTL-02)",
-   "J3-4 (GPIO1)"
-  ],
-  "d": "M640 420V340",
-  "colour": "blue"
- },
- {
   "type": "check",
-  "title": "Check: fan and spectral sensor (optional)",
+  "title": "Check: fan (optional)",
   "items": [
-   "Hub USB out while you wire the sensor; back in afterwards. Adapter in, e-stop released.",
-   "Fan: <code>$PINS</code> lists FAN1's port (normally 2). Sensor: on the hub's port, type <code>SPEC? 1</code>."
+   "Adapter in, e-stop released. <code>$PINS</code> lists FAN1's port (normally 2)."
   ],
   "cmd": [
    "opengonio send '$PINS'",
    "opengonio send 'M62 P2'",
-   "opengonio send 'M63 P2'",
-   "python -m serial.tools.miniterm /dev/ttyACM1 115200"
+   "opengonio send 'M63 P2'"
   ],
-  "pass": "Fan runs on M62 P2, stops on M63 P2 · SPEC #1 and 10 numbers (F1–F8, clear, NIR) that drop when a finger covers the sensor.",
-  "warn": "OLED instead of the sensor: the same four hub pins (wiring guide, section 8). Both fitted: OLED on the sensor's second STEMMA QT socket (cable [TBD])."
+  "pass": "Fan runs on M62 P2, stops on M63 P2.",
+  "warn": "The spectral sensor and the status screen on the hub: <a href=\"addons.html\">hub add-ons walkthrough</a>."
  },
  {
   "type": "check",

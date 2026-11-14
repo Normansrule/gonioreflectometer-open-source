@@ -24,9 +24,9 @@ Every bought part has a model in the repo (dummy in `cad/bought/` or open model 
 | CAM-01 | USB camera 12 MP IMX477, M12 mount (UVC) | [`CAM-01_arducam_b0433_imx477_usb.step`](../../../cad/bought/CAM-01_arducam_b0433_imx477_usb.step) | [link](https://www.uctronics.com/download/Amazon/B0433_Arducam_12MP_USB_Camera_Module_Datasheet.pdf) None published. Drawing:  (38 x 38 mm, holes 34/28 mm) - dummy built from it |
 | CAM-02 | M12 lens 16 mm, ≥ 1/2 in format, low distortion | [`CAM-02_m12_lens_16mm.step`](../../../cad/bought/CAM-02_m12_lens_16mm.step) | None published - use the dummy (M12 x 0.5 barrel) |
 | LSR-06 | Solderless COB holder 13.5 mm (TE LUMAWISE Z35) | [`LSR-06_te_lumawise_z35_2213678_5.step`](../../../cad/bought/LSR-06_te_lumawise_z35_2213678_5.step) | [link](https://www.te.com/) (search 2213678-5 → CAD 3D model) |
-| LSR-01 | COB LED CRI 97, 12 V, 13.5 mm (Citizen CLU7A3) | [`LSR-01_citizen_clu7a3_cob.step`](../../../cad/bought/LSR-01_citizen_clu7a3_cob.step) | None published - use the dummy (datasheet: 13.5 x 13.5 x 1.4 mm, 4.2 mm LES) |
-| LSR-02 | Constant-current driver 350 mA | [`LSR-02_meanwell_nldd_350h.step`](../../../cad/bought/LSR-02_meanwell_nldd_350h.step) | [link](https://www.meanwellusa.com/) (search NLDD-H → 3D STEP) |
-| LSR-03 | Heatsink 40 x 40 mm (from a pack) | [`LSR-03_heatsink_40x40x11.step`](../../../cad/bought/LSR-03_heatsink_40x40x11.step) | None published - use the dummy (generic heatsink) |
-| LSR-04 | Thermal adhesive pad | [`LSR-04_thermal_pad_40x40.step`](../../../cad/bought/LSR-04_thermal_pad_40x40.step) | None published - use the dummy (pad) |
+| LSR-01 | COB LED CRI 90, 9 V, 13.5 mm (Citizen CLU701) | [`LSR-01_citizen_clu701_cob.step`](../../../cad/bought/LSR-01_citizen_clu701_cob.step) | None published - use the dummy (datasheet: 13.5 x 13.5 x 1.4 mm) |
+| LSR-02 | Constant-current driver 350 mA, wire leads (MEAN WELL NLDD-350HW) | [`LSR-02_meanwell_nldd_350hw.step`](../../../cad/bought/LSR-02_meanwell_nldd_350hw.step) | [link](https://www.meanwellusa.com/) (search NLDD-H → 3D STEP) |
+| LSR-03 | Heatsink 40 x 40 x 11.6 mm, pin fin (Wakefield 910) | [`LSR-03_wakefield_910_40_2_12_2_b0.step`](../../../cad/bought/LSR-03_wakefield_910_40_2_12_2_b0.step) | None published - use the dummy (40 x 40 x 11.6 mm pin fin) |
+| LSR-04 | Thermal adhesive tape 3M 8810, 19 mm | [`LSR-04_thermal_pad_40x40.step`](../../../cad/bought/LSR-04_thermal_pad_40x40.step) | None published - use the dummy (pad) |
 
 Design notes: [../design.md](../design.md).

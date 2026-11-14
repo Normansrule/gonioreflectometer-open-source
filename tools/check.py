@@ -159,7 +159,7 @@ def check_site() -> list[str]:
     errs = []
     app = ROOT / "software" / "src" / "opengonio" / "app" / "static"
     for page in (ROOT / "docs" / "index.html", ROOT / "docs" / "lab.html", ROOT / "docs" / "wiring.html",
-                 ROOT / "docs" / "power.html", ROOT / "docs" / "controller.html", ROOT / "docs" / "machine.html", ROOT / "docs" / "inside.html", ROOT / "docs" / "app" / "index.html", ROOT / "docs" / "build.html", app / "index.html"):
+                 ROOT / "docs" / "power.html", ROOT / "docs" / "controller.html", ROOT / "docs" / "machine.html", ROOT / "docs" / "addons.html", ROOT / "docs" / "render.html", ROOT / "docs" / "inside.html", ROOT / "docs" / "app" / "index.html", ROOT / "docs" / "build.html", app / "index.html"):
         for ref in re.findall(r'(?:src|href)="([^"#?]+)', page.read_text(encoding="utf-8")):
             if re.match(r"^(https?:|mailto:|data:)", ref) or ref.startswith("/api/"):
                 continue
@@ -167,7 +167,7 @@ def check_site() -> list[str]:
                 errs.append(f"{page.relative_to(ROOT)}: missing {ref}")
     for f in (ROOT / "docs" / "og").rglob("*"):
         rel = f.relative_to(ROOT / "docs" / "og")
-        if f.is_file() and (rel.parts[0] == "fonts" or f.name in ("og.css", "og.js", "icon.svg")):
+        if f.is_file() and (rel.parts[0] == "fonts" or f.name in ("og.css", "og.js", "icon.svg", "render-gl.js")):
             twin = app / "og" / rel
             if not twin.exists() or twin.read_bytes() != f.read_bytes():
                 errs.append(f"{twin.relative_to(ROOT)} differs from docs/og/{rel} (run `make build`)")

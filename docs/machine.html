@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OpenGonio machine wiring</title>
-<meta name="description" content="The rest of the OpenGonio electronics wired and tested on the bench, step by step: table, tilt and spin motors, their endstops, the lamp, the camera and the optional fan and spectral sensor, ending with a whole-machine test. Text from docs/wiring.yaml.">
+<meta name="description" content="The rest of the OpenGonio electronics wired and tested on the bench, step by step: table, tilt and spin motors, their endstops, the lamp, the camera and the optional fan, ending with a whole-machine test. Text from docs/wiring.yaml.">
 <meta name="theme-color" content="#0c0b0a">
 <link rel="icon" href="og/icon.svg" type="image/svg+xml">
 <link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
@@ -17,7 +17,7 @@
 <header class="bar">
  <a class="mark display" href="./">OpenGonio</a>
  <nav aria-label="Pages">
-  <a href="./">Website</a><a href="inside.html">Inside</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html" aria-current="page">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
+  <a href="./">Website</a><a href="inside.html">Inside</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html" aria-current="page">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a>
  </nav>
  <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
 </header>
@@ -26,7 +26,7 @@
  <h1 id="h1" class="display">Machine wiring, step by step</h1>
  <p class="g-lead">The rest of the electronics on the bench, after the <a href="power.html">power</a> and
   <a href="controller.html">controller</a> walkthroughs: table, tilt and spin motors, their endstops, the lamp, the camera, then the
-  optional fan and spectral sensor. Dotted wires were made on the earlier pages; the moving wire with the two rings is the one to make
+  optional fan (the sensor and status screen have their own <a href="addons.html">hub add-ons</a> page). Dotted wires were made on the earlier pages; the moving wire with the two rings is the one to make
   now. Each check (✓) tests that group before the next, and the last one runs the whole machine. Wording from
   <code>docs/wiring.yaml</code>, the same source as the <a href="wiring.html">full wiring guide</a>.</p>
  <p class="g-safety"><span class="patch red" aria-hidden="true"></span><span><b>Press the e-stop and keep the wall adapter unplugged while you wire.</b>
@@ -39,7 +39,7 @@
    <title id="bench-title">Machine wiring on the bench</title>
    <desc id="bench-desc">SKR Pico in the middle with its motor sockets on top, endstop sockets below, lamp and fan outputs on the left
     and USB on the right. Above it the four motors and the spin motor's lever connectors and the camera; below it the four endstops;
-    left the lamp driver, fan and COB lamp; right the laptop, the ESP32-S3 hub and the AS7341 sensor. Wires from earlier pages are dotted.</desc>
+    left the lamp driver, fan and COB lamp; right the laptop and the ESP32-S3 hub. Wires from earlier pages are dotted.</desc>
    <path class="pw-done" d="M75 80V110H180V170"/><path class="pw-done" d="M180 380V330"/>
    <path class="pw-done" d="M450 200H475V170H500"/><path class="pw-done" d="M580 230V190"/><path class="pw-done" d="M150 200H136"/>
    <g class="pw-dim">
@@ -108,18 +108,6 @@
     <text class="box-t" x="580" y="252" text-anchor="middle">ESP32-S3 hub</text>
     <text class="pin-t" x="580" y="270" text-anchor="middle">keypads, opto ✓</text>
    </g>
-   <text class="pin-t" x="520" y="310" text-anchor="middle">3V3</text><text class="pin-t" x="560" y="310" text-anchor="middle">GND</text>
-   <text class="pin-t" x="600" y="310" text-anchor="middle">SCL</text><text class="pin-t" x="640" y="310" text-anchor="middle">SDA</text>
-   <text class="pin-t" x="520" y="328" text-anchor="middle">J1-2</text><text class="pin-t" x="560" y="328" text-anchor="middle">J3-22</text>
-   <text class="pin-t" x="600" y="328" text-anchor="middle">J3-5</text><text class="pin-t" x="640" y="328" text-anchor="middle">J3-4</text>
-   <circle cx="520" cy="340" r="4" class="pw-ink"/><circle cx="560" cy="340" r="4" class="pw-ink"/>
-   <circle cx="600" cy="340" r="4" class="pw-ink"/><circle cx="640" cy="340" r="4" class="pw-ink"/>
-   <rect class="box-r" x="500" y="420" width="160" height="56" rx="8"/>
-   <text class="pin-t" x="520" y="438" text-anchor="middle">VIN</text><text class="pin-t" x="560" y="438" text-anchor="middle">GND</text>
-   <text class="pin-t" x="600" y="438" text-anchor="middle">SCL</text><text class="pin-t" x="640" y="438" text-anchor="middle">SDA</text>
-   <text class="box-t" x="580" y="464" text-anchor="middle">AS7341 (optional)</text>
-   <circle cx="520" cy="420" r="4" class="pw-ink"/><circle cx="560" cy="420" r="4" class="pw-ink"/>
-   <circle cx="600" cy="420" r="4" class="pw-ink"/><circle cx="640" cy="420" r="4" class="pw-ink"/>
    <circle cx="605" cy="150" r="4" class="pw-ink"/>
    <g id="wires"></g><g id="rings"></g>
   </svg>
@@ -143,12 +131,12 @@
 </section>
 
 <p class="foot">Nothing here has been built or measured yet: this is the design. Part numbers in brackets are the parts list IDs
- (README → Electronics). These are sections 3, 4, 5, 7 and 8 of the <a href="wiring.html">full wiring guide</a>; section 9 (standalone
+ (README → Electronics). These are sections 3, 4, 5, 7 and the fan of section 8 of the <a href="wiring.html">full wiring guide</a>; section 9 (standalone
  station) comes with stage 15 and section 10 (colour LED bank) is blocked. After the last check, Next opens the <a href="build.html">build book</a>
  for printing and assembly.</p>
 </main>
 <footer class="site-foot">
- <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html" aria-current="page">Machine wiring</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html" aria-current="page">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
  <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span></p>
 </footer>
 <script src="wiring-guide.js"></script>

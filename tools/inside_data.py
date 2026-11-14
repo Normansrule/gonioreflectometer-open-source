@@ -26,7 +26,8 @@ HUB_COMMANDS = {     # in: what each line does (the firmware is the truth; tools
     "SOURCE": "Which supply is in use: WALL, PACK or USBC with its Wh. Kept across restarts.",
     "ENC?": "Optional AS5600 angle encoders: ENC and one angle per I2C pair.",
     "BAND": "Colour LED bank band 0-7 or OFF. Not wired: the bank is blocked (wiring guide section 10).",
-    "SHOW": "Text on the optional OLED: SHOW line 1|line 2|line 3.",
+    "SHOW": "Text on the optional OLED and status screen: SHOW line 1|line 2|line 3.",
+    "SCREEN": "SCREEN ON / OFF: the optional 2 in status screen; saved, and the hub restarts to take or free its pins.",
 }
 HUB_EVENTS = [
     ("BTN HOME | START | STOP | LIGHT | NEXT | PAUSE", "A key was pressed (debounced, once per press)."),
@@ -160,6 +161,12 @@ def hub() -> dict:
     pins += [{"gpio": consts["UART_TX"], "use": "UART to the Pi station: TX", "kind": "bus"},
              {"gpio": consts["UART_RX"], "use": "UART to the Pi station: RX", "kind": "bus"}]
     pins += [{"gpio": p, "use": f"colour LED band {i} (reserved, not wired)", "kind": "blocked"} for i, p in enumerate(consts["BAND_PINS"])]
+    taken = {p["gpio"] for p in pins}
+    pins += [{"gpio": g, "use": f"status screen {n} (SCREEN ON; else an encoder bus)", "kind": "bus"}
+             for n, g in consts.get("SCREEN_PINS", {}).items() if g not in taken]
+    for p in pins:
+        if p["gpio"] in consts.get("SCREEN_PINS", {}).values() and "I2C" in p["use"]:
+            p["use"] += " / status screen"
     i2c = [{"addr": f"0x{consts[k]:02X}", "part": part} for k, part in
            (("AS", "AS7341 spectral sensor (optional)"), ("INA", "INA219 power monitor (stage 17)"), ("AS5600", "AS5600 encoders (optional)"))]
     i2c.append({"addr": "0x3C", "part": "SSD1306 OLED (optional)"})

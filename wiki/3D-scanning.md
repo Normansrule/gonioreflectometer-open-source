@@ -8,7 +8,7 @@ The camera never moves; the sample axes turn the object, so every photo’s pose
 2.  **Quick shape:** silhouettes → visual hull (Laurentini, 1994).
 3.  **Full mesh:** photogrammetry (Griwodz et al., 2021), then screened Poisson reconstruction (Kazhdan & Hoppe, 2013).
 4.  **Surface detail (optional LED bank):** photometric stereo from known light directions (Ackermann & Goesele, 2015).
-5.  **Material:** measured BRDF fitted and textured onto the mesh; export to a game engine.
+5.  **Material:** measured BRDF fitted onto the mesh; export to a game engine ([Rendering](Rendering.md)).
 
 Stages [11](https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/phases/11-scan-capture) · [12](https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/phases/12-scan-mesh) · [13](https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/phases/13-object-material). Background: [Appendix C](Appendix-C-Calibration-and-3D.md).
 

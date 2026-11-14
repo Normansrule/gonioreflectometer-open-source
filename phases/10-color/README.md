@@ -31,7 +31,7 @@ Tick the boxes; `make done id=M29.1`.
 
 #### Do
 
-1. SPC-02 cable: SDA (blue) → ESP32-S3 J3-4 (GPIO 1), SCL (yellow) → J3-5 (GPIO 2), VIN (red) → J1-2 (3V3), GND (black) → J3-22 (same bus as the OLED: README → Wiring → 8).
+1. SPC-02 cable: SDA (blue) → ESP32-S3 J3-4 (GPIO 1), SCL (yellow) → J3-5 (GPIO 2), VIN (red) → 3V3 lever connector (fed from J1-2), GND (black) → sensor GND lever connector (fed from J3-22) (same bus as the OLED: README → Wiring → 8).
 2. `bash scripts/hub.sh`; `python -m serial.tools.miniterm /dev/ttyACM1 115200` (the hub's port); type `SPEC?`.
 
 #### Verify
@@ -155,4 +155,4 @@ Band → wavelength table in phases/10-color/design.md → Results.
 
 Both values in design.md; commit.
 
-[Sources](../../REFERENCES.md): R1 · G17 · G28 · G37 · G41 · G42 · G45 · T30 · T52 · T53 · T54 · T55 · V9 · V49 · V50 · V51 · V52 · N9 · N13 · N15 · N16 · N17 · N18 · N19 · N20 · N21 · N22 · N23 · N27 · N37 · N38 · N39 · N40 · N41 · N42 · N43 · N44 · N47 · H10 · H40 · H42 · H59 · L4 · L7 · E8
+[Sources](../../REFERENCES.md): R1 · G17 · G28 · G37 · G41 · G42 · G45 · T30 · T52 · T53 · T54 · T55 · V9 · V49 · V50 · V51 · V52 · N9 · N13 · N15 · N16 · N17 · N18 · N19 · N20 · N21 · N22 · N23 · N27 · N37 · N38 · N39 · N40 · N41 · N42 · N43 · N44 · N47 · H10 · H40 · H42 · H59 · L4 · L28 · E8

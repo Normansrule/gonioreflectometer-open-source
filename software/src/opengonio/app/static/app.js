@@ -29,7 +29,8 @@
   function say(msg) { $("banner-text").innerHTML = codeify(msg || ""); $("banner").hidden = !msg; }
   const codeify = t => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>");
   const ACT_NAMES = { "/api/home": "Home all", "/api/move": "Move", "/api/stop": "STOP", "/api/light": "Light",
-    "/api/connect": "Connect", "/api/disconnect": "Disconnect", "/api/run": "Capture", "/api/spectral": "Spectral reading" };
+    "/api/connect": "Connect", "/api/disconnect": "Disconnect", "/api/run": "Capture", "/api/spectral": "Spectral reading",
+    "/api/fit": "Material fitted" };
   async function act(path, body, after) {
     const what = ACT_NAMES[path] || path;
     try { const r = await api(path, body); say(""); log(describe(path, body), "ok"); if (after) after(r); }
@@ -356,10 +357,38 @@
       const { runs } = await api("/api/runs"), ul = $("runlist");
       if (!runs.length) { ul.innerHTML = '<li class="empty small">No runs yet. Run a capture and its curve appears here.</li>'; return; }
       ul.innerHTML = runs.map(r => `<li><button type="button" data-run="${esc(r.name)}" ${r.curve ? "" : "disabled"} aria-current="${r.name === shownRun}">` +
-        `<span>${esc(r.name)}</span><span>${r.simulated ? "simulated · " : ""}${r.shots} shots · ${esc(r.status)}</span></button></li>`).join("");
+        `<span>${esc(r.name)}</span><span>${r.simulated ? "simulated · " : ""}${r.shots} shots · ${esc(r.status)}</span></button>` +
+        `<button type="button" class="dl" data-dl="${esc(r.name)}" aria-label="Download ${esc(r.name)} (zip)" title="Download the run (zip)">↓</button></li>`).join("");
       ul.querySelectorAll("[data-run]").forEach(b => b.addEventListener("click", () => showRun(b.dataset.run)));
+      ul.querySelectorAll("[data-dl]").forEach(b => b.addEventListener("click", () => download(b.dataset.dl)));
     } catch (e) { /* the banner already says why */ }
   }
+  async function download(name) {        // fetch + blob, so the in-browser demo (docs/app) can answer it too
+    try {
+      const r = await fetch("/api/download?run=" + encodeURIComponent(name));
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j.error || r.statusText); }
+      const url = URL.createObjectURL(await r.blob()), a = document.createElement("a");
+      a.href = url; a.download = name + ".zip"; document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      log(`Downloaded ${name}.zip`, "ok");
+    } catch (e) { say(`Download failed: ${e.message}`); }
+  }
+
+  /* ---------- phones and tablets: pairing (this computer only; opengonio app --lan) ---------- */
+  async function setupPhone() {
+    let p; try { p = await api("/api/pairing"); } catch (e) { return; }      // phones and the web demo: no button
+    $("phone").hidden = false;
+    $("phone").addEventListener("click", () => {
+      $("pair-body").innerHTML = p.lan
+        ? `<p>Scan with the phone's camera, on the same Wi-Fi. Only devices that scan this can see or control the machine; STOP always works.</p>` +
+          (p.svg ? `<img class="qr" alt="QR code for ${esc(p.url)}" src="${p.svg}">` : "") + `<p class="small"><code>${esc(p.url)}</code></p>` +
+          `<p class="small">Then Share → Add to Home Screen (iPhone) or ⋮ → Install app (Android) to open it like an app.</p>`
+        : `<p>${codeify(p.hint)}</p>`;
+      $("phone-dlg").showModal();
+    });
+  }
+  setupPhone();
+
   async function showRun(name, result) {
     shownRun = name;
     let c; try { c = await api("/api/curve?run=" + encodeURIComponent(name)); } catch (e) { say(e.message); return; }
@@ -371,8 +400,41 @@
     if (result && result.lamp_drift_pct != null) notes.push(`Lamp drift over the run: ${result.lamp_drift_pct} %`);
     $("notes").innerHTML = notes.map(n => `<li>${codeify(n)}</li>`).join("");
     curveRows = c.rows; drawCurve(); runsKey = "";
+    showMaterial(name);
     loadRuns();
   }
+  /* ---------- material: the run's fit on a shader ball (opengonio/render; og/render-gl.js draws the same GGX) ---------- */
+  let matViewer = null, matRun = null;
+  async function showMaterial(name) {
+    matRun = name;
+    let m; try { m = await api("/api/material?run=" + encodeURIComponent(name)); } catch (e) { $("run-mat").hidden = true; return; }
+    if (matRun !== name) return;
+    const src = m.material || m.preview;
+    $("run-mat").hidden = !(src || m.kind === "fittable");
+    $("mat-fit").hidden = m.kind !== "fittable"; $("mat-glb").hidden = !src;
+    const kind = m.kind === "fit" ? ["ok", "Fitted"] : m.kind === "fittable" ? ["lamp", "Not fitted yet"] : ["open", "Preview: simulated truth"];
+    $("mat-kind").className = "verdict " + kind[0]; $("mat-kind").textContent = kind[1];
+    const notes = [];
+    if (m.kind === "fit") { notes.push(`Fit RMS ${m.rms_pct_of_peak} % of peak over ${m.rows} rows`);
+      if (m.holdout) notes.push(`holdout ${m.holdout.rms_pct_of_peak} %`); }
+    else notes.push(m.why);
+    if (src) (src.notes || []).forEach(n => notes.push(n));
+    $("mat-note").innerHTML = codeify(notes.join(" · "));
+    $("mat-vals").innerHTML = src ? [["Base colour", src.base_color[0]], ["Roughness", src.roughness], ["Metallic", src.metallic],
+      ["Unity smoothness", (1 - src.roughness).toFixed(3)]].map(([k, v]) => `<div><dt>${k}</dt><dd>${(+v).toFixed(3)}</dd></div>`).join("") : "";
+    if (!src || !window.OGRender || !OGRender.webgl2()) return;
+    if (!matViewer) { matViewer = OGRender.create($("mat-gl"), { state: { camEl: 18 } }); if (!matViewer) return; matViewer.setMesh(OGRender.shaderBall()); }
+    matViewer.setMaterial({ base: src.base_color, rough: src.roughness, metal: src.metallic });
+  }
+  $("mat-fit").addEventListener("click", () => act("/api/fit", { run: matRun }, () => showMaterial(matRun)));
+  $("mat-glb").addEventListener("click", async () => {
+    try { const r = await fetch("/api/glb?run=" + encodeURIComponent(matRun));
+      if (!r.ok) throw new Error((await r.json()).error || r.statusText);
+      const a = document.createElement("a"); a.href = URL.createObjectURL(await r.blob()); a.download = `${matRun}_material.glb`; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 4000); log(`Material saved: ${matRun}_material.glb`, "ok");
+    } catch (e) { say(e.message); }
+  });
+
   let curveRows = null;
   function drawCurve() {
     if (!curveRows) return;

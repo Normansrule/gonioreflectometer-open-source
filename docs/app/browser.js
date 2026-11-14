@@ -16,7 +16,7 @@
     const done = waiting.get(m.id);
     if (!done) return;
     waiting.delete(m.id);
-    done(m.png ? new Response(new Blob([m.png], { type: "image/png" }), { status: m.status })
+    done(m.bin ? new Response(new Blob([m.bin], { type: m.ctype }), { status: m.status })
                : new Response(m.body, { status: m.status, headers: { "Content-Type": "application/json" } }));
   };
   const real = window.fetch.bind(window);

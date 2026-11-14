@@ -6,6 +6,11 @@
 <title>OpenGonio control</title>
 <meta name="description" content="Control app for OpenGonio: connect, home, jog, light, capture and see the curve.">
 <meta name="theme-color" content="#0c0b0a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="OpenGonio">
 <link rel="icon" href="og/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="og/og.css">
 <link rel="stylesheet" href="app.css">
@@ -16,10 +21,17 @@
 <header class="bar">
  <h1 class="mark">OpenGonio<span class="mark-sub">Control</span></h1>
  <p class="conn" id="conn" role="status"><span class="patch open" aria-hidden="true"></span><span id="conn-text">Starting…</span></p>
+ <button class="btn ghost" type="button" id="phone" hidden>Phone</button>
  <button class="btn ghost" type="button" id="disconnect" hidden>Disconnect</button>
  <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
  <button class="btn stop" type="button" id="stop" aria-keyshortcuts="Escape" title="Stop now (Esc)">Stop</button>
 </header>
+
+<dialog class="pair" id="phone-dlg" aria-labelledby="pair-h">
+ <h2 id="pair-h">Use a phone or tablet</h2>
+ <div id="pair-body"></div>
+ <form method="dialog"><button class="btn" type="submit">Close</button></form>
+</dialog>
 
 <div class="banner" id="banner" role="alert" hidden>
  <span class="patch block" aria-hidden="true"></span><p id="banner-text"></p>
@@ -123,6 +135,14 @@
    <canvas id="curve" data-aspect="0.62" role="img" aria-label="Curve of the run"></canvas>
    <ul class="notes small" id="notes"></ul>
   </div>
+  <div class="group material" id="run-mat" hidden>
+   <div class="group-head"><h2>Material</h2><span class="verdict" id="mat-kind"></span></div>
+   <div class="mat-stage"><canvas id="mat-gl" tabindex="0" role="img" aria-label="The run's material on a shader ball: drag to turn it; the values are listed below"></canvas></div>
+   <dl class="tiles" id="mat-vals"></dl>
+   <p class="small" id="mat-note"></p>
+   <div class="row-2"><button class="btn ghost" type="button" id="mat-fit" hidden>Fit material</button><button class="btn ghost" type="button" id="mat-glb">Download .glb</button></div>
+   <p class="small dim">Open the .glb in Blender, Unity, Unreal or three.js, or on <a href="https://normansrule.github.io/gonioreflectometer-open-source/render.html">the Render page</a>.</p>
+  </div>
   <div class="group">
    <h2>Earlier runs</h2>
    <ul class="runlist" id="runlist"><li class="empty small">No runs yet. Run a capture and its curve appears here.</li></ul>
@@ -153,6 +173,7 @@
 
  <p class="loading" id="loading">Connecting to the app…</p>
 </main>
+<script src="og/render-gl.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

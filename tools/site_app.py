@@ -1,6 +1,6 @@
 """The control app on the website: docs/app/ runs the real opengonio package (simulated machine) in the browser.
 
-Copies software/src/opengonio/app/static/{index.html, app.js, app.css} into docs/app/ (pointing at the website's og/
+Copies software/src/opengonio/app/static/{index.html, app.js, app.css, manifest, icons} into docs/app/ (pointing at the website's og/
 files and adding the in-browser loader), and zips the package source + config into docs/app/opengonio.zip, which
 docs/app/worker.js unpacks into Pyodide (Python compiled to WebAssembly). Same zip bytes for the same sources.
 Hand-written: docs/app/browser.js (routes the app's /api/ calls to the worker) and docs/app/worker.js.
@@ -54,8 +54,11 @@ def write_if_changed(path: Path, data: bytes) -> None:
 def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     write_if_changed(OUT / "index.html", page().encode("utf-8"))
-    for name in ("app.js", "app.css"):
+    for name in ("app.js", "app.css", "manifest.webmanifest"):
         write_if_changed(OUT / name, (STATIC / name).read_bytes())
+    (OUT / "icons").mkdir(exist_ok=True)
+    for f in sorted((STATIC / "icons").glob("*.png")):
+        write_if_changed(OUT / "icons" / f.name, f.read_bytes())
     z = package_zip()
     write_if_changed(OUT / "opengonio.zip", z)
     print(f"docs/app: control app web demo, package zip {len(z) // 1024} kB")

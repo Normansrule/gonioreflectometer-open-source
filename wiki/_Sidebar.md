@@ -10,6 +10,7 @@
 - [CAD](CAD.md)
 - [Calibration](Calibration.md)
 - [3D scanning](3D-scanning.md)
+- [Rendering](Rendering.md)
 - [Software](Software.md)
 - [Commands](Commands.md)
 - [Build guide](Build-guide.md)

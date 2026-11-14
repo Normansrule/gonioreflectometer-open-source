@@ -1,112 +1,208 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 565" font-family="Segoe UI,Helvetica,Arial,sans-serif">
-<rect width="1000" height="565" rx="14" fill="#0d1117"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1377 917" font-family="Segoe UI,Helvetica,Arial,sans-serif">
+<rect width="1377" height="917" rx="14" fill="#0d1117"/>
 <text x="28" y="34" fill="#f0f6fc" font-size="18" font-weight="600">8 · Optional add-ons</text>
 <text x="28" y="56" fill="#8b949e" font-size="12">Stage 02, 10, 15 · each line is one wire, from the left pin to the right pin; the number matches the table row below.</text>
-<rect x="28" y="78" width="273" height="80" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-<text x="40" y="98" fill="#f0f6fc" font-size="13" font-weight="600">40 mm fan (CTL-08, optional)</text>
-<rect x="34" y="112" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="124" fill="#f0f6fc" font-size="11.5">red (+)</text>
-<rect x="34" y="132" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="146" fill="#f0f6fc" font-size="11.5">black (−)</text>
-<rect x="451" y="176" width="232" height="101" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-<text x="463" y="196" fill="#f0f6fc" font-size="13" font-weight="600">SKR Pico (CTL-01)</text>
-<rect x="457" y="210" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="222" fill="#f0f6fc" font-size="11.5">FAN1 12/24V</text>
-<rect x="457" y="230" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="244" fill="#f0f6fc" font-size="11.5">FAN1 IO17</text>
-<rect x="457" y="252" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="264" fill="#f0f6fc" font-size="11.5">RGB pin 3 (5V) / RGB pin 1 (GND)</text>
-<rect x="28" y="176" width="273" height="122" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-<text x="40" y="196" fill="#f0f6fc" font-size="13" font-weight="600">AS7341 sensor (SPC-01, optional)</text>
-<rect x="34" y="210" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="222" fill="#f0f6fc" font-size="11.5">VIN (red)</text>
-<rect x="34" y="230" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="244" fill="#f0f6fc" font-size="11.5">GND (black)</text>
-<rect x="34" y="252" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="264" fill="#f0f6fc" font-size="11.5">SCL (yellow)</text>
-<rect x="34" y="272" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="286" fill="#f0f6fc" font-size="11.5">SDA (blue)</text>
-<rect x="451" y="295" width="232" height="122" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-<text x="463" y="315" fill="#f0f6fc" font-size="13" font-weight="600">ESP32-S3 hub (CTL-02)</text>
-<rect x="457" y="328" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="342" fill="#f0f6fc" font-size="11.5">J1-2 (3V3)</text>
-<rect x="457" y="350" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="362" fill="#f0f6fc" font-size="11.5">J3-22 (GND)</text>
-<rect x="457" y="370" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="384" fill="#f0f6fc" font-size="11.5">J3-5 (GPIO2)</text>
-<rect x="457" y="392" width="220" height="18" rx="4" fill="#0d1117"/>
-<text x="465" y="404" fill="#f0f6fc" font-size="11.5">J3-4 (GPIO1)</text>
-<rect x="28" y="316" width="273" height="122" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-<text x="40" y="336" fill="#f0f6fc" font-size="13" font-weight="600">OLED (STA-05, optional)</text>
-<rect x="34" y="350" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="362" fill="#f0f6fc" font-size="11.5">VIN</text>
-<rect x="34" y="370" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="384" fill="#f0f6fc" font-size="11.5">GND</text>
-<rect x="34" y="392" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="404" fill="#f0f6fc" font-size="11.5">SCL</text>
-<rect x="34" y="412" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="426" fill="#f0f6fc" font-size="11.5">SDA</text>
-<rect x="28" y="456" width="273" height="59" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-<text x="40" y="476" fill="#f0f6fc" font-size="13" font-weight="600">Alignment laser (LAR-09, tool)</text>
-<rect x="34" y="490" width="261" height="18" rx="4" fill="#0d1117"/>
-<text x="42" y="502" fill="#f0f6fc" font-size="11.5">+ / −</text>
-<path d="M301,120 C376,120 376,218 451,218" fill="none" stroke="#f85149" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.29s" repeatCount="indefinite" path="M301,120 C376,120 376,218 451,218"/></circle>
-<circle cx="301" cy="120" r="4.5" fill="#f85149" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="218" r="4.5" fill="#f85149" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="355" cy="144" r="9" fill="#0d1117" stroke="#f85149" stroke-width="1.5"/><text x="355" y="148" fill="#f0f6fc" font-size="10" text-anchor="middle">1</text>
-<path d="M301,142 C376,142 376,240 451,240" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.58s" repeatCount="indefinite" path="M301,142 C376,142 376,240 451,240"/></circle>
-<circle cx="301" cy="142" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="240" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="397" cy="216" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="397" y="220" fill="#f0f6fc" font-size="10" text-anchor="middle">2</text>
-<path d="M301,218 C376,218 376,338 451,338" fill="none" stroke="#ffa657" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.87s" repeatCount="indefinite" path="M301,218 C376,218 376,338 451,338"/></circle>
-<circle cx="301" cy="218" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="338" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="376" cy="278" r="9" fill="#0d1117" stroke="#ffa657" stroke-width="1.5"/><text x="376" y="282" fill="#f0f6fc" font-size="10" text-anchor="middle">3</text>
-<path d="M301,240 C376,240 376,358 451,358" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.16s" repeatCount="indefinite" path="M301,240 C376,240 376,358 451,358"/></circle>
-<circle cx="301" cy="240" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="358" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="355" cy="268" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="355" y="272" fill="#f0f6fc" font-size="10" text-anchor="middle">4</text>
-<path d="M301,260 C376,260 376,380 451,380" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.45s" repeatCount="indefinite" path="M301,260 C376,260 376,380 451,380"/></circle>
-<circle cx="301" cy="260" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="380" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="397" cy="351" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="397" y="355" fill="#f0f6fc" font-size="10" text-anchor="middle">5</text>
-<path d="M301,282 C376,282 376,400 451,400" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.74s" repeatCount="indefinite" path="M301,282 C376,282 376,400 451,400"/></circle>
-<circle cx="301" cy="282" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="400" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="376" cy="341" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="376" y="345" fill="#f0f6fc" font-size="10" text-anchor="middle">6</text>
-<path d="M301,358 C376,358 376,338 451,338" fill="none" stroke="#ffa657" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="2.03s" repeatCount="indefinite" path="M301,358 C376,358 376,338 451,338"/></circle>
-<circle cx="301" cy="358" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="338" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="355" cy="353" r="9" fill="#0d1117" stroke="#ffa657" stroke-width="1.5"/><text x="355" y="357" fill="#f0f6fc" font-size="10" text-anchor="middle">7</text>
-<path d="M301,380 C376,380 376,358 451,358" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="2.32s" repeatCount="indefinite" path="M301,380 C376,380 376,358 451,358"/></circle>
-<circle cx="301" cy="380" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="358" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="397" cy="364" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="397" y="368" fill="#f0f6fc" font-size="10" text-anchor="middle">8</text>
-<path d="M301,400 C376,400 376,380 451,380" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.00s" repeatCount="indefinite" path="M301,400 C376,400 376,380 451,380"/></circle>
-<circle cx="301" cy="400" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="380" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="376" cy="390" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="376" y="394" fill="#f0f6fc" font-size="10" text-anchor="middle">9</text>
-<path d="M301,422 C376,422 376,400 451,400" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.29s" repeatCount="indefinite" path="M301,422 C376,422 376,400 451,400"/></circle>
-<circle cx="301" cy="422" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="400" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="355" cy="416" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="355" y="420" fill="#f0f6fc" font-size="10" text-anchor="middle">10</text>
-<path d="M301,498 C376,498 376,260 451,260" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
-<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.58s" repeatCount="indefinite" path="M301,498 C376,498 376,260 451,260"/></circle>
-<circle cx="301" cy="498" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="451" cy="260" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
-<circle cx="397" cy="318" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="397" y="322" fill="#f0f6fc" font-size="10" text-anchor="middle">11</text>
-<line x1="28" y1="547" x2="50" y2="547" stroke="#f85149" stroke-width="3"/><text x="56" y="551" fill="#8b949e" font-size="11.5">18–24 V</text>
-<line x1="117" y1="547" x2="139" y2="547" stroke="#8b949e" stroke-width="3"/><text x="145" y="551" fill="#8b949e" font-size="11.5">ground / − side</text>
-<line x1="262" y1="547" x2="284" y2="547" stroke="#ffa657" stroke-width="3"/><text x="290" y="551" fill="#8b949e" font-size="11.5">3.3 / 5 V</text>
-<line x1="365" y1="547" x2="387" y2="547" stroke="#bc8cff" stroke-width="3"/><text x="393" y="551" fill="#8b949e" font-size="11.5">signal</text>
+<rect x="28" y="130" width="395" height="80" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="40" y="150" fill="#f0f6fc" font-size="13" font-weight="600">40 mm fan (CTL-08, optional)</text>
+<rect x="34" y="164" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="176" fill="#f0f6fc" font-size="11.5">red (+)</text>
+<rect x="34" y="184" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="198" fill="#f0f6fc" font-size="11.5">black (−)</text>
+<rect x="573" y="298" width="232" height="101" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="585" y="318" fill="#f0f6fc" font-size="13" font-weight="600">SKR Pico (CTL-01)</text>
+<rect x="579" y="332" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="344" fill="#f0f6fc" font-size="11.5">FAN1 12/24V</text>
+<rect x="579" y="352" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="366" fill="#f0f6fc" font-size="11.5">FAN1 IO17</text>
+<rect x="579" y="374" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="386" fill="#f0f6fc" font-size="11.5">RGB pin 3 (5V) / RGB pin 1 (GND)</text>
+<rect x="573" y="417" width="232" height="206" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="585" y="437" fill="#f0f6fc" font-size="13" font-weight="600">ESP32-S3 hub (CTL-02)</text>
+<rect x="579" y="450" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="464" fill="#f0f6fc" font-size="11.5">J1-2 (3V3)</text>
+<rect x="579" y="472" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="484" fill="#f0f6fc" font-size="11.5">J3-22 (GND)</text>
+<rect x="579" y="492" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="506" fill="#f0f6fc" font-size="11.5">J3-5 (GPIO2)</text>
+<rect x="579" y="514" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="526" fill="#f0f6fc" font-size="11.5">J3-4 (GPIO1)</text>
+<rect x="579" y="534" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="548" fill="#f0f6fc" font-size="11.5">J3-6 (GPIO42)</text>
+<rect x="579" y="556" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="568" fill="#f0f6fc" font-size="11.5">J3-7 (GPIO41)</text>
+<rect x="579" y="576" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="590" fill="#f0f6fc" font-size="11.5">J1-11 (GPIO18)</text>
+<rect x="579" y="598" width="220" height="18" rx="4" fill="#0d1117"/>
+<text x="587" y="610" fill="#f0f6fc" font-size="11.5">J3-10 (GPIO38)</text>
+<rect x="954" y="330" width="395" height="143" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="966" y="350" fill="#f0f6fc" font-size="13" font-weight="600">Lever connector hub 3V3 (WAGO 221-415, 5-way)</text>
+<rect x="960" y="363" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="376" fill="#f0f6fc" font-size="11.5">1</text>
+<rect x="960" y="384" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="397" fill="#f0f6fc" font-size="11.5">2</text>
+<rect x="960" y="405" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="418" fill="#f0f6fc" font-size="11.5">3</text>
+<rect x="960" y="426" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="439" fill="#f0f6fc" font-size="11.5">4</text>
+<rect x="960" y="447" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="460" fill="#f0f6fc" font-size="11.5">5</text>
+<rect x="954" y="490" width="395" height="101" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="966" y="510" fill="#f0f6fc" font-size="13" font-weight="600">Lever connector sensor GND (WAGO 221-413, 3-way)</text>
+<rect x="960" y="524" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="537" fill="#f0f6fc" font-size="11.5">1</text>
+<rect x="960" y="545" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="558" fill="#f0f6fc" font-size="11.5">2</text>
+<rect x="960" y="566" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="968" y="579" fill="#f0f6fc" font-size="11.5">3</text>
+<rect x="28" y="228" width="395" height="122" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="40" y="248" fill="#f0f6fc" font-size="13" font-weight="600">AS7341 sensor (SPC-01, optional)</text>
+<rect x="34" y="262" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="274" fill="#f0f6fc" font-size="11.5">VIN (red)</text>
+<rect x="34" y="282" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="296" fill="#f0f6fc" font-size="11.5">GND (black)</text>
+<rect x="34" y="304" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="316" fill="#f0f6fc" font-size="11.5">SCL (yellow)</text>
+<rect x="34" y="324" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="338" fill="#f0f6fc" font-size="11.5">SDA (blue)</text>
+<rect x="28" y="368" width="395" height="122" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="40" y="388" fill="#f0f6fc" font-size="13" font-weight="600">OLED (STA-05, optional)</text>
+<rect x="34" y="402" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="414" fill="#f0f6fc" font-size="11.5">VIN</text>
+<rect x="34" y="422" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="436" fill="#f0f6fc" font-size="11.5">GND</text>
+<rect x="34" y="444" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="456" fill="#f0f6fc" font-size="11.5">SCL</text>
+<rect x="34" y="464" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="478" fill="#f0f6fc" font-size="11.5">SDA</text>
+<rect x="28" y="508" width="395" height="206" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="40" y="528" fill="#f0f6fc" font-size="13" font-weight="600">Status screen, Waveshare 2 in (STA-09, optional)</text>
+<rect x="34" y="542" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="554" fill="#f0f6fc" font-size="11.5">VCC</text>
+<rect x="34" y="562" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="576" fill="#f0f6fc" font-size="11.5">GND</text>
+<rect x="34" y="584" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="596" fill="#f0f6fc" font-size="11.5">RST</text>
+<rect x="34" y="604" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="618" fill="#f0f6fc" font-size="11.5">BL</text>
+<rect x="34" y="626" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="638" fill="#f0f6fc" font-size="11.5">CLK</text>
+<rect x="34" y="646" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="660" fill="#f0f6fc" font-size="11.5">DIN</text>
+<rect x="34" y="668" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="680" fill="#f0f6fc" font-size="11.5">DC</text>
+<rect x="34" y="688" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="702" fill="#f0f6fc" font-size="11.5">CS</text>
+<rect x="28" y="732" width="395" height="59" rx="9" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+<text x="40" y="752" fill="#f0f6fc" font-size="13" font-weight="600">Alignment laser (LAR-09, tool)</text>
+<rect x="34" y="766" width="383" height="18" rx="4" fill="#0d1117"/>
+<text x="42" y="778" fill="#f0f6fc" font-size="11.5">+ / −</text>
+<path d="M423,172 C498,172 498,340 573,340" fill="none" stroke="#f85149" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.29s" repeatCount="indefinite" path="M423,172 C498,172 498,340 573,340"/></circle>
+<circle cx="423" cy="172" r="4.5" fill="#f85149" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="340" r="4.5" fill="#f85149" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="477" cy="213" r="9" fill="#0d1117" stroke="#f85149" stroke-width="1.5"/><text x="477" y="217" fill="#f0f6fc" font-size="10" text-anchor="middle">1</text>
+<path d="M423,194 C498,194 498,362 573,362" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.58s" repeatCount="indefinite" path="M423,194 C498,194 498,362 573,362"/></circle>
+<circle cx="423" cy="194" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="362" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="519" cy="321" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="519" y="325" fill="#f0f6fc" font-size="10" text-anchor="middle">2</text>
+<path d="M804,460 C879,460 879,372 954,372" fill="none" stroke="#ffa657" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.87s" repeatCount="indefinite" path="M804,460 C879,460 879,372 954,372"/></circle>
+<circle cx="804" cy="460" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="372" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="879" cy="416" r="9" fill="#0d1117" stroke="#ffa657" stroke-width="1.5"/><text x="879" y="420" fill="#f0f6fc" font-size="10" text-anchor="middle">3</text>
+<path d="M804,480 C879,480 879,533 954,533" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.16s" repeatCount="indefinite" path="M804,480 C879,480 879,533 954,533"/></circle>
+<circle cx="804" cy="480" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="533" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="858" cy="493" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="858" y="497" fill="#f0f6fc" font-size="10" text-anchor="middle">4</text>
+<path d="M423,270 H441 V90 H936 V393 H954" fill="none" stroke="#ffa657" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.45s" repeatCount="indefinite" path="M423,270 H441 V90 H936 V393 H954"/></circle>
+<circle cx="423" cy="270" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="393" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="659" cy="90" r="9" fill="#0d1117" stroke="#ffa657" stroke-width="1.5"/><text x="659" y="94" fill="#f0f6fc" font-size="10" text-anchor="middle">5</text>
+<path d="M423,292 H450 V102 H927 V554 H954" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.74s" repeatCount="indefinite" path="M423,292 H450 V102 H927 V554 H954"/></circle>
+<circle cx="423" cy="292" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="554" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="689" cy="102" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="689" y="106" fill="#f0f6fc" font-size="10" text-anchor="middle">6</text>
+<path d="M423,312 C498,312 498,502 573,502" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="2.03s" repeatCount="indefinite" path="M423,312 C498,312 498,502 573,502"/></circle>
+<circle cx="423" cy="312" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="502" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="477" cy="358" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="477" y="362" fill="#f0f6fc" font-size="10" text-anchor="middle">7</text>
+<path d="M423,334 C498,334 498,522 573,522" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="2.32s" repeatCount="indefinite" path="M423,334 C498,334 498,522 573,522"/></circle>
+<circle cx="423" cy="334" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="522" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="519" cy="477" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="519" y="481" fill="#f0f6fc" font-size="10" text-anchor="middle">8</text>
+<path d="M423,410 H459 V114 H918 V393 H954" fill="none" stroke="#ffa657" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.00s" repeatCount="indefinite" path="M423,410 H459 V114 H918 V393 H954"/></circle>
+<circle cx="423" cy="410" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="393" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="719" cy="114" r="9" fill="#0d1117" stroke="#ffa657" stroke-width="1.5"/><text x="719" y="118" fill="#f0f6fc" font-size="10" text-anchor="middle">9</text>
+<path d="M423,432 H468 V807 H909 V554 H954" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.29s" repeatCount="indefinite" path="M423,432 H468 V807 H909 V554 H954"/></circle>
+<circle cx="423" cy="432" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="554" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="689" cy="807" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="689" y="811" fill="#f0f6fc" font-size="10" text-anchor="middle">10</text>
+<path d="M423,452 C498,452 498,502 573,502" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.58s" repeatCount="indefinite" path="M423,452 C498,452 498,502 573,502"/></circle>
+<circle cx="423" cy="452" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="502" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="519" cy="490" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="519" y="494" fill="#f0f6fc" font-size="10" text-anchor="middle">11</text>
+<path d="M423,474 C498,474 498,522 573,522" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.87s" repeatCount="indefinite" path="M423,474 C498,474 498,522 573,522"/></circle>
+<circle cx="423" cy="474" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="522" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="498" cy="498" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="498" y="502" fill="#f0f6fc" font-size="10" text-anchor="middle">12</text>
+<path d="M423,550 H477 V819 H900 V414 H954" fill="none" stroke="#ffa657" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.16s" repeatCount="indefinite" path="M423,550 H477 V819 H900 V414 H954"/></circle>
+<circle cx="423" cy="550" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="414" r="4.5" fill="#ffa657" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="659" cy="819" r="9" fill="#0d1117" stroke="#ffa657" stroke-width="1.5"/><text x="659" y="823" fill="#f0f6fc" font-size="10" text-anchor="middle">13</text>
+<path d="M423,572 H486 V831 H891 V575 H954" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.45s" repeatCount="indefinite" path="M423,572 H486 V831 H891 V575 H954"/></circle>
+<circle cx="423" cy="572" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="575" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="719" cy="831" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="719" y="835" fill="#f0f6fc" font-size="10" text-anchor="middle">14</text>
+<path d="M423,592 H495 V843 H882 V435 H954" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="1.74s" repeatCount="indefinite" path="M423,592 H495 V843 H882 V435 H954"/></circle>
+<circle cx="423" cy="592" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="435" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="689" cy="843" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="689" y="847" fill="#f0f6fc" font-size="10" text-anchor="middle">15</text>
+<path d="M423,614 H504 V855 H873 V456 H954" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="2.03s" repeatCount="indefinite" path="M423,614 H504 V855 H873 V456 H954"/></circle>
+<circle cx="423" cy="614" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="954" cy="456" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="659" cy="855" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="659" y="859" fill="#f0f6fc" font-size="10" text-anchor="middle">16</text>
+<path d="M423,634 C498,634 498,544 573,544" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="2.32s" repeatCount="indefinite" path="M423,634 C498,634 498,544 573,544"/></circle>
+<circle cx="423" cy="634" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="544" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="519" cy="565" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="519" y="569" fill="#f0f6fc" font-size="10" text-anchor="middle">17</text>
+<path d="M423,656 C498,656 498,564 573,564" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.00s" repeatCount="indefinite" path="M423,656 C498,656 498,564 573,564"/></circle>
+<circle cx="423" cy="656" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="564" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="498" cy="610" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="498" y="614" fill="#f0f6fc" font-size="10" text-anchor="middle">18</text>
+<path d="M423,676 C498,676 498,586 573,586" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.29s" repeatCount="indefinite" path="M423,676 C498,676 498,586 573,586"/></circle>
+<circle cx="423" cy="676" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="586" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="477" cy="655" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="477" y="659" fill="#f0f6fc" font-size="10" text-anchor="middle">19</text>
+<path d="M423,698 C498,698 498,606 573,606" fill="none" stroke="#bc8cff" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.58s" repeatCount="indefinite" path="M423,698 C498,698 498,606 573,606"/></circle>
+<circle cx="423" cy="698" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="606" r="4.5" fill="#bc8cff" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="519" cy="628" r="9" fill="#0d1117" stroke="#bc8cff" stroke-width="1.5"/><text x="519" y="632" fill="#f0f6fc" font-size="10" text-anchor="middle">20</text>
+<path d="M423,774 C498,774 498,382 573,382" fill="none" stroke="#8b949e" stroke-width="2.4" stroke-linejoin="round" stroke-dasharray="9 5" opacity="0.95"><animate attributeName="stroke-dashoffset" from="28" to="0" dur="1.3s" repeatCount="indefinite"/></path>
+<circle r="3.6" fill="#f0f6fc"><animateMotion dur="2.6s" begin="0.87s" repeatCount="indefinite" path="M423,774 C498,774 498,382 573,382"/></circle>
+<circle cx="423" cy="774" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="573" cy="382" r="4.5" fill="#8b949e" stroke="#0d1117" stroke-width="1.5"/>
+<circle cx="498" cy="578" r="9" fill="#0d1117" stroke="#8b949e" stroke-width="1.5"/><text x="498" y="582" fill="#f0f6fc" font-size="10" text-anchor="middle">21</text>
+<line x1="28" y1="899" x2="50" y2="899" stroke="#f85149" stroke-width="3"/><text x="56" y="903" fill="#8b949e" font-size="11.5">18–24 V</text>
+<line x1="117" y1="899" x2="139" y2="899" stroke="#8b949e" stroke-width="3"/><text x="145" y="903" fill="#8b949e" font-size="11.5">ground / − side</text>
+<line x1="262" y1="899" x2="284" y2="899" stroke="#ffa657" stroke-width="3"/><text x="290" y="903" fill="#8b949e" font-size="11.5">3.3 / 5 V</text>
+<line x1="365" y1="899" x2="387" y2="899" stroke="#bc8cff" stroke-width="3"/><text x="393" y="903" fill="#8b949e" font-size="11.5">signal</text>
 </svg>

@@ -13,15 +13,15 @@ Your decisions on every part I suggested. **Edit this file** (on GitHub: open it
 <!-- parts-summary -->
 | Status | Parts | Core USD | Optional USD | Tools USD |
 |---|---:|---:|---:|---:|
-| suggested | 80 | $450.21 | $425.58 | $469.76 |
+| suggested | 77 | $440.85 | $436.25 | $469.76 |
 | agreed | 0 | $0.00 | $0.00 | $0.00 |
-| ordered | 4 | $44.98 | $0.00 | $0.00 |
+| ordered | 8 | $70.75 | $0.00 | $0.00 |
 | have | 0 | $0.00 | $0.00 | $0.00 |
 | swap | 0 | $0.00 | $0.00 | $0.00 |
 | skip | 0 | $0.00 | $0.00 | $0.00 |
-| **Still to buy** | 56 | **$450.21** | **$0.00** | **$469.76** |
+| **Still to buy** | 52 | **$440.85** | **$0.00** | **$469.76** |
 | Paid so far | | $0.00 | | |
-| Plan: every core part bought (cap $630) | | $495.19 | | |
+| Plan: every core part bought (cap $630) | | $511.60 | | |
 
 Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optional parts you `agreed` to. Tools are bought once and kept: they have their own total and are not in the machine cap.
 
@@ -92,7 +92,7 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
 
 ## 01 · Power
 
-0/6 decided · still to buy $54.26 · [bom.csv](phases/01-power/bom.csv) · [checklist](phases/01-power/README.md)
+0/6 decided · still to buy $66.71 · [bom.csv](phases/01-power/bom.csv) · [checklist](phases/01-power/README.md)
 
 - [ ] **PWR-30** 24 V 3 A wall adapter with screw-terminal DC jack — 1 × $17.85 = $17.85 · [buy at amazon.com](https://www.amazon.com/dp/B078RY7BPL) · status: suggested
   - <img src="docs/assets/parts/icon-psu.svg" width="64" height="64" alt="PWR-30"> **Qty 1** · **Must meet:** Regulated 24 V DC, ≥ 3 A (72 W), 5.5 × 2.1 mm plug, short-circuit and overload protection, with a female 5.5 × 2.1 mm jack to screw terminals (+ / − marked): no solder
@@ -114,9 +114,9 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
   - *why:* Power wiring
   - note:
   - paid:
-- [ ] **PWR-20** Lever wire connectors, WAGO 221 assortment (12) — 1 × $12.45 = $12.45 · [buy at amazon.com](https://www.amazon.com/dp/B0CJ5QF4Z2) · status: suggested
-  - <img src="docs/assets/parts/icon-lever.svg" width="64" height="64" alt="PWR-20"> **Qty 1** · **Must meet:** Lever splicing connectors for 24–12 AWG stranded and solid wire (fine-stranded down to 0.14 mm²), 2/3/5-way, ≥ 20 A (WAGO 221-412/413/415): ≥ 3 × 3-way, 3 × 2-way, 3 × 5-way
-  - *why:* Every bare-wire join: no solder, no crimp, no heat-shrink · Uses (README → Wiring): MOT+, MOT− and keypad GND 221-413; M1 pancake splice 3 × 221-412 + 1 × 221-415 (motor leads ~26 AWG: only the 221-41x take fine-stranded 0.14 mm²); lamp leads 2 × 221-415; all three 221-2401 at the limit switch (two splices into the red run + the unused wire's cap). The three 221-413s sit in pockets on the controller tray (CTL-10b).
+- [ ] **PWR-20** Lever wire connectors, WAGO 221 assortment (12) — 2 × $12.45 = $24.90 · [buy at amazon.com](https://www.amazon.com/dp/B0CJ5QF4Z2) · status: suggested
+  - <img src="docs/assets/parts/icon-lever.svg" width="64" height="64" alt="PWR-20"> **Qty 2** · **Must meet:** Lever splicing connectors for 24–12 AWG stranded and solid wire (fine-stranded down to 0.14 mm²), 2/3/5-way, ≥ 20 A (WAGO 221-412/413/415): ≥ 4 × 3-way, 6 × 2-way, 4 × 5-way, 3 × 221-2401
+  - *why:* Every bare-wire join: no solder, no crimp, no heat-shrink · Two packs: one is not enough since the lamp driver has wire leads. Uses (README → Wiring): MOT+, MOT− and keypad GND 221-413; M1 pancake splice 3 × 221-412 + 1 × 221-415 (motor leads ~26 AWG: only the 221-41x take fine-stranded 0.14 mm²); lamp: 2 on the tray (driver leads to jumper chains), 2 at the lamp, 1 capping the DIM lead (2-way or larger); all three 221-2401 at the limit switch (two splices into the red run + the unused wire's cap); hub add-ons: 3V3 rail 221-415 and sensor GND 221-413. The three tray 221-413s sit in pockets on the controller tray (CTL-10b).
   - note:
   - paid:
 - [ ] **PWR-18** Power plate — print · print · status: suggested
@@ -293,7 +293,7 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
 
 ## 06 · Camera and light
 
-0/9 decided · still to buy $111.91 · [bom.csv](phases/06-camera-light/bom.csv) · [checklist](phases/06-camera-light/README.md)
+4/9 decided · still to buy $90.10 · [bom.csv](phases/06-camera-light/bom.csv) · [checklist](phases/06-camera-light/README.md)
 
 - [ ] **CAM-01** USB camera 12 MP IMX477, M12 mount (UVC) — 1 × $59.99 = $59.99 · [buy at amazon.com](https://www.amazon.com/dp/B0C1G73QZD) · status: suggested
   - <img src="docs/assets/parts/icon-camera.svg" width="64" height="64" alt="CAM-01"> **Qty 1** · **Must meet:** USB Video Class (UVC) camera, Sony IMX477 12.3 MP, 1.55 µm pixels, M12 × 0.5 lens mount, manual exposure / gain / white balance, ≥ 3840 × 3032 output, IR-cut filter for true colour
@@ -305,29 +305,29 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
   - *why:* Lens
   - note:
   - paid:
-- [ ] **LSR-06** Solderless COB holder 13.5 mm (TE LUMAWISE Z35) — 1 × $3.50 = $3.50 · [buy at digikey.com](https://www.digikey.com/en/products/detail/te-connectivity-amp-connectors/2213678-5/6174915) · status: suggested
-  - <img src="docs/assets/parts/icon-holder.svg" width="64" height="64" alt="LSR-06"> **Qty 1** · **Must meet:** Solderless holder for a 13.5 × 13.5 mm COB (Citizen CLU700 family), poke-in terminals for 18–20 AWG wire, rated ≥ 0.5 A and ≥ 24 V
-  - *why:* Holds and connects the COB without solder · Ø35 × 3.6 mm, 3 A / 60 V DC, poke-in for 18–20 AWG solid or stranded [L23]. No screws: the lamp body's round seat centres it and the cap clamps heatsink + holder. Leads: 2 × 15 cm of PWR-15 18 AWG.
+- [x] **LSR-06** Solderless COB holder 13.5 mm (TE LUMAWISE Z35) — 1 × $3.30 = $3.30 · [buy at digikey.com](https://www.digikey.com/en/products/detail/te-connectivity-amp-connectors/2213678-5/6174915) · status: ordered
+  - <img src="docs/assets/parts/icon-holder.svg" width="64" height="64" alt="LSR-06"> **Qty 1** · **Must meet:** Solderless holder for a 13.5 × 13.5 mm COB (Citizen CLU700 / CLU701), poke-in terminals for 18–20 AWG wire, rated ≥ 0.5 A and ≥ 24 V
+  - *why:* Holds and connects the COB without solder · Ordered 2 (1 spare). Ø35 × 3.6 mm, 3 A / 60 V DC, poke-in for 18–20 AWG solid or stranded [L23]; listed for the CLU701 [L26]. No screws: the lamp body's round seat centres it and the cap clamps heatsink + holder. Leads: 2 × PWR-15 18 AWG from the lamp lever connector.
   - note:
   - paid:
-- [ ] **LSR-01** COB LED CRI 97, 12 V, 13.5 mm (Citizen CLU7A3) — 1 × $5.91 = $5.91 · [buy at digikey.com](https://www.digikey.com/en/products/detail/citizen/CLU7A3-0403E1-303H7X5/17053751) · status: suggested
-  - <img src="docs/assets/parts/icon-led.svg" width="64" height="64" alt="LSR-01"> **Qty 1** · **Must meet:** White chip-on-board LED, Colour Rendering Index (CRI) ≥ 90, 3000–5000 K, forward voltage ≤ 18 V at 350 mA (the driver needs headroom under 24 V), rated ≥ 350 mA, ≤ 6 mm light-emitting surface, 13.5 × 13.5 mm board (fits LSR-06)
-  - *why:* White measurement light · Datasheet: 12.2 V typ at 525 mA, max 900 mA, case ≤ 120 °C, Rj-c 3.4 °C/W; ≈ 4 W at 350 mA. Cree CXA13 COBs dropped: every CXA13 holder is obsolete [L21].
+- [x] **LSR-01** COB LED CRI 90, 9 V, 13.5 mm (Citizen CLU701) — 1 × $4.60 = $4.60 · [buy at digikey.com](https://www.digikey.com/en/products/detail/citizen/CLU701-0303C4-273H5K2/5820601) · status: ordered
+  - <img src="docs/assets/parts/icon-led.svg" width="64" height="64" alt="LSR-01"> **Qty 1** · **Must meet:** White chip-on-board LED, Colour Rendering Index (CRI) ≥ 90, 2700–5000 K, forward voltage ≤ 18 V at 350 mA (the driver steps down 4 V from 24 V), rated ≥ 350 mA, 13.5 × 13.5 mm board listed for LSR-06 in TE 114-32208
+  - *why:* White measurement light · Ordered 2 (1 spare). Datasheet: Vf 8.6 / 9.4 / 10.2 V at 525 mA, max 690 mA, Tc ≤ 105 °C, Rj-c 3.5 °C/W; ≈ 3.2 W at 350 mA. TE 114-32208 lists the CLU701 for the Z35 2213678-5 [L26]. The square board sits in the holder's square seat; the round part is the holder.
   - note:
   - paid:
-- [ ] **LSR-02** Constant-current driver 350 mA — 1 × $5.41 = $5.41 · [buy at digikey.com](https://www.digikey.com/en/products/detail/mean-well-usa-inc/NLDD-350H/13913618) · status: suggested
-  - <img src="docs/assets/parts/icon-driver.svg" width="64" height="64" alt="LSR-02"> **Qty 1** · **Must meet:** Constant-current LED driver 350 mA, input range covering 24 V, output covering the LED's ≈ 12 V, no flicker (DC output); 2.54 mm-pitch pins that take female jumper ends (no breadboard, no solder)
-  - *why:* Drives the COB from 24 V; on/off from the SKR Pico HE (heater) MOSFET output · Sits pins-up in a locating frame on the controller tray; female jumper ends on its pins, male ends into lever connectors. The wire-lead NLDD-350HW (13913611) was out of stock on 2026-10-11.
+- [x] **LSR-02** Constant-current driver 350 mA, wire leads (MEAN WELL NLDD-350HW) — 1 × $7.20 = $7.20 · [buy at digikey.com](https://www.digikey.com/en/products/detail/mean-well-usa-inc/NLDD-350HW/13913611) · status: ordered
+  - <img src="docs/assets/parts/icon-driver.svg" width="64" height="64" alt="LSR-02"> **Qty 1** · **Must meet:** Constant-current LED driver 350 mA, input range covering 24 V, output covering the LED's ≈ 9 V, no flicker (DC output); wire leads that go under screw terminals or into lever connectors (no breadboard, no solder)
+  - *why:* Drives the COB from 24 V; on/off from the SKR Pico HE (heater) MOSFET output · Ordered. 32.1 × 20.5 × 12.5 mm, input 10–56 V, output 4 V under the input, DIM open = on [L27]. Taped into its frame on the controller tray. Input leads straight under the SKR Pico HE screws; output leads into lever connectors; DIM lead alone in a lever connector. Match lead colours to functions from the label on the driver.
   - note:
   - paid:
-- [ ] **LSR-03** Heatsink 40 x 40 mm (from a pack) — 1 × $6.99 = $6.99 · [buy at amazon.com](https://www.amazon.com/dp/B07D4FVC61) · status: suggested
-  - <img src="docs/assets/parts/icon-heatsink.svg" width="64" height="64" alt="LSR-03"> **Qty 1** · **Must meet:** Aluminium heatsink ≥ 40 × 40 × 11 mm (keeps the LED case ≤ 70 °C)
-  - *why:* COB cooling · Tape covers LSR-04.
+- [x] **LSR-03** Heatsink 40 x 40 x 11.6 mm, pin fin (Wakefield 910) — 1 × $10.67 = $10.67 · [buy at digikey.com](https://www.digikey.com/en/products/detail/wakefield-thermal-solutions/910-40-2-12-2-B-0/4815166) · status: ordered
+  - <img src="docs/assets/parts/icon-heatsink.svg" width="64" height="64" alt="LSR-03"> **Qty 1** · **Must meet:** Aluminium heatsink 40 × 40 mm footprint, 11–12 mm tall, ≤ 10 °C/W in still air (keeps the LED case ≤ 70 °C at ≈ 2.5 W of heat)
+  - *why:* COB cooling · Ordered. Digi-Key price not in your cart message: [TBD] on the store page; 10.67 is Mouser's qty-1 price via Octopart (2026-11-12). Sold for clip mounting with no tape: needs LSR-04.
   - note:
   - paid:
-- [ ] **LSR-04** Thermal adhesive pad — $0 (in another row) · [buy at amazon.com](https://www.amazon.com/dp/B07D4FVC61) · status: suggested
+- [ ] **LSR-04** Thermal adhesive tape 3M 8810, 19 mm — $0 (in another row) · [buy at digikey.com](https://www.digikey.com/en/products/detail/3m-tc/8810-0-75-5/2649863) · status: suggested
   - <img src="docs/assets/parts/icon-tape.svg" width="64" height="64" alt="LSR-04"> **Qty 1** · **Must meet:** Thermally conductive, electrically insulating adhesive tape or pad, ≥ 20 mm wide
-  - *why:* COB to heatsink · In the LSR-03 kit.
+  - *why:* COB to heatsink · Not ordered yet: the Wakefield heatsink comes without tape. Two 19 mm strips side by side cover the 13.5 mm board. Price [TBD]: check the store page and set it here.
   - note:
   - paid:
 - [ ] **CAM-03** Camera L-arm, aperture stop (f/8), lens lock — print · print · status: suggested
@@ -484,9 +484,9 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
   - *why:* The ESP32-S3 hub selects the band (low-side switch on each LED cathode) · BLOCKED (audit F09): do not buy or power until the LED driver circuit is reviewed (design.md). Replaces the ULN2803A chip, which needed a breadboard. Same wiring: LED cathode → OUTn, inputs ← ESP32-S3 GPIO 8–14 and 21.
   - note:
   - paid:
-- [ ] **MSK-04** Heatsink 40 mm (from LSR-03 pack) — $0 (in another row) · optional · [buy at amazon.com](https://www.amazon.com/dp/B07D4FVC61) · status: suggested
+- [ ] **MSK-04** Heatsink 40 mm (second LSR-03) — 1 × $10.67 = $10.67 · optional · [buy at digikey.com](https://www.digikey.com/en/products/detail/wakefield-thermal-solutions/910-40-2-12-2-B-0/4815166) · status: suggested
   - <img src="docs/assets/parts/icon-heatsink.svg" width="64" height="64" alt="MSK-04"> **Qty 1** · **Must meet:** Aluminium heatsink ≥ 40 × 40 mm
-  - *why:* LED bank cooling · From the LSR-03 pack. Optional colour kit (stage 10).
+  - *why:* LED bank cooling · Optional colour kit (stage 10). Price is Mouser's qty-1 via Octopart; Digi-Key price [TBD].
   - note:
   - paid:
 - [ ] **MSK-05** Linear polarizer film 10 x 10 cm (10) — 1 × $6.83 = $6.83 · optional · [buy at amazon.com](https://www.amazon.com/dp/B0FX4P45HD) · status: suggested
@@ -544,7 +544,7 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
 
 ## 15 · Standalone (no laptop)
 
-0/8 decided · still to buy $0.00 · [bom.csv](phases/15-standalone/bom.csv) · [checklist](phases/15-standalone/README.md)
+0/10 decided · still to buy $0.00 · [bom.csv](phases/15-standalone/bom.csv) · [checklist](phases/15-standalone/README.md)
 
 - [ ] **STA-01** Raspberry Pi Zero 2 WH (header soldered) — 1 × $19.80 = $19.80 · optional · [buy at adafruit.com](https://www.adafruit.com/product/6008) · status: suggested
   - <img src="docs/assets/parts/icon-board.svg" width="64" height="64" alt="STA-01"> **Qty 1** · **Must meet:** Raspberry Pi Zero 2 W with factory-soldered 40-pin header (Zero 2 WH), 64-bit, WiFi
@@ -581,7 +581,16 @@ Still to buy = core parts not `ordered` / `have` / `swap` / `skip`, plus optiona
   - *why:* Pi OTG port to a USB hub / camera
   - note:
   - paid:
+- [ ] **STA-09** Status screen 2 in IPS 240 x 320, SPI (Waveshare 2inch LCD Module) — $0 (in another row) · optional · [buy at amazon.com](https://www.amazon.com/dp/B081Q79X2F) · status: suggested
+  - <img src="docs/assets/parts/icon-hardware.svg" width="64" height="64" alt="STA-09"> **Qty 1** · **Must meet:** ST7789 or ST7789VW 2.0 in IPS LCD, 240 × 320, 4-wire SPI, 3.3 V logic and supply, 8 pins VCC GND DIN CLK CS DC RST BL, cable ending in 2.54 mm female jumper ends (no solder)
+  - *why:* Hub status on demand without the app: power, keys, laptop link, last spectral reading (SCREEN ON) · Price [TBD]: check the store page and set it here. Box: module + 20 cm PH2.0 8-pin cable [L30]; the maker page does not say what its far end is: check the listing shows 8 female jumper ends before buying. Wiring: addons.html. Holder: STA-10 (M2 × 8, no screws into the module).
+  - note:
+  - paid:
 - [ ] **STA-07** Pi Zero mount + OLED window — print · print · status: suggested
   - <img src="docs/assets/parts/STA-07a_pi_zero_mount.png" width="64" height="64" alt="STA-07"> **Qty 1** · **Must meet:** ABS, 0.2 mm layers, 4 walls, 25–30 % infill, enclosed printer; settings and checks in this stage's checklist · files: [3d/STA-07a_pi_zero_mount.step](phases/15-standalone/3d/STA-07a_pi_zero_mount.step)
   - *why:* Clips into the controller case
+  - note:
+- [ ] **STA-10** Status screen stand + bezel — print · print · status: suggested
+  - <img src="docs/assets/parts/STA-10a_screen_stand.png" width="64" height="64" alt="STA-10"> **Qty 1** · **Must meet:** ABS, 0.2 mm layers, 4 walls, 25–30 % infill, enclosed printer; settings and checks in this stage's checklist · files: [3d/STA-10a_screen_stand.step](phases/15-standalone/3d/STA-10a_screen_stand.step)
+  - *why:* Holds STA-09 at 30° from vertical beside the controller tray, facing the laptop side · The bezel clamps only the module's two short ends (4 mm each), so its holes and thickness need not be known. Check on the real module before printing: the display sits inside the 50 mm window and back-side parts clear the 3 mm ledge.
   - note:

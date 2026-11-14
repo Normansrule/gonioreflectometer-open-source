@@ -4,7 +4,7 @@
 
 <img src="../../docs/assets/power-flow.svg" width="100%" alt="Power">
 
-$54.26 · total so far $118.22 / $630
+$66.71 · total so far $130.67 / $630
 
 [Design](design.md) · [Research](research.md) · [Parts list](bom.csv) · [3D files](3d/) · [Tests](test.csv)
 

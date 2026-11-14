@@ -6,6 +6,7 @@
     opengonio --dry-run move M4=60 M3=30     print the G-code instead of sending it
     opengonio home | move ... | light on|off | sleep | wake | status
     opengonio panel                          run the button panel (ESP32-S3 hub) loop
+    opengonio app [--sim mirror] [--lan]     control app; --lan: phones on this Wi-Fi pair with a QR code
     opengonio send '$I' '?'                  raw controller lines (grblHAL / FluidNC); prints the replies
     opengonio station                        standalone: buttons + OLED run jobs, images to station.data_dir
     opengonio pull pi@opengonio.local        copy job folders from the station to ./data
@@ -177,6 +178,13 @@ def _main(argv: list[str] | None = None) -> int:
     apx.add_argument("--data", default="data/app", help="folder for the app's runs")
     apx.add_argument("--window", action="store_true", help='desktop window (pip install "opengonio[desktop]"), else the browser')
     apx.add_argument("--no-browser", action="store_true", help="only serve; open the printed address yourself")
+    apx.add_argument("--lan", action="store_true", help="also serve phones and tablets on this Wi-Fi (they pair with a QR code)")
+    rn = sub.add_parser("render", help="fitted material on a sphere or a scanned mesh -> .glb + picture")
+    rn.add_argument("what", help="a run folder with fit.json (opengonio fit), or 'demo' for the offline pipeline")
+    rn.add_argument("--mesh", help="hull_mesh.ply or a .glb (default: the shader ball)")
+    rn.add_argument("--color", type=float, nargs=3, metavar=("R", "G", "B"), help="tint 0-1 (the fit is grey)")
+    rn.add_argument("--size", type=int, default=480, help="picture size (px)")
+    rn.add_argument("--out", help="output folder (default: the run folder; demo: data/render_demo)")
     sc = sub.add_parser("scan", help="3D photo scanner (phases 11-12)")
     sc.add_argument("action", choices=["plan", "export-colmap", "demo", "run", "calibrate", "sync-ids", "hull", "ps"])
     sc.add_argument("--voxel", type=float, default=1.0, help="hull: voxel size (mm)")
@@ -197,7 +205,10 @@ def _main(argv: list[str] | None = None) -> int:
 
     if a.cmd == "app":
         from .app.server import main as app_main
-        return app_main(cfg, a.app_sim or a.sim, a.port, a.data, a.window, not a.no_browser, a.cal)
+        return app_main(cfg, a.app_sim or a.sim, a.port, a.data, a.window, not a.no_browser, a.cal, a.lan)
+    if a.cmd == "render":
+        from .render.cli import main as render_main
+        return render_main(a, cfg)
     if a.cmd == "sim-demo":
         from .sim import demo
         rep = demo(cfg.with_phase(max(cfg.installed_phase, 6)), a.out)

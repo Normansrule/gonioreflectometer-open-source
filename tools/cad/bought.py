@@ -104,10 +104,13 @@ def tcst2103_module():
     return b.union(s).union(header(3).rotate((0, 0, 0), (0, 0, 1), 90).translate((15, 0, 1.6)))
 
 
-def heatsink(x=40, y=40, h=11, fins=8):
+def heatsink(x=40, y=40, h=11.6, pins=7):
+    """Wakefield 910-40-2-12-2-B-0 envelope: 40 x 40 x 11.6 mm pin fin [L28]; 2 mm base and the pin grid assumed."""
     b = box(x, y, 2)
-    for i in range(fins):
-        b = b.union(box(1.2, y, h).translate((-x / 2 + 2.5 + i * (x - 5) / (fins - 1), 0, 0)))
+    step = (x - 5) / (pins - 1)
+    for i in range(pins):
+        for j in range(pins):
+            b = b.union(box(2.2, 2.2, h).translate((-x / 2 + 2.5 + i * step, -y / 2 + 2.5 + j * step, 0)))
     return b
 
 
@@ -141,9 +144,22 @@ def ldd_module():
     return b
 
 
-def cob_clu7a3():
-    """Citizen CLU7A3 (1201 board): 13.5 x 13.5 x 1.4 mm, 4.2 mm light-emitting surface [L22]."""
-    return box(13.5, 13.5, 1.4).union(cyl(4.2, 0.2).translate((0, 0, 1.4)))
+def ldd_hw():
+    """MEAN WELL NLDD-350HW: 32.1 x 20.5 x 12.5 mm, five 22 AWG leads 100 mm out of one short end [L27]."""
+    b = box(32.1, 20.5, 12.5)
+    for k in range(5):
+        b = b.union(W("YZ").circle(0.8).extrude(100).translate((16.05, -6 + 3 * k, 6)))
+    return b
+
+
+def cob_clu701():
+    """Citizen CLU701: 13.5 x 13.5 x 1.4 mm board [L25]; the emitting disc (no number in the datasheet) drawn 6 mm."""
+    return box(13.5, 13.5, 1.4).union(cyl(6.0, 0.2).translate((0, 0, 1.4)))
+
+
+def tft_2in():
+    """Waveshare 2inch LCD Module envelope [L30]: 58 x 35 mm; 4 mm thick and the 1.6 mm board edge are estimates."""
+    return box(58, 35, 1.6).union(box(46, 35, 2.4).translate((0, 0, 1.6)))
 
 
 def cob_holder():
@@ -303,9 +319,9 @@ B_PARTS = {   # id: (file stem, builder, source of the dimensions)
     "TBL-05": ("bolt_m8x75_nut", lambda: bolt(8, 75, 13, 5.3, True, (13, 6.5)), "DIN 931 M8 x 75 + DIN 934 nut"),
     "CAM-01": ("arducam_b0433_imx477_usb", camera_b0433, "Arducam B0433 datasheet drawing: 38 x 38, holes 34 mm [K3]"),
     "CAM-02": ("m12_lens_16mm", lens_m12, "M12 x 0.5 lens, ~14 mm flange"),
-    "LSR-01": ("citizen_clu7a3_cob", cob_clu7a3, "Citizen CLU7A3-0403E1: 13.5 x 13.5 x 1.4 mm, 4.2 mm LES [L22]"),
-    "LSR-02": ("meanwell_nldd_350h", ldd_module, "MEAN WELL NLDD-H spec: 31.8 x 20.3 x 12.2 mm [L6]"),
-    "LSR-03": ("heatsink_40x40x11", heatsink, "40 x 40 x 11 mm finned heatsink [L7]"),
+    "LSR-01": ("citizen_clu701_cob", cob_clu701, "Citizen CLU701-0303C4: 13.5 x 13.5 x 1.4 mm [L25]"),
+    "LSR-02": ("meanwell_nldd_350hw", ldd_hw, "MEAN WELL NLDD-350HW: 32.1 x 20.5 x 12.5 mm, 100 mm leads [L27]"),
+    "LSR-03": ("wakefield_910_40_2_12_2_b0", heatsink, "Wakefield 910-40-2-12-2-B-0: 40 x 40 x 11.6 mm pin fin [L28]"),
     "LSR-04": ("thermal_pad_40x40", lambda: box(40, 40, 0.5), "Thermal adhesive pad"),
     "LSR-06": ("te_lumawise_z35_2213678_5", cob_holder, "TE Z35 envelope: OD 35 x 3.6 mm; vendor STEP recommended [L23]"),
     "ENC-01": ("blackout_fabric_2yd", lambda: box(1371, 1829, 0.5), "54 in x 2 yd"),
@@ -334,11 +350,13 @@ B_PARTS = {   # id: (file stem, builder, source of the dimensions)
     "STA-04": ("otg_adapter", lambda: box(20, 14, 8).union(box(7, 2.5, 6).translate((0, 0, -6))), "Micro-USB OTG adapter"),
     "STA-05": ("ssd1306_oled_096in", oled_ssd1306, "0.96 in SSD1306 I2C module: 27.3 x 27.8 mm"),
     "STA-06": ("jumper_wire_ff", jumper_wire, "Dupont jumper 2.54 mm"),
+    "STA-09": ("waveshare_2in_lcd", tft_2in, "Waveshare 2inch LCD Module: 58 x 35 mm [L30]; thickness estimated"),
+    "MSK-02": ("meanwell_nldd_350h", ldd_module, "MEAN WELL NLDD-H spec: 31.8 x 20.3 x 12.2 mm [L6]"),
     "STA-08": ("usb_cable_micro_b", lambda: cable(1000, 3.5, (12, 7, 20), (8, 6, 15)), "USB-A to micro-B cable"),
 }
 ALIASES = {   # same physical part as another ID: same model
     "TBL-01": "LAR-02", "TLT-01": "LAR-02", "TBL-03": "LAR-04", "TLT-03": "LAR-04", "TBL-04": "LAR-05", "TLT-04": "LAR-05",
-    "SPN-04": "LAR-05", "CTL-04": "STA-08", "MSK-02": "LSR-02", "MSK-04": "LSR-03", "CAM-04": "CAM-01", "CAM-05": "CAM-02",
+    "SPN-04": "LAR-05", "CTL-04": "STA-08", "MSK-04": "LSR-03", "CAM-04": "CAM-01", "CAM-05": "CAM-02",
     "TBL-06": "FRM-07", "TLT-06": "FRM-07", "SPN-06": "FRM-07",
 }
 

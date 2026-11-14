@@ -27,7 +27,7 @@ window.SITE = {
    ],
    "steps": 8,
    "hours": 2.5,
-   "cost": 54.26
+   "cost": 66.71
   },
   {
    "id": "02",
@@ -96,7 +96,7 @@ window.SITE = {
    ],
    "steps": 11,
    "hours": 5.8,
-   "cost": 111.91
+   "cost": 115.87
   },
   {
    "id": "07",
@@ -216,8 +216,8 @@ window.SITE = {
     "Job with no laptop",
     "Laptop collects and verifies"
    ],
-   "steps": 8,
-   "hours": 2.8,
+   "steps": 9,
+   "hours": 3.4,
    "cost": 0.0
   },
   {
@@ -249,11 +249,11 @@ window.SITE = {
    "cost": 0.0
   }
  ],
- "plan_usd": 495.19,
+ "plan_usd": 511.6,
  "cap_usd": 630.0,
- "steps": 140,
- "hours": 98.2,
- "parts": 83,
+ "steps": 141,
+ "hours": 98.8,
+ "parts": 86,
  "evidence": [
   {
    "claim": "In-plane and out-of-plane BRDF, white light, flat samples ≤ 50 mm",

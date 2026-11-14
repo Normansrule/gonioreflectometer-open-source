@@ -418,7 +418,7 @@
    "id": "config:phases/15-standalone/bom.csv",
    "type": "config",
    "name": "Parts, stage 15",
-   "summary": "8 parts for stage 15: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
+   "summary": "10 parts for stage 15: store, price, the spec each part must meet. A source of truth for the README tables and the budget.",
    "tags": [
     "parts list"
    ],
@@ -521,8 +521,8 @@
    "complexity": "simple",
    "filePath": "software/src/opengonio/app/server.py",
    "lineRange": [
-    51,
-    52
+    62,
+    63
    ]
   },
   {
@@ -537,8 +537,8 @@
    "complexity": "simple",
    "filePath": "software/src/opengonio/app/server.py",
    "lineRange": [
-    67,
-    349
+    78,
+    426
    ]
   },
   {
@@ -924,6 +924,90 @@
    ],
    "complexity": "simple",
    "filePath": "software/src/opengonio/plot.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/__init__.py",
+   "type": "file",
+   "name": "render (package)",
+   "summary": "Rendering: the measured material on real geometry (stage 07 fit + stages 11-12 scan -> graphics).",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/render/__init__.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/cli.py",
+   "type": "file",
+   "name": "cli.py",
+   "summary": "`opengonio render`: run folder (fit.json) or 'demo' -> .glb + PNG.",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/render/cli.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/demo.py",
+   "type": "file",
+   "name": "demo.py",
+   "summary": "The whole path offline, no hardware: measure -> fit -> scan -> combine -> render.",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/render/demo.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/gltf.py",
+   "type": "file",
+   "name": "gltf.py",
+   "summary": "glTF 2.0 binary (.glb) writer and reader, no dependencies .",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/render/gltf.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/material.py",
+   "type": "file",
+   "name": "material.py",
+   "summary": "Material: what a fit gives a renderer.",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/render/material.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/mesh.py",
+   "type": "file",
+   "name": "mesh.py",
+   "summary": "Triangle meshes for rendering: test shapes and the scanner's visual hull.",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/render/mesh.py"
+  },
+  {
+   "id": "file:software/src/opengonio/render/raster.py",
+   "type": "file",
+   "name": "raster.py",
+   "summary": "Software renderer (numpy): z-buffer rasteriser + the fitted BRDF, for pictures without a GPU or a game engine.",
+   "tags": [
+    "software",
+    "render"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/render/raster.py"
   },
   {
    "id": "file:software/src/opengonio/roi.py",
@@ -1363,6 +1447,17 @@
    "filePath": "tools/refs_bib.py"
   },
   {
+   "id": "file:tools/render_assets.py",
+   "type": "file",
+   "name": "render_assets.py",
+   "summary": "docs/render.html assets from the offline render pipeline (opengonio.render.demo): run by hand, `make render`.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/render_assets.py"
+  },
+  {
    "id": "file:tools/roadmap.py",
    "type": "file",
    "name": "roadmap.py",
@@ -1495,6 +1590,17 @@
    "filePath": "software/config/machine.yaml"
   },
   {
+   "id": "document:docs/addons.html",
+   "type": "document",
+   "name": "OpenGonio hub add-ons",
+   "summary": "The OpenGonio hub add-ons wired and tested on the bench, step by step: the AS7341 spectral sensor and the 2 in status screen that shows the machine state without the laptop app. Text from docs/wiring.yaml.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/addons.html"
+  },
+  {
    "id": "document:docs/build.html",
    "type": "document",
    "name": "OpenGonio build book",
@@ -1553,7 +1659,7 @@
    "id": "document:docs/machine.html",
    "type": "document",
    "name": "OpenGonio machine wiring",
-   "summary": "The rest of the OpenGonio electronics wired and tested on the bench, step by step: table, tilt and spin motors, their endstops, the lamp, the camera and the optional fan and spectral sensor, ending with a whole-machine test. Text from docs/wiring.yaml.",
+   "summary": "The rest of the OpenGonio electronics wired and tested on the bench, step by step: table, tilt and spin motors, their endstops, the lamp, the camera and the optional fan, ending with a whole-machine test. Text from docs/wiring.yaml.",
    "tags": [
     "website"
    ],
@@ -1570,6 +1676,17 @@
    ],
    "complexity": "simple",
    "filePath": "docs/power.html"
+  },
+  {
+   "id": "document:docs/render.html",
+   "type": "document",
+   "name": "OpenGonio render",
+   "summary": "From the gonioreflectometer and 3D scanner to realistic computer graphics: the fitted material on the scanned shape, rendered live with the same equations as Blender, Unity and Unreal. Simulated data: no machine has been built yet.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/render.html"
   },
   {
    "id": "document:docs/wiring.html",
@@ -1713,6 +1830,17 @@
    ],
    "complexity": "simple",
    "filePath": "wiki/src/Paper.md"
+  },
+  {
+   "id": "document:wiki/src/Rendering.md",
+   "type": "document",
+   "name": "Wiki: Rendering",
+   "summary": "What the machine measures, on a real shape: the fitted material and the scanned object as computer graphics.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/Rendering.md"
   },
   {
    "id": "document:wiki/src/Repository-map.md",
@@ -2265,6 +2393,46 @@
   },
   {
    "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/fit.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/render/gltf.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
+   "target": "file:software/src/opengonio/render/mesh.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/app/server.py",
    "target": "file:software/src/opengonio/camera/uvc.py",
    "type": "imports",
    "direction": "forward",
@@ -2474,6 +2642,14 @@
   {
    "source": "file:software/src/opengonio/cli.py",
    "target": "file:software/src/opengonio/app/server.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/render/cli.py",
    "type": "imports",
    "direction": "forward",
    "description": "",
@@ -2896,6 +3072,166 @@
    "weight": 0.5
   },
   {
+   "source": "file:software/src/opengonio/render/cli.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/cli.py",
+   "target": "file:software/src/opengonio/render/gltf.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/cli.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/cli.py",
+   "target": "file:software/src/opengonio/render/mesh.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/cli.py",
+   "target": "file:software/src/opengonio/render/raster.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/cli.py",
+   "target": "file:software/src/opengonio/render/demo.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/fit.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/gantry/config.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/imageio.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/render/gltf.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/render/mesh.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/render/raster.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/scan/carve.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/scan/geometry.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/demo.py",
+   "target": "file:software/src/opengonio/scan/plan.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/gltf.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/gltf.py",
+   "target": "file:software/src/opengonio/render/mesh.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/raster.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/render/raster.py",
+   "target": "file:software/src/opengonio/render/mesh.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
    "source": "file:software/src/opengonio/roi.py",
    "target": "file:software/src/opengonio/gantry/config.py",
    "type": "imports",
@@ -3098,6 +3434,30 @@
   {
    "source": "file:software/src/opengonio/scan/process.py",
    "target": "file:software/src/opengonio/scan/calibrate.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/render/gltf.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/render/material.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/scan/process.py",
+   "target": "file:software/src/opengonio/render/mesh.py",
    "type": "imports",
    "direction": "forward",
    "description": "",
@@ -3918,6 +4278,14 @@
    "direction": "forward",
    "description": "wire and test motors, endstops, lamp, camera",
    "weight": 0.8
+  },
+  {
+   "source": "document:docs/addons.html",
+   "target": "file:firmware/hub/main.py",
+   "type": "documents",
+   "direction": "forward",
+   "description": "wire the spectral sensor and the status screen",
+   "weight": 0.8
   }
  ],
  "layers": [
@@ -4022,6 +4390,13 @@
     "file:software/src/opengonio/plans/inplane.py",
     "file:software/src/opengonio/plans/repeatability.py",
     "file:software/src/opengonio/plot.py",
+    "file:software/src/opengonio/render/__init__.py",
+    "file:software/src/opengonio/render/cli.py",
+    "file:software/src/opengonio/render/demo.py",
+    "file:software/src/opengonio/render/gltf.py",
+    "file:software/src/opengonio/render/material.py",
+    "file:software/src/opengonio/render/mesh.py",
+    "file:software/src/opengonio/render/raster.py",
     "file:software/src/opengonio/roi.py",
     "file:software/src/opengonio/runrecord.py",
     "file:software/src/opengonio/scan/__init__.py",
@@ -4066,6 +4441,7 @@
     "file:tools/power_budget.py",
     "file:tools/readme_screens.py",
     "file:tools/refs_bib.py",
+    "file:tools/render_assets.py",
     "file:tools/roadmap.py",
     "file:tools/roadmap_svg.py",
     "file:tools/site_app.py",
@@ -4085,6 +4461,7 @@
    "name": "Website, wiki and paper",
    "description": "Everything written for readers and builders.",
    "nodeIds": [
+    "document:docs/addons.html",
     "document:docs/build.html",
     "document:docs/controller.html",
     "document:docs/index.html",
@@ -4092,6 +4469,7 @@
     "document:docs/lab.html",
     "document:docs/machine.html",
     "document:docs/power.html",
+    "document:docs/render.html",
     "document:docs/wiring.html",
     "document:docs/explore/index.html",
     "document:wiki/src/3D-scanning.md",
@@ -4105,6 +4483,7 @@
     "document:wiki/src/How-it-works.md",
     "document:wiki/src/Machine.md",
     "document:wiki/src/Paper.md",
+    "document:wiki/src/Rendering.md",
     "document:wiki/src/Repository-map.md",
     "document:wiki/src/Software.md",
     "document:wiki/src/Test-materials.md",

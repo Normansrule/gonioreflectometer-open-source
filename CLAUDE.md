@@ -17,7 +17,7 @@
 - Wiki text: `wiki/src/*.md` → `wiki/*.md` (`make build`); publish with `bash scripts/publish_wiki.sh`.
 - Geometry: `tools/cad/parts.py`, `tools/cad/bought.py`.
 - Wiring: `docs/wiring.yaml` → README Wiring section, `docs/assets/wiring.svg` and one animated diagram per section in `docs/assets/wiring/` (`tools/wiring.py`; `make check` compares pins with `firmware/hub/main.py`).
-- Website and app look: `docs/og/og.css` (tokens; DESIGN.md explains them) → copied into `software/src/opengonio/app/static/og/` by `make build`; website numbers come from `docs/site-data.js` (`tools/site_data.py`) and `docs/og/sim-examples.js` (`tools/make_assets.py`). Pictures: `tools/site_pictures.py`, README screenshots: `tools/readme_screens.py` (run by hand).
+- Website and app look: `docs/og/og.css` (tokens; DESIGN.md explains them) → copied into `software/src/opengonio/app/static/og/` by `make build`; website numbers come from `docs/site-data.js` (`tools/site_data.py`) and `docs/og/sim-examples.js` (`tools/make_assets.py`). Pictures: `tools/site_pictures.py`, README screenshots: `tools/readme_screens.py` (run by hand). Render page data: `tools/render_assets.py` (`make render`, by hand) → `docs/render-data.js`, `docs/assets/render/`.
 
 ## Writing
 - Fewest words that stay precise. Tables and lists over prose.

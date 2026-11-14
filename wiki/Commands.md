@@ -31,6 +31,9 @@ opengonio capture linearity && opengonio calibrate linearity data/linearity  # c
 opengonio capture white     && opengonio calibrate white data/white          # PTFE at 45:0 -> absolute units
 opengonio capture inplane --step 10 --out data/paper && opengonio curve data/paper   # brdf_per_sr column
 opengonio fit data/paper                     # base colour, roughness, metallic -> fit.json (+ Blender/Unreal/Unity values), fit.svg
+opengonio render data/paper                  # that material on a shader ball -> material.glb + material.png (see Rendering)
+opengonio render data/paper --mesh scan_out/hull_mesh.ply   # on your scanned object -> hull_mesh.glb
+opengonio render demo                        # the whole path on simulated data -> data/render_demo/
 opengonio capture isotropic --step 15        # stage 08: out-of-plane set from BRDF angles (inverse kinematics)
 opengonio capture spin --theta 30            # stage 09: sample spun 0–180° (brushed metal)
 opengonio scan hull --out scan_cube --voxel 0.5   # stage 12: silhouettes -> hull.ply + object size
@@ -58,6 +61,18 @@ bash scripts/e4.sh test                   # home, move, motors off
 bash scripts/hub.sh flash oct              # MicroPython onto the ESP32-S3 (oct = N8R8/N16R8 module)
 bash scripts/hub.sh                       # button hub firmware
 ```
+
+### Control app: laptop, desktop, phone, website
+
+```bash
+opengonio app --sim mirror                      # browser, simulated machine
+opengonio app --window                          # desktop window (pip install "./software[desktop]")
+opengonio app --lan                             # + phones and tablets on this Wi-Fi: scan the QR code under Phone (pip install "./software[lan]")
+bash scripts/pages.sh                           # once: the website on GitHub Pages (asks before making the repo public)
+python software/packaging/build.py              # desktop app for this computer -> dist/OpenGonio-<os>.zip (GitHub builds all three)
+```
+
+Each run in the app's list downloads as a zip (↓). The [web version](https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/docs/app/index.html) runs the same Python in the browser (Pyodide) on the simulated machine. The optional status screen on the hub shows the machine's state without any app: `SCREEN ON` on the hub's serial port ([hub add-ons](https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/docs/addons.html)).
 
 ### Standalone mode (no laptop)
 

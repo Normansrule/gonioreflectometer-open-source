@@ -27,7 +27,7 @@
 
   /* ---------- software ---------- */
   const GROUPS = { core: "Core: runs, calibration, fitting", gantry: "Machine control", plans: "Measurement plans", brdf: "Reflectance models",
-                   camera: "Camera", hdr: "High dynamic range", scan: "3D scanning", app: "Control app" };
+                   camera: "Camera", hdr: "High dynamic range", scan: "3D scanning", render: "Rendering", app: "Control app" };
   const usedBy = {};
   D.modules.forEach(m => m.imports.forEach(i => (usedBy[i] = usedBy[i] || []).push(m.module)));
   const testedBy = {};

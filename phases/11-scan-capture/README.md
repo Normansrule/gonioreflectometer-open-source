@@ -4,7 +4,7 @@
 
 <img src="../../docs/assets/scanner.svg" width="100%" alt="3D scan: capture">
 
-$2.33 · total so far $495.19 / $630
+$2.33 · total so far $511.60 / $630
 
 [Design](design.md) · [Parts list](bom.csv) · [3D files](3d/) · [Tests](test.csv)
 

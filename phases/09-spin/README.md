@@ -2,7 +2,7 @@
 
 <img src="../../docs/assets/steps/09.svg" width="100%" alt="Steps of stage 09">
 
-$11.99 · total so far $492.86 / $630
+$11.99 · total so far $509.27 / $630
 
 [Design](design.md) · [Parts list](bom.csv) · [3D files](3d/)
 

@@ -2,7 +2,7 @@
 
 <img src="../../docs/assets/steps/07.svg" width="100%" alt="Steps of stage 07">
 
-$39.78 · total so far $464.19 / $630
+$39.78 · total so far $480.60 / $630
 
 [Design](design.md) · [Research](research.md) · [Parts list](bom.csv) · [3D files](3d/)
 

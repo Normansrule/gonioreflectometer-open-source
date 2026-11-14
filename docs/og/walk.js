@@ -1,4 +1,4 @@
-/* Bench walkthroughs (power.html, controller.html, machine.html): one wire at a time on a drawing of the parts as they sit on the bench.
+/* Bench walkthroughs (power.html, controller.html, machine.html, addons.html): one wire at a time on a drawing of the parts as they sit on the bench.
    Steps come from window.WALK (og/walk-*.js); wire and note text from window.WIRING (docs/wiring-guide.js, generated
    from docs/wiring.yaml). SPDX-License-Identifier: GPL-3.0-or-later */
 (function () {
@@ -36,6 +36,21 @@
     pills.append(b);
   });
 
+  /* Buy links: every bom.csv row this page's wires use (W.buy, from tools/wiring.py), plus IDs named in the step text. */
+  const BUY = W.buy || {};
+  const pageIds = [...new Set(STEPS.flatMap(s => {
+    const w = s.type === "wire" ? find(s) : null;
+    return [...(w ? w.ids || [] : []), ...JSON.stringify(s.items || "").match(/\b[A-Z]{3}-\d{2}\b/g) || []];
+  }))].filter(i => BUY[i]);
+  const money = b => +b.unit > 0 ? `$${(+b.unit).toFixed(2)}` : b.tbd ? "price [TBD]" : "in another row's pack";
+  const buyItem = i => { const b = BUY[i];
+    const name = b.link ? `<a href="${esc(b.link)}" rel="noopener">${esc(b.part)}</a>` : esc(b.part);
+    const where = b.type === "Owned" ? "owned" : b.type === "Print" ? "printed" : `${esc(b.supplier)} · ${money(b)}`;
+    return `<li><span class="pw-id">${i}</span> ${name} <span class="pw-where">${where}${b.status && b.status !== "suggested" ? ` · ${esc(b.status)}` : ""}</span></li>`; };
+  function buyList(ids, head) {
+    return ids.length ? `<details class="pw-buy"${head ? " open" : ""}><summary>${head || "Parts for this wire"} (${ids.length})</summary><ul>${ids.map(buyItem).join("")}</ul></details>` : "";
+  }
+
   function lists(s) {
     let h = "";
     if (s.warn) h += `<p class="warn">${s.warn}</p>`;
@@ -46,6 +61,7 @@
     }
     if (s.cmd) h += `<pre class="pw-cmd"><code>${s.cmd.map(esc).join("\n")}</code></pre>`;
     if (s.pass) h += `<p class="pw-pass"><b>Pass:</b> ${esc(s.pass)}</p>`;
+    if (s.type === "prepare") h += buyList(pageIds, "Parts on this page, with buy links");
     return h;
   }
   function body(s) {
@@ -53,7 +69,7 @@
     const w = find(s);
     return `<dl class="ends"><dt>From</dt><dd><b>${esc(w.from.part)}</b> · ${esc(w.from.pin)}</dd>
       <dt>To</dt><dd><b>${esc(w.to.part)}</b> · ${esc(w.to.pin)}</dd>
-      <dt>Wire</dt><dd>${w.wire}</dd></dl>${w.note ? `<p class="note">${w.note}</p>` : ""}`;
+      <dt>Wire</dt><dd>${w.wire}</dd></dl>${w.note ? `<p class="note">${w.note}</p>` : ""}${buyList((w.ids || []).filter(i => BUY[i]))}`;
   }
 
   let cur = 0;

@@ -7,6 +7,7 @@ importScripts(PYODIDE + "pyodide.js");
 
 const GLUE = `
 import json, sys, threading
+from urllib.parse import parse_qs
 sys.path.insert(0, "/home/pyodide/og/software/src")
 
 
@@ -31,11 +32,15 @@ def handle(method, path, query, body):
     b = json.loads(body) if body else {}
     if method == "POST" and path == "/api/connect" and b.get("mode") == "hardware":
         return 409, json.dumps({"error": WEB_ONLY, "kind": "refused"}), None
-    if path == "/api/frame.png":
-        try:
-            return 200, "", app.frame_png()
-        except (Refused, GantryError) as exc:
-            return 409, json.dumps({"error": str(exc)}), None
+    try:
+        if path == "/api/frame.png":
+            return 200, "image/png", app.frame_png()
+        if path == "/api/download":
+            return 200, "application/zip", app.download(parse_qs(query).get("run", [""])[0])
+        if path == "/api/glb":
+            return 200, "model/gltf-binary", app.glb(parse_qs(query).get("run", [""])[0])
+    except (Refused, GantryError) as exc:
+        return 409, json.dumps({"error": str(exc)}), None
     code, out = respond(app, method, path, query, b)
     return int(code), json.dumps(out, default=str), None
 `;
@@ -58,9 +63,9 @@ onmessage = async e => {
   try {
     const handle = await ready;
     const r = handle(m.method, m.path, m.query, m.body);
-    const [status, body, png] = r.toJs();
+    const [status, body, bin] = r.toJs();
     r.destroy();
-    if (png) postMessage({ id: m.id, status, png }, [png.buffer]);
+    if (bin) postMessage({ id: m.id, status, ctype: body, bin }, [bin.buffer]);
     else postMessage({ id: m.id, status, body });
   } catch (err) {
     postMessage({ id: m.id, status: 500, body: JSON.stringify({ error: String(err.message || err), kind: "internal" }) });

@@ -17,10 +17,11 @@ hub_pins:              # ESP32-S3 header pins that are not wired but matter: kep
   reserved:            # firmware/hub/main.py I2C_PAIRS 2-4: optional AS5600 angle encoders (no part in the list yet)
     J3-8: "AS5600 encoder 1 SCL (optional)"
     J3-9: "AS5600 encoder 1 SDA (optional)"
-    J3-6: "AS5600 encoder 2 SCL (optional)"
-    J3-7: "AS5600 encoder 2 SDA (optional)"
-    J1-11: "AS5600 encoder 3 SCL (optional)"
-    J3-10: "AS5600 encoder 3 SDA (optional; RGB LED on v1.1 boards)"
+  shared:              # I2C_PAIRS 3-4: the status screen when it is fitted (SCREEN ON), else AS5600 encoders 2-3
+    J3-6: "status screen CLK, or AS5600 encoder 2 SCL"
+    J3-7: "status screen DIN, or AS5600 encoder 2 SDA"
+    J1-11: "status screen DC, or AS5600 encoder 3 SCL"
+    J3-10: "status screen CS, or AS5600 encoder 3 SDA (RGB LED on v1.1 boards)"
   avoid:
     J1-3: "reset (EN)"
     J1-13: "strapping pin"
@@ -49,7 +50,7 @@ parts:
   OPTO: "Opto module (PWR-10)"
   MOT+: "Lever connector MOT+ (3-way, on the tray)"
   MOT-: "Lever connector MOT− (3-way, on the tray)"
-  LAMPDRV: "Lamp driver NLDD-350H (LSR-02)"
+  LAMPDRV: "Lamp driver NLDD-350HW (LSR-02)"
   LAMP: "COB lamp in holder (LSR-01 + LSR-06)"
   M4: "M4 motor, light arm (LAR-02)"
   M3: "M3 motor, table (TBL-01)"
@@ -70,6 +71,9 @@ parts:
   USBHUB: "Powered USB hub ([TBD], optional)"
   SPLICE: "Lever connectors (WAGO 221-412 / 415)"
   HGND: "Lever connector keypad GND (3-way)"
+  V3R: "Lever connector hub 3V3 (WAGO 221-415, 5-way)"
+  SGND: "Lever connector sensor GND (WAGO 221-413, 3-way)"
+  TFT: "Status screen, Waveshare 2 in (STA-09, optional)"
   LASER: "Alignment laser (LAR-09, tool)"
   BANK: "Colour LED bank (MSK-01…03)"
 
@@ -142,14 +146,16 @@ groups:
   - title: "5 · Lamp (white COB)"
     stage: "06"
     intro: >-
-      The driver sits pins-up in its frame on the tray; female jumper ends push onto its pins. A cut jumper = one female
-      end, the other end stripped. HE is a low-side switch: its `IO23` terminal is the switched `−`.
+      The driver (NLDD-350HW) has five 22 AWG leads, 100 mm, stripped 5 mm: read which colour is which on its label.
+      It is taped into its frame on the tray. HE is a low-side switch: its `IO23` terminal is the switched `−`.
+      The holder's own leads are 15 cm of 18 AWG (PWR-15) pushed into its poke-in terminals (M18.1). Jumper ends that
+      go into a lever connector: cut off the plug, strip 11 mm, fold double.
     rows:
-      - ["LAMPDRV:+Vin", "SKR:HE.12/24V", "cut M-F jumper, bare end under the HE screw", "HE `+`: always at motor-power voltage"]
-      - ["LAMPDRV:−Vin", "SKR:HE.IO23", "cut M-F jumper, bare end under the HE screw", "HE `−`, switched: `M62 P4` on / `M63 P4` off (check with `$PINS`)"]
-      - ["LAMPDRV:+Vo", "LAMP:red (+) lead", "chain of 5 M-F jumpers + lever connector at the lamp", "slack for 20–324° of arm travel"]
-      - ["LAMPDRV:−Vo", "LAMP:black (−) lead", "chain of 5 M-F jumpers + lever connector", ""]
-      - ["LAMPDRV:DIM", "-", "not connected", "no dimming: on/off only"]
+      - ["LAMPDRV:+Vin", "SKR:HE.12/24V", "driver lead, bare end under the HE screw", "HE `+`: always at motor-power voltage"]
+      - ["LAMPDRV:−Vin", "SKR:HE.IO23", "driver lead, bare end under the HE screw", "HE `−`, switched: `M62 P4` on / `M63 P4` off (check with `$PINS`)"]
+      - ["LAMPDRV:+Vo", "LAMP:+ terminal", "driver lead → lever connector → chain of 5 M-F jumpers along the arm → lever connector → holder's red lead", "slack for 20–324° of arm travel"]
+      - ["LAMPDRV:−Vo", "LAMP:− terminal", "driver lead → lever connector → chain of 5 M-F jumpers → lever connector → holder's black lead", ""]
+      - ["LAMPDRV:DIM", "-", "its lead alone in a 2-way lever connector (insulated cap)", "open = on: never tie it to −Vin (that turns the lamp off)"]
 
   - title: "6 · Hub: keypads and motor-power sense"
     stage: "02"
@@ -192,18 +198,31 @@ groups:
       Only when you fit the part. The OLED and the AS7341 share one I2C bus (OLED 0x3C: check, some are 0x3D; AS7341
       0x39): with both fitted,
       wire the AS7341 to the hub and plug the OLED into the AS7341's second STEMMA QT socket (a STEMMA QT cable, not in
-      the parts list yet [TBD]). Fan plug: check it fits FAN1 before relying on it.
+      the parts list yet [TBD]). Fan plug: check it fits FAN1 before relying on it. The hub has only two 3V3 and four GND
+      pins, so the sensor and the status screen take 3V3 and GND from two lever connectors fed from J1-2 and J3-22 (cut
+      jumper or cable ends, 11 mm stripped, folded double). Status screen (STA-09): Waveshare 2inch LCD Module, ST7789, 8-pin cable to
+      female jumpers, on its printed stand (STA-10); it takes the pins of encoders 2-3, so send `SCREEN ON` to the hub once (it restarts) after wiring.
     rows:
       - ["FAN:red (+)", "SKR:FAN1.12/24V", "fan lead", "`M62 P2` (check with `$PINS`); advised above 0.8 A per motor"]
       - ["FAN:black (−)", "SKR:FAN1.IO17", "fan lead", "switched side"]
-      - ["SPEC:VIN (red)", "HUB:J1-2", "SPC-02 JST-SH to female", "3V3"]
-      - ["SPEC:GND (black)", "HUB:J3-22", "SPC-02", "GND"]
+      - ["HUB:J1-2", "V3R:1", "M-F jumper, male end cut and stripped", "3V3 for the sensor and the screen"]
+      - ["HUB:J3-22", "SGND:1", "M-F jumper, male end cut and stripped", "GND for the sensor and the screen"]
+      - ["SPEC:VIN (red)", "V3R:2", "SPC-02 JST-SH to female, female end cut and stripped", "3V3"]
+      - ["SPEC:GND (black)", "SGND:2", "SPC-02, female end cut and stripped", "GND"]
       - ["SPEC:SCL (yellow)", "HUB:J3-5", "SPC-02", "first I2C pair"]
       - ["SPEC:SDA (blue)", "HUB:J3-4", "SPC-02", "first I2C pair"]
-      - ["OLED:VIN", "HUB:J1-2", "female–female jumper (STA-06)", "only without the AS7341; with it, chain the OLED as above"]
-      - ["OLED:GND", "HUB:J3-22", "F-F jumper", "only without the AS7341"]
+      - ["OLED:VIN", "V3R:2", "female–female jumper (STA-06), one end cut", "only without the AS7341; with it, chain the OLED as above"]
+      - ["OLED:GND", "SGND:2", "F-F jumper, one end cut", "only without the AS7341"]
       - ["OLED:SCL", "HUB:J3-5", "F-F jumper", "only without the AS7341"]
       - ["OLED:SDA", "HUB:J3-4", "F-F jumper", "only without the AS7341"]
+      - ["TFT:VCC", "V3R:3", "screen cable, female end cut and stripped", "3V3"]
+      - ["TFT:GND", "SGND:3", "screen cable, female end cut and stripped", "GND"]
+      - ["TFT:RST", "V3R:4", "screen cable, female end cut and stripped", "held high: the firmware resets the screen by command"]
+      - ["TFT:BL", "V3R:5", "screen cable, female end cut and stripped", "backlight always on"]
+      - ["TFT:CLK", "HUB:J3-6", "screen cable", "SPI clock · `SCREEN ON`"]
+      - ["TFT:DIN", "HUB:J3-7", "screen cable", "SPI data"]
+      - ["TFT:DC", "HUB:J1-11", "screen cable", "data / command"]
+      - ["TFT:CS", "HUB:J3-10", "screen cable", "chip select"]
       - ["LASER:+ / −", "SKR:RGB.3 / SKR:RGB.1", "2 jumpers", "bench tool: 5 V and GND of the unused RGB port"]
 
   - title: "9 · Standalone station (no laptop, optional)"

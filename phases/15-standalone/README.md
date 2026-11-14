@@ -8,7 +8,7 @@ Optional kit $71.68 (not in the $630 total)
 
 ## M40 · Panel screen
 
-OLED shows menu and progress (both modes). · 0/2 steps done · ~35 min hands-on · ~1 wk
+OLED shows menu and progress (both modes). · 0/3 steps done · ~1.2 h hands-on · ~1 wk
 
 ### M40.1 Order the kit
 
@@ -32,7 +32,7 @@ Commit.
 
 #### Do
 
-1. OLED SDA → ESP32-S3 J3-4 (GPIO 1), SCL → J3-5 (GPIO 2), VIN → J1-2 (3V3), GND → J3-22. With the AS7341 fitted: plug the OLED into the sensor's second STEMMA QT socket instead (README → Wiring → 8).
+1. OLED SDA → ESP32-S3 J3-4 (GPIO 1), SCL → J3-5 (GPIO 2), VIN → 3V3 lever connector (fed from J1-2), GND → sensor GND lever connector (fed from J3-22). With the AS7341 fitted: plug the OLED into the sensor's second STEMMA QT socket instead (README → Wiring → 8).
 2. `bash scripts/hub.sh`
 
 #### Verify
@@ -46,6 +46,31 @@ Commit.
 #### Record
 
 Tick the boxes; `make done id=M40.2`.
+
+### M40.3 Status screen (optional)
+
+**Time** 40 min (+ print 2 h) · **Needs** STA-09 status screen · STA-10 print · FRM-06 M2 screws (4 × 12, 4 × 8) · PWR-20 lever connectors (221-415, 221-413)
+
+#### Do
+
+1. Print `STA-10a_screen_stand` and `STA-10b_screen_bezel`. Before printing, lay the module on the bezel drawing (50 mm window, 4 mm at each short end) and check the display sits inside the window.
+2. Module into the stand's pocket, display outward, cable socket through the window behind it; bezel on, 4 × M2 × 8 snug (it presses only the two short ends: stop when the module no longer moves).
+3. Stand onto its 4 deck pilots on the NW tile beside the controller tray (M2 × 12), face toward the laptop side; cable out of the open back to the hub.
+4. Wire it with the hub add-ons walkthrough (docs/addons.html, README → Wiring → 8): VCC, RST, BL to the 3V3 lever connector; GND to the sensor GND lever connector; CLK J3-6, DIN J3-7, DC J1-11, CS J3-10.
+5. `bash scripts/hub.sh send "SCREEN ON"` (the hub restarts), then `bash scripts/hub.sh send "SHOW Bench test|line two"`.
+
+#### Verify
+
+- [ ] Screen shows the status lines, and `Bench test` / `line two` after SHOW.
+- [ ] Key presses and power changes appear on the screen within 1 s.
+
+#### If a check fails
+
+- Blank, backlight on: CLK / DIN / DC / CS swapped or `SCREEN ON` not sent. Backlight off: BL or VCC not on 3V3.
+
+#### Record
+
+Tick the boxes; `make done id=M40.3`.
 
 ## M41 · Pi Zero station set up
 
@@ -161,4 +186,4 @@ Laptop only pulls and checks data. · 0/1 steps done · ~15 min hands-on · ~1 w
 
 Verify output in phases/15-standalone/design.md → Results; commit.
 
-[Sources](../../REFERENCES.md): H51 · H52 · H53 · H55 · C7
+[Sources](../../REFERENCES.md): H51 · H52 · H53 · H55 · C7 · L30

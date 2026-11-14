@@ -4,6 +4,7 @@
 # USB serial line protocol (laptop <-> hub)
 #   out: BTN HOME|START|STOP|LIGHT|NEXT|PAUSE   POWER 0|1   ENC a b c d   PONG OpenGonio-hub 4 POWER n   ERR <msg>
 #   in : BAND 0-7 | BAND OFF | ENC? | POWER? | PING | SHOW line1|line2|line3 | SPEC? <id> | BATT? | SOURCE WALL|PACK|USBC [Wh]
+#        | SCREEN ON|OFF  (optional 2 in ST7789 status screen; kept in screen.txt, takes effect after the hub restarts)
 #   BATT? -> 'BATT <source> <volts> <amps> <watts> <Wh used> <OK|LOW|CRIT|NONE>' from an INA219 (0x40, stage 17 battery kit)
 #   on the first I2C pair; the hub also sends that line when the state changes, and 'BTN PAUSE' once on CRIT.
 #   SPEC? <id> -> 'SPEC #<id> f1 f2 f3 f4 f5 f6 f7 f8 clear nir' from an AS7341 (0x39) on the first I2C pair (shared with the OLED).
@@ -12,11 +13,15 @@
 # Pins (GPIO numbers, all clear of the strapping pins 0/3/45/46, USB 19/20, flash/PSRAM 26-37 and UART0 43/44 [R86]):
 #   buttons HOME 4, START 5, STOP 6, LIGHT 7, NEXT 15, PAUSE 16 (each to GND), MOTION_SENSE 17 (PC817 module OUT,
 #   low = motor power on), LED bank 8-14 + 21 -> MOSFET module inputs, I2C pairs (scl, sda) (2,1) (40,39) (42,41) (18,38).
+# Status screen (optional, SCREEN ON): 2 in ST7789 240 x 320 SPI LCD on SCK 42, MOSI 41, DC 18, CS 38: the pins of I2C pairs
+#   3 and 4, so with the screen on those two encoder buses are not started. Its RST and BL go to 3V3. It shows what the hub
+#   knows by itself (motor power, keys, supply, laptop link, last spectral reading) plus the SHOW lines, so the machine's
+#   state stays visible if the laptop app has a problem.
 # The board's RGB LED sits on GPIO 48 (v1.0) or 38 (v1.1): it may flicker when that pin carries UART or I2C. Harmless.
 import sys
 import time
 import uselect
-from machine import UART, Pin, SoftI2C
+from machine import SPI, UART, Pin, SoftI2C
 
 BUTTONS = {"HOME": 4, "START": 5, "STOP": 6, "LIGHT": 7, "NEXT": 15, "PAUSE": 16}
 SENSE_PIN = 17
@@ -24,6 +29,8 @@ SENSE_ACTIVE_LOW = True                 # PC817 module OUT pulls GPIO 17 low whe
 BAND_PINS = [8, 9, 10, 11, 12, 13, 14, 21]
 I2C_PAIRS = [(2, 1), (40, 39), (42, 41), (18, 38)]   # (scl, sda)
 UART_TX, UART_RX = 47, 48
+SCREEN_PINS = {"SCK": 42, "MOSI": 41, "DC": 18, "CS": 38}   # status screen: I2C pairs 3 and 4 when it is fitted
+MADCTL = 0x60                           # landscape 320 x 240; if the picture is mirrored, try 0xA0
 AS5600 = 0x36
 DEBOUNCE_MS = 30
 INA = 0x40                              # INA219 power monitor, 0.1 ohm shunt (Adafruit 904): volts and amps on the 24 V line
@@ -34,7 +41,17 @@ last = {n: 1 for n in BUTTONS}
 since = {n: 0 for n in BUTTONS}
 sense = Pin(SENSE_PIN, Pin.IN, Pin.PULL_UP)
 bands = [Pin(p, Pin.OUT, value=0) for p in BAND_PINS]
-buses = [SoftI2C(scl=Pin(s), sda=Pin(d), freq=100_000) for s, d in I2C_PAIRS]
+
+
+def screen_wanted():
+    try:
+        return open("screen.txt").read().strip() == "ON"
+    except Exception:                       # first boot: no file, no screen
+        return False
+
+
+screen_on = screen_wanted()
+buses = [SoftI2C(scl=Pin(s), sda=Pin(d), freq=100_000) for s, d in (I2C_PAIRS[:2] if screen_on else I2C_PAIRS)]
 poll = uselect.poll()
 poll.register(sys.stdin, uselect.POLLIN)
 uart = UART(1, baudrate=115200, tx=Pin(UART_TX), rx=Pin(UART_RX))
@@ -137,12 +154,83 @@ def spectral():
     return lo[:4] + hi[:4] + [lo[4], lo[5]]  # F1..F8, clear, NIR
 
 
+def rgb(r, g, b):
+    """RGB565, high byte first as the ST7789 wants it."""
+    c = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3)
+    return bytes([c >> 8, c & 0xFF])
+
+
+class ST7789:
+    """Minimal ST7789 driver for the status screen: init, clear, and text lines drawn at twice the 8 x 8 font size."""
+    W, H, ROW = 320, 240, 16                # 20 characters x 15 lines
+
+    def __init__(self, spi, dc, cs, madctl=0x60):
+        self.spi, self.dc, self.cs, self.madctl = spi, dc, cs, madctl
+        self.cs.value(1)
+
+    def cmd(self, c, data=None):
+        self.cs.value(0)
+        self.dc.value(0)
+        self.spi.write(bytes([c]))
+        if data:
+            self.dc.value(1)
+            self.spi.write(data)
+        self.cs.value(1)
+
+    def init(self):
+        for c, d, wait in ((0x01, None, 150), (0x11, None, 120), (0x3A, b"\x55", 0), (0x36, bytes([self.madctl]), 0),
+                           (0x21, None, 0), (0x13, None, 0), (0x29, None, 20)):   # reset, wake, 16-bit colour, rotate, IPS invert, on
+            self.cmd(c, d)
+            if wait:
+                time.sleep_ms(wait)
+
+    def window(self, x0, y0, x1, y1):
+        self.cmd(0x2A, bytes([x0 >> 8, x0 & 0xFF, x1 >> 8, x1 & 0xFF]))
+        self.cmd(0x2B, bytes([y0 >> 8, y0 & 0xFF, y1 >> 8, y1 & 0xFF]))
+        self.cs.value(0)
+        self.dc.value(0)
+        self.spi.write(b"\x2c")
+        self.dc.value(1)
+
+    def clear(self, bg):
+        self.window(0, 0, self.W - 1, self.H - 1)
+        row = bg * self.W
+        for _ in range(self.H):
+            self.spi.write(row)
+        self.cs.value(1)
+
+    def line(self, n, text, fg, bg):
+        """Line n (0-14): up to 20 characters, each 8 x 8 font pixel drawn as 2 x 2."""
+        import framebuf
+        text = text[:self.W // 16]
+        mono = framebuf.FrameBuffer(bytearray(self.W // 2), self.W // 2, 8, framebuf.MONO_HLSB)   # 160 x 8 px, 1 bit
+        mono.fill(0)
+        mono.text(text, 0, 0, 1)
+        out = bytearray(self.W * 2 * self.ROW)
+        for sy in range(8):
+            row = bytearray(bg * self.W)
+            for sx in range(len(text) * 8):
+                if mono.pixel(sx, sy):
+                    row[sx * 4:sx * 4 + 4] = fg + fg
+            a = sy * 2 * self.W * 2
+            out[a:a + self.W * 2] = row
+            out[a + self.W * 2:a + self.W * 4] = row
+        self.window(0, n * self.ROW, self.W - 1, n * self.ROW + self.ROW - 1)
+        self.spi.write(out)
+        self.cs.value(1)
+
+
 def out(msg):
     print(msg)
     uart.write(msg + "\n")
 
 
+laptop_lines = []                           # the last SHOW lines (the laptop or the Pi station writes these)
+
+
 def show(lines):
+    global laptop_lines
+    laptop_lines = [str(t) for t in lines[:6]]
     if oled is None:
         return
     oled.fill(0)
@@ -164,13 +252,45 @@ def read_angle(bus):
         return float("nan")
 
 
+BLACK = rgb(12, 11, 10)
+WHITE = rgb(239, 233, 223)
+GREEN = rgb(80, 200, 120)
+RED = rgb(230, 70, 60)
+AMBER = rgb(255, 201, 120)
+GREY = rgb(150, 145, 138)
+boot_t = time.ticks_ms()
+last_key, key_t, host_t, spec_last = "-", 0, None, None
+
+
+def ago(t, now):
+    s = time.ticks_diff(now, t) // 1000
+    return "%ds" % s if s < 60 else "%dm" % (s // 60) if s < 3600 else "%dh" % (s // 3600)
+
+
+def screen_lines(now, power, source, batt, last_key, key_t, host_t, laptop, spec, boot):
+    """The status screen's 15 lines as (text, colour name). Pure: tests/test_hub_screen.py runs it on a laptop."""
+    up = time.ticks_diff(now, boot) // 1000
+    lines = [("OpenGonio hub", "white"),
+             ("MOTOR POWER ON" if power else "MOTOR POWER OFF", "green" if power else "red"),
+             ("SUPPLY %s %s" % (source, batt), "amber" if batt in ("LOW", "CRIT") else "white"),
+             ("KEY %s %s" % (last_key, ago(key_t, now) if key_t else ""), "white"),
+             ("LAPTOP %s" % ("link " + ago(host_t, now) if host_t is not None else "not heard yet"), "grey"),
+             ("", "white")]
+    lines += [(t, "white") for t in laptop[:6]] + [("", "white")] * (6 - len(laptop[:6]))
+    lines.append(("SPEC %s" % (" ".join(str(v) for v in spec[:4]) if spec else "-"), "grey"))
+    lines.append(("UP %02d:%02d:%02d" % (up // 3600, up // 60 % 60, up % 60), "grey"))
+    lines.append(("", "white"))
+    return lines[:15]
+
+
 def motion_power():
     on = not sense.value() if SENSE_ACTIVE_LOW else bool(sense.value())   # opto module: MOTION power present
     return 1 if on else 0
 
 
 def handle(line):
-    global source, capacity_wh, used_wh
+    global source, capacity_wh, used_wh, host_t, spec_last
+    host_t = time.ticks_ms()
     if line.strip().upper().startswith("SHOW"):
         show(line.strip()[4:].strip().split("|"))
         return
@@ -189,7 +309,8 @@ def handle(line):
             band(n)
         elif parts[0] == "SPEC?":                # "SPEC? <id>": the reply echoes the id so the host can match it
             rid = ("#%d " % int(parts[1])) if len(parts) > 1 else ""
-            out("SPEC " + rid + " ".join(str(v) for v in spectral()))
+            spec_last = spectral()
+            out("SPEC " + rid + " ".join(str(v) for v in spec_last))
         elif parts[0] == "BATT?":
             out(batt_line()[1])
         elif parts[0] == "SOURCE":               # after a full charge: SOURCE PACK, or SOURCE USBC 74 (the bank's Wh)
@@ -199,6 +320,15 @@ def handle(line):
             with open("source.txt", "w") as f:
                 f.write("%s %s" % (source, capacity_wh))
             out(batt_line()[1])
+        elif parts[0] == "SCREEN":               # SCREEN ON / OFF: saved; the hub restarts to free or take the pins
+            if parts[1] not in ("ON", "OFF"):
+                raise ValueError("SCREEN ON or SCREEN OFF")
+            with open("screen.txt", "w") as f:
+                f.write(parts[1])
+            out("SCREEN %s (restarting)" % parts[1])
+            time.sleep_ms(200)
+            import machine
+            machine.reset()
         elif parts[0] == "ENC?":
             out("ENC " + " ".join("%.3f" % read_angle(b) for b in buses))
         else:
@@ -210,6 +340,20 @@ def handle(line):
 power = motion_power()
 out("POWER %d" % power)
 show(["OpenGonio", "ready", "", "HOME START STOP", "LIGHT NEXT PAUSE"])
+tft = None
+drawn = []
+screen_t = time.ticks_ms()
+if screen_on:
+    try:
+        tft = ST7789(SPI(1, baudrate=40_000_000, sck=Pin(SCREEN_PINS["SCK"]), mosi=Pin(SCREEN_PINS["MOSI"])),
+                     Pin(SCREEN_PINS["DC"], Pin.OUT), Pin(SCREEN_PINS["CS"], Pin.OUT), MADCTL)
+        tft.init()
+        tft.clear(BLACK)
+        drawn = [None] * 15
+    except Exception as e:                  # a missing or miswired screen must never stop the hub
+        out("ERR screen %s" % e)
+        tft = None
+COLOURS = {"white": WHITE, "green": GREEN, "red": RED, "amber": AMBER, "grey": GREY}
 buf = ""
 ubuf = ""
 while True:
@@ -221,6 +365,7 @@ while True:
             last[name] = v
             if v == 0:
                 out("BTN " + name)
+                last_key, key_t = name, now
     if motion_power() != power:
         power = motion_power()
         out("POWER %d" % power)
@@ -255,4 +400,14 @@ while True:
             ubuf = ""
         elif len(ubuf) < 256:
             ubuf += ch
+    if tft and time.ticks_diff(now, screen_t) >= 500:   # twice a second: redraw only the lines that changed
+        screen_t = now
+        for i, (text, colour) in enumerate(screen_lines(now, power, source, batt, last_key, key_t, host_t, laptop_lines,
+                                                        spec_last, boot_t)):
+            if drawn[i] != (text, colour):
+                try:
+                    tft.line(i, text, COLOURS[colour], BLACK)
+                    drawn[i] = (text, colour)
+                except Exception:           # keep STOP / POWER handling alive whatever the screen does
+                    pass
     time.sleep_ms(2)

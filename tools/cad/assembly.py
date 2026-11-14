@@ -93,7 +93,19 @@ def build() -> cq.Assembly:
     add("PWR-10_opto_module", orient(B.B_PARTS["PWR-10"][1](), t=(tx + 47, ty + 40, 3)), BUY)
     for (x, y), name in zip(P.WAGO_POCKETS, ("MOT_plus", "MOT_minus", "keypad_GND")):          # 221-413s, entries facing -Y
         add(f"PWR-20_{name}", orient(B.wago(3), z_to=(0, 0, 1), y_to=(-1, 0, 0), t=(tx + x, ty + y, 3)), BUY)
-    add("LSR-02_led_driver", orient(B.ldd_module(), z_to=(0, 0, -1), t=(tx + 40, ty + 5, 3 + 12.2)), BUY)   # pins up
+    add("LSR-02_led_driver", orient(B.ldd_hw(), t=(tx + 40, ty + 5, 3)), BUY)                     # leads toward +X
+    # ---- hub add-on: status screen (STA-09) on its stand, face toward -X
+    sx, sy = P.SCREEN_XY
+    ta = math.radians(P.SCREEN_TILT)
+    add("STA-10a_screen_stand", orient(P.screen_stand(), t=(sx, sy, 0)), PRINT)
+    n_ = (-math.cos(ta), 0, math.sin(ta))                                           # face normal, toward the user
+    d_ = (math.sin(ta), 0, math.cos(ta))                                            # up the slope
+    cz = P.SCREEN_C
+    mod = (sx - 18 + P.TFT_POCKET * math.cos(ta) + cz * math.sin(ta), sy,           # module back on the pocket floor
+           3 - P.TFT_POCKET * math.sin(ta) + cz * math.cos(ta))
+    add("STA-09_status_screen", orient(B.tft_2in(), z_to=n_, y_to=d_, t=mod), OPT)
+    top = (mod[0] + 4.0 * n_[0], sy, mod[2] + 4.0 * n_[2])
+    add("STA-10b_screen_bezel", orient(P.screen_bezel(), z_to=n_, y_to=d_, t=top), PRINT)
     # ---- light arm (M4 = 90 deg: arm on +Y)
     add("LAR-01_lazy_susan", orient(B.lazy_susan()), BUY)
     lead = P.UPRIGHT_LEAD                                                       # lamp on +Y; upright 15.3 deg further on
@@ -117,7 +129,7 @@ def build() -> cq.Assembly:
     hs = ly - (P.HS_H - P.PRELOAD)                                                   # heatsink front face (stack clamped)
     add("LSR-03_heatsink", orient(B.heatsink(), z_to=(0, 1, 0), y_to=(0, 0, 1), t=(0, hs, 150)), BUY, g="arm")
     add("LSR-06_holder", orient(B.cob_holder(), z_to=(0, -1, 0), y_to=(0, 0, 1), t=(0, hs, 150)), BUY, g="arm")
-    add("LSR-01_cob", orient(B.cob_clu7a3(), z_to=(0, -1, 0), y_to=(0, 0, 1), t=(0, hs - P.PAD_T, 150)), BUY, g="arm")
+    add("LSR-01_cob", orient(B.cob_clu701(), z_to=(0, -1, 0), y_to=(0, 0, 1), t=(0, hs - P.PAD_T, 150)), BUY, g="arm")
     # ---- table (M3 = 0)
     add("TBL-07d_table_post", orient(P.table_post()), PRINT)
     add("TBL-05_axle_bolt", orient(B.bolt(8, 75, 13, 5.3, True)), BUY)

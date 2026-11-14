@@ -4,7 +4,7 @@
 
 Enclosed printer, nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20 %, 0.2 mm layers, 4 walls, 25 % gyroid, brim on tall or long parts, door shut until cool; XY shrink compensation from the tolerance coupon (M03.3). Print in the orientation of the STL (flat face down). Filament is an estimate (±25 %): the slicer has the real number.
 
-**Core machine: ≈ 2664 g of ABS** (67 % of the 4 kg FIL-01 supply; ±25 %, plus any reprints) · optional add-ons (stages 10, 15, CAL-06c, ENC-04a): ≈ 106 g · minimum build volume 220 × 220 × 200 mm (largest part: FRM-09h, 184 mm tall).
+**Core machine: ≈ 2666 g of ABS** (67 % of the 4 kg FIL-01 supply; ±25 %, plus any reprints) · optional add-ons (stages 10, 15, CAL-06c, ENC-04a): ≈ 131 g · minimum build volume 220 × 220 × 200 mm (largest part: FRM-09h, 184 mm tall).
 
 | Stage | ID | Part | Print | Size x × y × z (mm) | ≈ g each | ≈ g total | Fits |
 |---|---|---|---:|---|---:|---:|---|
@@ -15,10 +15,10 @@ Enclosed printer, nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20 %, 0.2 mm 
 | 03-frame | FRM-01a | [Deck tile SW (x -300..-100, y -300..-100)](../phases/03-frame/3d/FRM-01a_deck_tile_SW.stl) | 1 | 200 × 200 × 24 | 158 | 158 | yes |
 | 03-frame | FRM-01b | [Deck tile S (x -100..100, y -300..-100)](../phases/03-frame/3d/FRM-01b_deck_tile_S.stl) | 1 | 200 × 200 × 24 | 158 | 158 | yes |
 | 03-frame | FRM-01c | [Deck tile SE: power plate (x 100..300, y -300..-100)](../phases/03-frame/3d/FRM-01c_deck_tile_SE.stl) | 1 | 200 × 200 × 24 | 159 | 159 | yes |
-| 03-frame | FRM-01d | [Deck tile W (x -300..-100, y -100..100)](../phases/03-frame/3d/FRM-01d_deck_tile_W.stl) | 1 | 200 × 200 × 24 | 159 | 159 | yes |
+| 03-frame | FRM-01d | [Deck tile W (x -300..-100, y -100..100)](../phases/03-frame/3d/FRM-01d_deck_tile_W.stl) | 1 | 200 × 200 × 24 | 160 | 160 | yes |
 | 03-frame | FRM-01e | [Deck tile C: table post + motor (x -100..100, y -100..100)](../phases/03-frame/3d/FRM-01e_deck_tile_C.stl) | 1 | 200 × 200 × 24 | 161 | 161 | yes |
 | 03-frame | FRM-01f | [Deck tile E: M4 motor + saddles (x 100..300, y -100..100)](../phases/03-frame/3d/FRM-01f_deck_tile_E.stl) | 1 | 200 × 200 × 24 | 164 | 164 | yes |
-| 03-frame | FRM-01g | [Deck tile NW: controller tray (x -300..-100, y 100..300)](../phases/03-frame/3d/FRM-01g_deck_tile_NW.stl) | 1 | 200 × 200 × 24 | 160 | 160 | yes |
+| 03-frame | FRM-01g | [Deck tile NW: controller tray (x -300..-100, y 100..300)](../phases/03-frame/3d/FRM-01g_deck_tile_NW.stl) | 1 | 200 × 200 × 24 | 161 | 161 | yes |
 | 03-frame | FRM-01h | [Deck tile N (x -100..100, y 100..300)](../phases/03-frame/3d/FRM-01h_deck_tile_N.stl) | 1 | 200 × 200 × 24 | 158 | 158 | yes |
 | 03-frame | FRM-01i | [Deck tile NE (x 100..300, y 100..300)](../phases/03-frame/3d/FRM-01i_deck_tile_NE.stl) | 1 | 200 × 200 × 24 | 158 | 158 | yes |
 | 03-frame | FRM-02a | [Outrigger bar 1, 250 mm (x 215..465)](../phases/03-frame/3d/FRM-02a_outrigger_bar_1.stl) | 1 | 250 × 20 × 20 | 45 | 45 | yes |
@@ -64,5 +64,7 @@ Enclosed printer, nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20 %, 0.2 mm 
 | 11-scan-capture | SCN-03c | [Riser 60 mm](../phases/11-scan-capture/3d/SCN-03c_riser_60.stl) | 1 | 50 × 50 × 60 | 41 | 41 | yes |
 | 11-scan-capture | SCN-03d | [Scan camera plate, looks 15 deg down](../phases/11-scan-capture/3d/SCN-03d_scan_camera_plate_15.stl) | 1 | 50 × 52 × 44 | 20 | 20 | yes |
 | 15-standalone | STA-07a (optional) | [Pi Zero 2 W mount](../phases/15-standalone/3d/STA-07a_pi_zero_mount.stl) | 1 | 75 × 40 × 11 | 9 | 9 | yes |
+| 15-standalone | STA-10a (optional) | [Status screen stand (4 deck pilots)](../phases/15-standalone/3d/STA-10a_screen_stand.stl) | 1 | 52 × 74 × 46 | 22 | 22 | yes |
+| 15-standalone | STA-10b (optional) | [Status screen bezel](../phases/15-standalone/3d/STA-10b_screen_bezel.stl) | 1 | 74 × 46 × 2 | 3 | 3 | yes |
 
-Total all parts: ≈ 2770 g. Regenerate: `make parts` (or `python tools/cad/printability.py`).
+Total all parts: ≈ 2797 g. Regenerate: `make parts` (or `python tools/cad/printability.py`).

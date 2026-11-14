@@ -169,3 +169,95 @@ def test_web_demo_package_is_reproducible():
     names = zipfile.ZipFile(io.BytesIO(a)).namelist()
     assert "software/src/opengonio/app/server.py" in names and "software/config/machine.yaml" in names
     assert not any("static/" in n or "__pycache__" in n for n in names)
+
+
+def _lan(tmp_path):
+    app = App(load_config(), tmp_path / "runs", str(tmp_path / "calibration.yaml"))
+    srv = serve(app, port=0, lan=True, lan_host="10.9.8.7", token="s3cret")
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    port = srv.server_address[1]
+
+    def call(path, host, cookie=None, body=None, origin=None):
+        h = {"Host": f"{host}:{port}", "Content-Type": "application/json"}
+        if cookie:
+            h["Cookie"] = cookie
+        if origin:
+            h["Origin"] = origin
+        req = urllib.request.Request(f"http://127.0.0.1:{port}{path}", headers=h,
+                                     data=None if body is None else json.dumps(body).encode())
+        try:
+            with urllib.request.urlopen(req, timeout=10) as r:
+                return r.status, dict(r.headers), r.read()
+        except urllib.error.HTTPError as e:
+            return e.code, dict(e.headers), e.read()
+    return app, srv, call
+
+
+def test_lan_needs_pairing_and_refuses_other_hosts(tmp_path):
+    """--lan: a phone without the code gets nothing; the QR address sets the cookie; another Host name is refused."""
+    app, srv, call = _lan(tmp_path)
+    try:
+        assert call("/api/state", "10.9.8.7")[0] == 401
+        assert call("/", "10.9.8.7")[0] == 401                                   # the 'pair this device' page
+        assert call("/?pair=wrong", "10.9.8.7")[0] == 401
+        code, headers, _ = call("/?pair=s3cret", "10.9.8.7")
+        assert code == 200 and "og_pair=s3cret" in headers.get("Set-Cookie", "") and "HttpOnly" in headers["Set-Cookie"]
+        assert call("/api/state", "10.9.8.7", cookie="og_pair=s3cret")[0] == 200
+        assert call("/api/home", "10.9.8.7", body={})[0] == 401                  # POST without the cookie
+        assert call("/api/connect", "10.9.8.7", cookie="og_pair=s3cret", body={"mode": "sim", "material": "mirror"},
+                    origin="http://10.9.8.7:%d" % srv.server_address[1])[0] == 200
+        assert call("/api/state", "evil.example", cookie="og_pair=s3cret")[0] == 403   # DNS rebinding
+        assert call("/api/pairing", "10.9.8.7", cookie="og_pair=s3cret")[0] == 403    # the code is shown on the computer only
+        code, _, body = call("/api/pairing", "127.0.0.1")
+        p = json.loads(body)
+        assert code == 200 and p["lan"] and p["url"].endswith("/?pair=s3cret")
+        code, _, body = call("/manifest.webmanifest", "10.9.8.7", cookie="og_pair=s3cret")
+        assert code == 200 and json.loads(body)["start_url"] == "./?pair=s3cret"      # the home-screen app re-pairs
+    finally:
+        srv.shutdown()
+
+
+def test_run_download_is_a_zip_of_the_run(tmp_path):
+    """Data collection: GET /api/download?run=NAME returns the run folder as a zip; other paths are refused."""
+    import io
+    import zipfile
+    app, srv, call = _lan(tmp_path)
+    try:
+        app.connect("sim", "mirror")
+        app.home()
+        job = app.run("mirror", 40)
+        for _ in range(600):
+            if job.status != "running":
+                break
+            time.sleep(0.05)
+        assert job.status == "finished", job.error
+        code, headers, body = call(f"/api/download?run={job.name}", "127.0.0.1")
+        assert code == 200 and headers["Content-Type"] == "application/zip"
+        names = zipfile.ZipFile(io.BytesIO(body)).namelist()
+        assert f"{job.name}/manifest.json" in names and f"{job.name}/curve.csv" in names
+        assert call("/api/download?run=../../etc", "127.0.0.1")[0] == 404
+    finally:
+        srv.shutdown()
+
+
+def test_material_preview_and_glb(tmp_path):
+    """A relative-only simulated run cannot be fitted: the app says why and previews the simulated truth as a .glb."""
+    from opengonio.app.server import respond
+    from opengonio.render.gltf import read_glb
+    app = App(load_config(), tmp_path / "runs", str(tmp_path / "calibration.yaml"))
+    app.connect("sim", "plastic")
+    app.home()
+    job = app.run("inplane", 30, 20)
+    for _ in range(1200):
+        if job.status != "running":
+            break
+        time.sleep(0.05)
+    assert job.status == "finished", job.error
+    code, m = respond(app, "GET", "/api/material", f"run={job.name}", {})
+    assert code == 200 and m["kind"] == "none" and "white" in m["why"]
+    assert m["preview"]["roughness"] == 0.3 and m["simulated"]
+    doc, _ = read_glb(app.glb(job.name))
+    assert doc["materials"][0]["pbrMetallicRoughness"]["roughnessFactor"] == 0.3
+    assert doc["asset"]["extras"]["opengonio"]["kind"] == "none"
+    assert respond(app, "POST", "/api/fit", "", {"run": job.name})[0] == 400          # fit.py refuses relative values
+    assert respond(app, "GET", "/api/material", "run=../../etc", {})[0] == 409

@@ -1,0 +1,55 @@
+# Desktop app for Windows, macOS and Linux (PyInstaller, one build per system). Every run keeps the three zips as
+# workflow artifacts; a version tag (scripts/release.sh) also attaches them to that GitHub release.
+name: desktop
+on:
+  push:
+    tags: ["v*"]
+    branches: [main]
+    paths: ["software/src/**", "software/packaging/**", ".github/workflows/desktop.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: windows-latest, window: "pywebview>=5"}
+          - {os: macos-latest, window: "pywebview>=5"}
+          - {os: ubuntu-24.04, window: ""}           # Linux opens the browser: no GTK web view to bundle
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.12"}
+      - name: Install
+        run: python -m pip install ./software pyserial opencv-python-headless segno pyinstaller ${{ matrix.window }}
+      - name: Build
+        run: python software/packaging/build.py
+      - name: Smoke test (Linux and Windows run the packed app on the simulator)
+        if: runner.os != 'macOS'
+        shell: bash
+        run: |
+          cd build/desktop/dist
+          exe=./OpenGonio; [ -f OpenGonio.exe ] && exe=./OpenGonio.exe
+          "$exe" --sim mirror --no-browser --port 8790 --data "$RUNNER_TEMP/runs" &
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8790/api/state > /tmp/state.json && break; sleep 1; done
+          python -c "import json; s=json.load(open('/tmp/state.json')); assert s['mode']=='sim', s; print('app answers:', s['mode'], s['material'])"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: OpenGonio-${{ runner.os }}
+          path: dist/*.zip
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v5
+        with: {path: dist, merge-multiple: true}
+      - name: Attach to the release
+        env: {GH_TOKEN: "${{ github.token }}"}
+        run: |
+          gh release view "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || \
+            gh release create "$GITHUB_REF_NAME" -R "$GITHUB_REPOSITORY" --title "$GITHUB_REF_NAME" --notes "Desktop apps for Windows, macOS and Linux."
+          gh release upload "$GITHUB_REF_NAME" dist/*.zip -R "$GITHUB_REPOSITORY" --clobber

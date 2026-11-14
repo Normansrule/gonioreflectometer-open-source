@@ -4,7 +4,7 @@
 
 <img src="../../docs/assets/axes.svg" width="100%" alt="Frame">
 
-$22.45 · total so far $211.51 / $630
+$22.45 · total so far $223.96 / $630
 
 [Design](design.md) · [Parts list](bom.csv) · [3D files](3d/)
 

@@ -16,13 +16,23 @@ static/ and talks to these endpoints:
     POST /api/run {plan, theta, step}   capture -> verify -> curve, in the background
     POST /api/spectral                  one AS7341 reading (simulator only for now: the app doesn't open the hub yet)
     GET  /api/frame.png                 one camera frame (the simulated camera is 64 x 48 px)
-    GET  /api/runs | /api/curve?run=NAME
+    GET  /api/runs | /api/curve?run=NAME | /api/download?run=NAME (the run folder as a zip)
+    GET  /api/pairing                   this computer only: the address and QR code phones pair with (--lan)
+
+Phones and tablets (`opengonio app --lan`): the server listens on the Wi-Fi address too and prints a pairing address
+with a one-time code (and shows it as a QR code under Phone in the app). A device that opened it keeps a cookie;
+without it every request is refused. This computer's own browser needs no code; requests under any other host name
+are refused (DNS rebinding), and POSTs from another origin too.
 SPDX-License-Identifier: GPL-3.0-or-later
 """
 from __future__ import annotations
 
 import csv
+import hmac
+import io
 import json
+import secrets
+import socket
 import threading
 import time
 import traceback
@@ -31,6 +41,7 @@ from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
+import zipfile
 
 from .. import __version__
 from ..calibration import load_calibration, DEFAULT_CAL
@@ -330,6 +341,72 @@ class App:
         simulated = str((man.get("camera") or {}).get("device", "")).startswith("sim:")
         return {"run": name, "simulated": simulated, "rows": [{k: r.get(k) for k in keys} for r in rows]}
 
+    def _run_dir(self, name: str) -> Path:
+        d = (self.data / name).resolve()
+        if self.data.resolve() not in d.parents or not (d / "manifest.json").is_file():
+            raise Refused(f"no run {name!r}")
+        return d
+
+    def run_material(self, name: str) -> dict:
+        """The run's material for graphics: its fit, or why there is none (and, for a simulated run, the true one)."""
+        from ..render.material import SIM_TRUTH, Material
+        d = self._run_dir(name)
+        man = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+        device = str((man.get("camera") or {}).get("device", ""))
+        sim = device.split(":", 1)[1] if device.startswith("sim:") else None
+        out = {"run": name, "simulated": sim is not None}
+        if (d / "fit.json").is_file():
+            fj = json.loads((d / "fit.json").read_text(encoding="utf-8"))
+            m = Material.from_fit(d / "fit.json")
+            return {**out, "kind": "fit", "material": m.to_dict(), "rms_pct_of_peak": fj.get("rms_pct_of_peak"),
+                    "holdout": fj.get("holdout"), "rows": fj.get("rows")}
+        absolute = False
+        if (d / "curve.csv").is_file():
+            with open(d / "curve.csv", newline="", encoding="utf-8") as f:
+                absolute = any(r.get("brdf_per_sr") for r in csv.DictReader(f))
+        mirror = name.split("_")[1:2] == ["mirror"]
+        if absolute and not mirror:
+            return {**out, "kind": "fittable", "why": "absolute BRDF values: press Fit"}
+        why = ("a mirror sweep checks angles; fit a material from an in-plane or isotropic run" if mirror else
+               "relative values only (no white reference): run `opengonio capture white` + `calibrate white`, then capture again")
+        res = {**out, "kind": "none", "why": why}
+        if sim in SIM_TRUTH:
+            res["preview"] = Material.sim(sim).to_dict()
+        return res
+
+    def fit_material(self, name: str) -> dict:
+        from ..fit import fit_run
+        d = self._run_dir(name)
+        with self.lock:
+            self._busy_refuse()
+            fit_run(d)
+        return self.run_material(name)
+
+    def glb(self, name: str, shape: str = "ball") -> bytes:
+        """The run's material on a shader ball or sphere as .glb (Blender, Unity, Unreal, three.js)."""
+        from ..render.gltf import glb_bytes
+        from ..render.material import Material
+        from ..render.mesh import shader_ball, uv_sphere
+        m = self.run_material(name)
+        src = m.get("material") or m.get("preview")
+        if not src:
+            raise Refused(f"no material for {name!r}: {m.get('why', 'fit it first')}")
+        mat = Material(src["name"], tuple(src["base_color"]), src["roughness"], src["metallic"], src["source"], src["notes"])
+        mesh = uv_sphere(25) if shape == "sphere" else shader_ball()
+        return glb_bytes(mesh, mat, extras={"opengonio": {"run": name, "simulated": m["simulated"], "kind": m["kind"]}})
+
+    def download(self, name: str) -> bytes:
+        """One run folder as a zip (manifest, images, curve.csv, checks): the data for the phone or another computer."""
+        d = (self.data / name).resolve()
+        if self.data.resolve() not in d.parents or not (d / "manifest.json").is_file():
+            raise Refused(f"no run {name!r}")
+        buf = io.BytesIO()
+        with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+            for f in sorted(d.rglob("*")):
+                if f.is_file():
+                    z.write(f, f"{name}/{f.relative_to(d).as_posix()}")
+        return buf.getvalue()
+
     def state(self) -> dict:
         g, cfg = self.g, self.cfg
         lights = []
@@ -349,8 +426,17 @@ class App:
         return s
 
 
+PAIR_COOKIE = "og_pair"
+NOT_PAIRED = """<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>OpenGonio: pair this device</title><body style="font:18px system-ui;background:#0c0b0a;color:#efe9df;padding:2rem;max-width:32rem">
+<h1 style="font-weight:500">Pair this device</h1><p>On the computer running OpenGonio, open <b>Phone</b> in the app's top bar and scan
+the QR code with this device's camera. Only paired devices can see or control the machine.</p>"""
+
+
 class Handler(SimpleHTTPRequestHandler):
     app: App
+    token: str | None = None                  # set by serve(..., lan=True): the pairing code
+    lan_host: str | None = None               # this computer's Wi-Fi address, the only other Host accepted
 
     def __init__(self, *a, **kw):
         super().__init__(*a, directory=str(STATIC), **kw)
@@ -363,10 +449,49 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("X-Content-Type-Options", "nosniff")
         super().end_headers()
 
-    def _host_ok(self) -> bool:
-        """Only this computer's own names: a DNS-rebinding page arrives under another Host and is refused."""
+    def _local_host(self) -> bool:
         port = self.server.server_address[1]
         return self.headers.get("Host", "") in (f"127.0.0.1:{port}", f"localhost:{port}", f"[::1]:{port}")
+
+    def _host_ok(self) -> bool:
+        """Only this computer's own names (and, with --lan, its Wi-Fi address): a DNS-rebinding page arrives under
+        another Host and is refused."""
+        return self._local_host() or (self.token is not None and self.headers.get("Host", "") ==
+                                      f"{self.lan_host}:{self.server.server_address[1]}")
+
+    def _local_client(self) -> bool:
+        return self._local_host() and self.client_address[0] in ("127.0.0.1", "::1")
+
+    def _paired(self) -> bool:
+        """This computer, or a device that holds the pairing cookie (LAN mode)."""
+        if self.token is None or self._local_client():
+            return True
+        for part in self.headers.get("Cookie", "").split(";"):
+            k, _, v = part.strip().partition("=")
+            if k == PAIR_COOKIE and hmac.compare_digest(v, self.token):
+                return True
+        return False
+
+    def _send(self, body: bytes, ctype: str, code: int = 200, headers: dict | None = None) -> None:
+        self.send_response(code)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(body)))
+        for k, v in (headers or {}).items():
+            self.send_header(k, v)
+        self.end_headers()
+        self.wfile.write(body)
+
+    def pairing(self) -> dict:
+        """The address phones open (LAN mode), with its QR code as an SVG data URI when segno is installed."""
+        if self.token is None:
+            return {"lan": False, "hint": "Start the app with  opengonio app --lan  to pair phones on this Wi-Fi."}
+        url = f"http://{self.lan_host}:{self.server.server_address[1]}/?pair={self.token}"
+        try:
+            import segno
+            svg = segno.make(url, error="m").svg_data_uri(scale=5, dark="#0c0b0a", light="#efe9df", border=2)
+        except ImportError:
+            svg = None
+        return {"lan": True, "url": url, "svg": svg}
 
     def _json(self, obj, code: int = 200) -> None:
         body = json.dumps(obj, default=str).encode()
@@ -389,6 +514,37 @@ class Handler(SimpleHTTPRequestHandler):
         if not self._host_ok():
             return self._json({"error": "unknown host refused"}, HTTPStatus.FORBIDDEN)
         u = urlparse(self.path)
+        extra = {}
+        code = parse_qs(u.query).get("pair", [""])[0]
+        if self.token is not None and code and hmac.compare_digest(code, self.token):
+            extra["Set-Cookie"] = f"{PAIR_COOKIE}={self.token}; Path=/; Max-Age=2592000; HttpOnly; SameSite=Strict"
+        elif not self._paired():
+            if u.path.startswith("/api/"):
+                return self._json({"error": "not paired: scan the QR code under Phone in the app on the computer",
+                                   "kind": "pairing"}, HTTPStatus.UNAUTHORIZED)
+            return self._send(NOT_PAIRED.encode(), "text/html; charset=utf-8", HTTPStatus.UNAUTHORIZED)
+        if u.path == "/api/pairing":
+            if not self._local_client():
+                return self._json({"error": "pairing is shown on the computer only"}, HTTPStatus.FORBIDDEN)
+            return self._json(self.pairing())
+        if u.path == "/api/download":
+            try:
+                name = parse_qs(u.query).get("run", [""])[0]
+                body = self.app.download(name)
+            except Refused as exc:
+                return self._json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+            return self._send(body, "application/zip", headers={"Content-Disposition": f'attachment; filename="{name}.zip"'})
+        if u.path == "/api/glb":
+            try:
+                name = parse_qs(u.query).get("run", [""])[0]
+                body = self.app.glb(name)
+            except Refused as exc:
+                return self._json({"error": str(exc)}, HTTPStatus.NOT_FOUND)
+            return self._send(body, "model/gltf-binary", headers={"Content-Disposition": f'attachment; filename="{name}_material.glb"'})
+        if u.path == "/manifest.webmanifest" and self.token is not None:     # the installed phone app re-pairs on launch
+            m = json.loads((STATIC / "manifest.webmanifest").read_text(encoding="utf-8"))
+            m["start_url"] = f"./?pair={self.token}"
+            return self._send(json.dumps(m).encode(), "application/manifest+json", headers=extra)
         if u.path == "/api/frame.png":
             try:
                 png = self.app.frame_png()
@@ -402,7 +558,15 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if u.path.startswith("/api/"):
             return self._json(*reversed(respond(self.app, "GET", u.path, u.query, {})))
+        if extra:                                            # pairing visit: set the cookie on the page itself
+            self._extra = extra
         return super().do_GET()
+
+    def send_response(self, code, message=None):
+        super().send_response(code, message)
+        for k, v in getattr(self, "_extra", {}).items():
+            self.send_header(k, v)
+        self._extra = {}
 
     def do_POST(self):
         u = urlparse(self.path)
@@ -410,6 +574,9 @@ class Handler(SimpleHTTPRequestHandler):
             return self._json({"error": "unknown host refused"}, HTTPStatus.FORBIDDEN)
         if self.headers.get("Origin") and urlparse(self.headers["Origin"]).netloc != self.headers.get("Host"):
             return self._json({"error": "cross-origin request refused"}, HTTPStatus.FORBIDDEN)   # another site can't drive the machine
+        if not self._paired():
+            return self._json({"error": "not paired: scan the QR code under Phone in the app on the computer",
+                               "kind": "pairing"}, HTTPStatus.UNAUTHORIZED)
         try:
             b = self._body()
         except ValueError as exc:
@@ -445,6 +612,7 @@ def respond(app: App, method: str, path: str, query: str, b: dict) -> tuple[int,
             "/api/state": a.state,
             "/api/runs": lambda: {"runs": a.runs()},
             "/api/curve": lambda: a.curve(parse_qs(query).get("run", [""])[0]),
+            "/api/material": lambda: a.run_material(parse_qs(query).get("run", [""])[0]),
         }
     else:
         routes = {
@@ -456,6 +624,7 @@ def respond(app: App, method: str, path: str, query: str, b: dict) -> tuple[int,
             "/api/check": lambda: a.check(b.get("pose", {})),
             "/api/light": lambda: a.light(b["name"], b["on"]),
             "/api/spectral": a.spectral,
+            "/api/fit": lambda: a.fit_material(b["run"]),
             "/api/run": lambda: {"job": a.run(b.get("plan", "mirror"), b.get("theta", 30), b.get("step", 10)).__dict__},
         }
     fn = routes.get(path)
@@ -464,19 +633,45 @@ def respond(app: App, method: str, path: str, query: str, b: dict) -> tuple[int,
     return call(a, fn, method == "POST")
 
 
-def serve(app: App, host: str = "127.0.0.1", port: int = 8747) -> ThreadingHTTPServer:
-    handler = type("BoundHandler", (Handler,), {"app": app})
+def lan_address() -> str:
+    """This computer's address on the local network (the interface a packet to the internet would leave by; nothing is sent)."""
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+        try:
+            s.connect(("10.255.255.255", 1))
+            return s.getsockname()[0]
+        except OSError:
+            return "127.0.0.1"
+
+
+def serve(app: App, host: str = "127.0.0.1", port: int = 8747, lan: bool = False, lan_host: str | None = None,
+          token: str | None = None) -> ThreadingHTTPServer:
+    """lan=True: listen on every interface and require pairing (token) for any device other than this computer."""
+    attrs = {"app": app}
+    if lan:
+        attrs.update(token=token or secrets.token_urlsafe(12), lan_host=lan_host or lan_address())
+        host = "0.0.0.0"
+    handler = type("BoundHandler", (Handler,), attrs)
     return ThreadingHTTPServer((host, port), handler)
 
 
-def main(cfg: Machine, sim: str | None, port: int, data: str, window: bool, open_browser: bool, cal: str) -> int:
+def main(cfg: Machine, sim: str | None, port: int, data: str, window: bool, open_browser: bool, cal: str,
+         lan: bool = False) -> int:
     app = App(cfg, Path(data), cal)
     if sim:
         app.connect("sim", sim)
-    srv = serve(app, port=port)
+    srv = serve(app, port=port, lan=lan)
     url = f"http://127.0.0.1:{srv.server_address[1]}/"
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     print(f"OpenGonio app on {url}  ({'simulated ' + sim if sim else 'not connected'}; Ctrl+C to quit)")
+    if lan:
+        h = srv.RequestHandlerClass
+        phone = f"http://{h.lan_host}:{srv.server_address[1]}/?pair={h.token}"
+        print(f"phones and tablets on this Wi-Fi: open {phone}  (or scan the QR code under Phone in the app)")
+        try:
+            import segno
+            segno.make(phone, error="m").terminal(compact=True)
+        except ImportError:
+            pass
     try:
         if window:
             try:

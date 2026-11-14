@@ -4,7 +4,7 @@
 
 <img src="../../docs/assets/brdf-lobe.svg" width="100%" alt="Camera and light">
 
-$111.91 · total so far $424.41 / $630
+$115.87 · total so far $440.82 / $630
 
 [Design](design.md) · [Parts list](bom.csv) · [3D files](3d/)
 
@@ -121,20 +121,20 @@ Light switches from the laptop, stays cool and steady. · 0/3 steps done · ~1.6
 
 ### M18.1 Lamp assembly
 
-**Time** 1 h (+ print 2 h) · **Needs** LSR-01 COB · LSR-06 holder · LSR-02 driver · LSR-03 heatsink · LSR-04 tape · LSR-05 print · PWR-15 18 AWG offcuts (2 × 15 cm) · PWR-20 lever connectors · TLS-04 stripper
+**Time** 1 h (+ print 2 h) · **Needs** LSR-01 COB · LSR-06 holder · LSR-02 driver · LSR-03 heatsink · LSR-04 tape (3M 8810; the Wakefield heatsink comes without it) · LSR-05 print · PWR-15 18 AWG offcuts (2 × 15 cm) · PWR-20 lever connectors · TLS-04 stripper
 
 #### Do
 
 1. Print `LSR-05a_lamp_tube`, `LSR-05b_lamp_cap`. Strip one end of a 15 cm red and a 15 cm black 18 AWG lead (PWR-15) to the length in the holder's instruction sheet; push red into the holder's `+` poke-in, black into `−`.
 2. Holder face-down in the body's round seat, wire entries toward the lead groove (the side away from the clamp), leads along the groove. COB into the holder's square seat, light-emitting face down through the window. Thermal tape (LSR-04) on the COB's back; heatsink on top, fins out. Cap on with 4 × M2 × 12, leads through its slot; tighten evenly until the heatsink no longer turns.
 3. Lamp clamp onto the arm bar's outer pilot (M2 × 16), aperture facing the zero point.
-4. E-stop pressed, adapter unplugged (HE `+` carries motor-power voltage). Driver (LSR-02) pins up in the short frame on the controller tray (double-sided tape). Female jumper ends onto its pins: +Vin ← SKR Pico HE `+` (terminal marked 12/24V; cut jumper, bare end under the screw); −Vin → SKR Pico HE `−` (terminal marked IO23; output port from M08.2, normally `M62 P4`).
-5. Driver +Vo / −Vo pins → two chains of 5 male–female jumpers along the arm (slack for 20–324°); at the lamp, lever connectors join each chain's last end (cut off, stripped, folded double) to the lamp's red (+) / black (−) lead.
+4. E-stop pressed, adapter unplugged (HE `+` carries motor-power voltage). Driver (LSR-02, NLDD-350HW) into the short frame on the controller tray (double-sided tape). Read which lead colour is which on its label. +Vin lead (bare 5 mm end) under the SKR Pico HE `+` screw (terminal marked 12/24V); −Vin lead under HE `−` (terminal marked IO23; output port from M08.2, normally `M62 P4`).
+5. Driver +Vo / −Vo leads → one lever connector each on the tray → two chains of 5 male–female jumpers along the arm (slack for 20–324°) → lever connectors at the lamp → the holder's red (+) / black (−) lead. Jumper ends into lever connectors: plug cut off, stripped 11 mm, folded double. DIM lead alone in a 2-way lever connector (open = on; never tie it to −Vin).
 
 #### Verify
 
-- [ ] Each lead holds when tugged (poke-in locked).
-- [ ] Polarity checked with the meter before power: +Vo pin → red lead beeps.
+- [ ] Each lead holds when tugged (poke-in locked, levers closed).
+- [ ] Polarity checked with the meter before power: +Vo lead → holder red lead beeps.
 
 #### Record
 
@@ -258,4 +258,4 @@ Two real materials measured and pictured. · 0/2 steps done · ~40 min hands-on 
 
 > **Safety:** Don't stare into the lamp. Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.
 
-[Sources](../../REFERENCES.md): R1 · G12 · T32 · V1 · V2 · V3 · V4 · V5 · V7 · V8 · V9 · N3 · N11 · N24 · N25 · N45 · N46 · N47 · H13 · H14 · H15 · H49 · K1 · K2 · K3 · K4 · K5 · K6 · L4 · L5 · L6 · L7 · L21 · L22 · L23
+[Sources](../../REFERENCES.md): R1 · G12 · T32 · V1 · V2 · V3 · V4 · V5 · V7 · V8 · V9 · N3 · N11 · N24 · N25 · N45 · N46 · N47 · H13 · H14 · H15 · H49 · K1 · K2 · K3 · K4 · K5 · K6 · L6 · L21 · L22 · L23 · L25 · L26 · L27 · L28 · L29

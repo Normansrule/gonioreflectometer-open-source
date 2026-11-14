@@ -9,6 +9,8 @@ Black ABS, enclosed printer: nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20
 | ID | Part | Edit (STEP) | Print (STL) |
 |---|---|---|---|
 | STA-07a | Pi Zero 2 W mount | [STA-07a_pi_zero_mount.step](STA-07a_pi_zero_mount.step) | [STA-07a_pi_zero_mount.stl](STA-07a_pi_zero_mount.stl) |
+| STA-10a | Status screen stand (4 deck pilots) | [STA-10a_screen_stand.step](STA-10a_screen_stand.step) | [STA-10a_screen_stand.stl](STA-10a_screen_stand.stl) |
+| STA-10b | Status screen bezel | [STA-10b_screen_bezel.step](STA-10b_screen_bezel.step) | [STA-10b_screen_bezel.stl](STA-10b_screen_bezel.stl) |
 
 Regenerate: `python tools/cad/parts.py` (parameters at the top of the file).
 
@@ -25,5 +27,6 @@ Every bought part has a model in the repo (dummy in `cad/bought/` or open model 
 | STA-05 | SSD1306 OLED 0.96 in I2C 128x64 | [`STA-05_ssd1306_oled_096in.step`](../../../cad/bought/STA-05_ssd1306_oled_096in.step) | None published - use the dummy (generic SSD1306 board) |
 | STA-06 | Jumper wires female-female (10) | [`STA-06_jumper_wire_ff.step`](../../../cad/bought/STA-06_jumper_wire_ff.step) | None published - use the dummy (wire) |
 | STA-08 | USB-A to micro-B data cable 1 m | [`STA-08_adafruit_592_microusb_cable.step`](../../../cad/open/STA-08_adafruit_592_microusb_cable.step)<br>[`STA-08_usb_cable_micro_b.step`](../../../cad/bought/STA-08_usb_cable_micro_b.step) | cad/open/STA-08_adafruit_592_microusb_cable.step |
+| STA-09 | Status screen 2 in IPS 240 x 320, SPI (Waveshare 2inch LCD Module) | [`STA-09_waveshare_2in_lcd.step`](../../../cad/bought/STA-09_waveshare_2in_lcd.step) | None published - use the dummy (58 x 35 mm envelope; thickness [TBD]) |
 
 Design notes: [../design.md](../design.md).
