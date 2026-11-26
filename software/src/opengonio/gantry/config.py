@@ -82,6 +82,7 @@ class Machine:
     station: dict[str, Any] = field(default_factory=dict)
     spectral: dict[str, Any] = field(default_factory=dict)
     sample: dict[str, Any] = field(default_factory=dict)      # planar sample size + valid-region rules (roi.py)
+    slip: dict[str, Any] = field(default_factory=dict)        # slip model parameters (gantry/slip.py)
 
     @property
     def active_axes(self) -> dict[str, Axis]:
@@ -141,4 +142,5 @@ def load_config(path: str | Path | None = None) -> Machine:
         axes=axes, controller=raw.get("controller", {}), hub=raw.get("hub", {}),
         camera=raw.get("camera", {}), lights=raw.get("lights", {}), scan=raw.get("scan", {}),
         station=raw.get("station", {}), spectral=raw.get("spectral", {}), sample=raw.get("sample", {}),
+        slip=raw.get("slip") or {},
     )

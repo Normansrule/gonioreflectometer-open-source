@@ -14,7 +14,7 @@
 | 73.5–80.0 | M8 nut (bolt end 81.5) |
 | 80.7 | drum top: yoke base; tilt axis at 150 |
 
-Fasteners: M2 × 12 × 4 (post) + 2 + washers (bracket slots), M2 × 8 × 2 (flag), M2 × 10 × 3 + washers (riser foot), M2 × 6 × 2 (endstop on the riser), M3 × 8 × 4 (motor face, FRM-07).
+Fasteners: M2 × 12 × 4 (post) + 2 + washers (bracket slots), M2 × 8 × 2 (flag), M2 × 10 × 3 + washers (riser foot), M2 × 8 × 2 (endstop on the riser), M3 × 8 × 4 (motor face, FRM-07).
 
 ## 3D parts
 

@@ -4,7 +4,7 @@
 
 Enclosed printer, nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20 %, 0.2 mm layers, 4 walls, 25 % gyroid, brim on tall or long parts, door shut until cool; XY shrink compensation from the tolerance coupon (M03.3). Print in the orientation of the STL (flat face down). Filament is an estimate (±25 %): the slicer has the real number.
 
-**Core machine: ≈ 2666 g of ABS** (67 % of the 4 kg FIL-01 supply; ±25 %, plus any reprints) · optional add-ons (stages 10, 15, CAL-06c, ENC-04a): ≈ 131 g · minimum build volume 220 × 220 × 200 mm (largest part: FRM-09h, 184 mm tall).
+**Core machine: ≈ 2662 g of ABS** (67 % of the 4 kg FIL-01 supply; ±25 %, plus any reprints) · optional add-ons (stages 10, 15, CAL-06c, ENC-04a): ≈ 131 g · minimum build volume 220 × 220 × 200 mm (largest part: FRM-09h, 184 mm tall).
 
 | Stage | ID | Part | Print | Size x × y × z (mm) | ≈ g each | ≈ g total | Fits |
 |---|---|---|---:|---|---:|---:|---|
@@ -52,10 +52,10 @@ Enclosed printer, nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20 %, 0.2 mm 
 | 07-calibrate | CAL-06b | [Mirror holder](../phases/07-calibrate/3d/CAL-06b_mirror_holder.stl) | 1 | 60 × 60 × 8 | 14 | 14 | yes |
 | 07-calibrate | CAL-06c (optional) | [Chrome-ball holder](../phases/07-calibrate/3d/CAL-06c_ball_holder.stl) | 1 | 66 × 28 × 14 | 12 | 12 | yes |
 | 07-calibrate | ENC-04a (optional) | [Dowel socket (print 4)](../phases/07-calibrate/3d/ENC-04a_dowel_socket.stl) | 4 | 50 × 24 × 40 | 10 | 38 | yes |
-| 08-tilt | TLT-07a | [Tilt yoke: 608 seats, motor slots above the axis](../phases/08-tilt/3d/TLT-07a_tilt_yoke.stl) | 1 | 140 × 34 × 174 | 80 | 80 | yes |
-| 08-tilt | TLT-07b | [GT2 100T pulley (5:1) on the stub axle](../phases/08-tilt/3d/TLT-07b_pulley_100T.stl) | 1 | 67 × 67 × 9 | 17 | 17 | yes |
-| 08-tilt | TLT-07c | [Tilt cradle: stub-axle nut traps, spin motor floor](../phases/08-tilt/3d/TLT-07c_tilt_cradle.stl) | 1 | 112 × 34 × 34 | 24 | 24 | yes |
-| 09-spin | SPN-07a | [Spin platter: clamps the motor D-shaft (direct drive)](../phases/09-spin/3d/SPN-07a_spin_platter.stl) | 1 | 84 × 84 × 18 | 25 | 25 | yes |
+| 08-tilt | TLT-07a | [Tilt yoke: 608 seats, motor slots above the axis](../phases/08-tilt/3d/TLT-07a_tilt_yoke.stl) | 1 | 140 × 46 × 173 | 84 | 84 | yes |
+| 08-tilt | TLT-07b | [GT2 60T pulley (3:1) on the stub axle](../phases/08-tilt/3d/TLT-07b_pulley_60T.stl) | 1 | 42 × 42 × 9 | 7 | 7 | yes |
+| 08-tilt | TLT-07c | [Tilt cradle: stub-axle nut traps, spin motor floor](../phases/08-tilt/3d/TLT-07c_tilt_cradle.stl) | 1 | 112 × 46 × 34 | 25 | 25 | yes |
+| 09-spin | SPN-07a | [Spin platter: clamps the motor D-shaft (direct drive)](../phases/09-spin/3d/SPN-07a_spin_platter.stl) | 1 | 84 × 84 × 18 | 26 | 26 | yes |
 | 10-color | MSK-06a (optional) | [LED ring (8 bands)](../phases/10-color/3d/MSK-06a_led_ring.stl) | 1 | 80 × 135 × 4 | 18 | 18 | yes |
 | 10-color | MSK-06b (optional) | [40 deg LED mast](../phases/10-color/3d/MSK-06b_led_mast.stl) | 1 | 30 × 139 × 110 | 14 | 14 | yes |
 | 10-color | SPC-03a (optional) | [Spectral sensor tube + post clamp](../phases/10-color/3d/SPC-03a_spectral_tube.stl) | 1 | 30 × 92 × 22 | 14 | 14 | yes |
@@ -67,4 +67,4 @@ Enclosed printer, nozzle 245–255 °C, bed 100–105 °C, fan ≤ 20 %, 0.2 mm 
 | 15-standalone | STA-10a (optional) | [Status screen stand (4 deck pilots)](../phases/15-standalone/3d/STA-10a_screen_stand.stl) | 1 | 52 × 74 × 46 | 22 | 22 | yes |
 | 15-standalone | STA-10b (optional) | [Status screen bezel](../phases/15-standalone/3d/STA-10b_screen_bezel.stl) | 1 | 74 × 46 × 2 | 3 | 3 | yes |
 
-Total all parts: ≈ 2797 g. Regenerate: `make parts` (or `python tools/cad/printability.py`).
+Total all parts: ≈ 2793 g. Regenerate: `make parts` (or `python tools/cad/printability.py`).

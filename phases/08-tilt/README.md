@@ -2,7 +2,7 @@
 
 <img src="../../docs/assets/steps/08.svg" width="100%" alt="Steps of stage 08">
 
-$16.68 · total so far $497.28 / $630
+$9.19 · total so far $489.79 / $630
 
 [Design](design.md) · [Parts list](bom.csv) · [3D files](3d/)
 
@@ -16,7 +16,7 @@ Sample tilts without leaving the zero point. · 0/5 steps done · ~3.2 h hands-o
 
 #### Do
 
-1. Print `TLT-07a_tilt_yoke.stl` (upright, 184 mm tall), `TLT-07b_pulley_100T.stl`, `TLT-07c_tilt_cradle.stl`, `SPN-07a_spin_platter.stl` (top face down).
+1. Print `TLT-07a_tilt_yoke.stl` (upright, 184 mm tall), `TLT-07b_pulley_60T.stl`, `TLT-07c_tilt_cradle.stl`, `SPN-07a_spin_platter.stl` (top face down).
 
 #### Verify
 
@@ -28,13 +28,13 @@ Tick the boxes; `make done id=M25.1`.
 
 ### M25.2 Cradle, platter and stub axles
 
-**Time** 1 h · **Needs** 2 × 608 · TLT-05 2 × M8 × 35 + nuts · spacers (TBL-07f) · SPN-01 pancake motor · 4 × M3 × 8 (FRM-07), 4 × M2 × 12 · M2 × 6 + M2 nut · TLS-10 spanner
+**Time** 1 h · **Needs** 2 × 608 · TLT-05 2 × M8 × 35 + nuts · spacers (TBL-07f) · SPN-01 pancake motor · 4 × M3 × 8 (FRM-07), 4 × M2 × 12 · M2 × 8 + M2 nut · TLS-10 spanner
 
 #### Do
 
-1. Pancake motor under the cradle floor (shaft up through it, 4 × M3 × 8). Platter on the shaft: M2 nut in its slot, M2 × 6 through the hub onto the D flat; platter top level with the stub-bolt axis (the end blocks stand 10 mm higher).
+1. Pancake motor under the cradle floor (shaft up through it, 4 × M3 × 8). Platter on the shaft: M2 nut in its slot, M2 × 8 through the hub onto the D flat; platter top level with the stub-bolt axis (the end blocks stand 10 mm higher).
 2. Yoke on the drum (4 × M2 × 12 self-tap into the OG-40 pilots) with its arms along ±Y: at M3 = 0 the tilt axis is square to the camera direction (+X) and the flag holes on the drum stay clear. The pulley-side arm is +Y.
-3. Pulley side: bolt through 100T pulley → 1 mm shim → 608 (outer face of the arm) → 6.8 mm spacer → cradle nut. Other side: the same with the 9.4 mm spacer instead of the pulley. Hold each bolt head with the spanner; snug, not tight.
+3. Pulley side: bolt through 60T pulley → 1 mm shim → 608 (outer face of the arm) → 6.8 mm spacer → cradle nut. Other side: the same with the 9.4 mm spacer instead of the pulley. Hold each bolt head with the spanner; snug, not tight.
 
 #### Verify
 
@@ -51,12 +51,12 @@ Tick the boxes; `make done id=M25.2`.
 
 ### M25.3 Tilt drive and flag
 
-**Time** 45 min · **Needs** TLT-01 motor · TLT-02 280 mm belt · TLT-03 pulley · TLT-04 endstop · TBL-07b flag · 4 × M3 × 16 (FRM-07; through the 12 mm arm into the motor)
+**Time** 45 min · **Needs** TLT-01 motor · TLT-02 232 mm belt (second one from the TBL-02 pack) · TLT-03 pulley · TLT-04 endstop · TBL-07b flag · 4 × M3 × 8 (FRM-07; in the counterbored slots of the motor pad)
 
 #### Do
 
 1. E-stop pressed: motor cable into the SKR Pico Z1 socket first, along the yoke arm with slack for the table's ±180°.
-2. Motor on the inner face of the pulley-side arm above the axis, shaft out through the arm slot (4 × M3 × 16 in the slots; the arm is 12 mm thick); 20T pulley outside, level with the 100T; belt on; slide the motor up to tension (~3 mm deflection); tighten.
+2. Motor on the inner face of the pulley-side arm above the axis, shaft out through the arm slot (4 × M3 × 8 in the counterbored slots of the 46 mm motor pad); 20T pulley outside, level with the 60T; belt on; slide the motor up to tension (~3 mm deflection); tighten.
 3. Flag on a cradle end block at −90°; endstop on the arm; lead into the SKR Pico Z-STOP socket (CTL-06, as M10.2).
 
 #### Verify

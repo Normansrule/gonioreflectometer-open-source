@@ -17,6 +17,6 @@ Inside (`docs/inside.html`) opens up the software, tests, firmware, wiring and r
 | [Test materials](Test-materials.md) · [Extend](Extend.md) · [Repository map](Repository-map.md) | samples; changing the design; where files are |
 | [Paper](Paper.md) | manuscript for *HardwareX*, build, status |
 | [Bibliography](Bibliography.md) | every scholarly source, APA 7 |
-| Appendices [A](Appendix-A-Measurement.md) · [B](Appendix-B-Reflectance-models.md) · [C](Appendix-C-Calibration-and-3D.md) · [D](Appendix-D-Standards-and-colour.md) · [E](Appendix-E-Hardware.md) | background papers by topic, with what each is used for |
+| Appendices [A](Appendix-A-Measurement.md) · [B](Appendix-B-Reflectance-models.md) · [C](Appendix-C-Calibration-and-3D.md) · [D](Appendix-D-Standards-and-colour.md) · [E](Appendix-E-Hardware.md) · [F](Appendix-F-Mixed-reality.md) | background papers by topic, with what each is used for |
 
 Build guide, bill of materials and commands: [README]({{REPO}}/README.md). Step checklists: [phases]({{REPO}}/phases).

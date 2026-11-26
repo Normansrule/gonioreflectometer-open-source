@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-python@v6
         with: {python-version: "3.12"}
-      - run: pip install -e "./software[dev]" pyyaml numpy openpyxl pillow
+      - run: pip install -e "./software[dev]" pyyaml numpy openpyxl pillow opencv-python-headless
       - name: Checks and tests
         run: set -o pipefail; make check test 2>&1 | tee /tmp/ci.out
       - name: Generated files are up to date

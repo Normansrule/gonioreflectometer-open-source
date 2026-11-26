@@ -1,0 +1,190 @@
+% Draft for Springer's journal Virtual Reality. Rules: wiki/src/XR-training.md -> Journal rules.
+% Every \tbd{} is a value or decision that does not exist yet. Results come from paper/xr/results.yaml only.
+% Build: cd paper/xr && latexmk   (PDF in paper/xr/build/). Move into the Springer Nature LaTeX template before submitting.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{csquotes}
+\usepackage[style=authoryear,backend=biber,maxcitenames=2,uniquename=false]{biblatex}
+\addbibresource{../references.bib}
+\usepackage{amsmath,booktabs,tabularx,xcolor,geometry}
+\usepackage[hidelinks]{hyperref}
+\geometry{margin=25mm}
+\newcommand{\tbd}[1]{\textcolor{red}{\textbf{[TBD: #1]}}}
+
+\title{One Web Page, Two Headsets: Augmented and Virtual Reality Training for an Open-Source Gonioreflectometer}
+\author{Aleksander Norman \and \tbd{co-authors and order}\\[2pt]
+\small \tbd{affiliations: department, institution, city, state, country}\\
+\small Corresponding author: \tbd{name, e-mail, ORCID}}
+\date{Draft of 2026-11-25. No headset measurement has been made.}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A gonioreflectometer measures how a surface reflects light in every direction, and students find the instrument hard
+to picture: four rotary axes, travel limits that protect the camera, and a measured quantity defined by two angles
+that are not the motor angles. We present a training tool that draws these ideas in place. It overlays the travel of
+each axis and its limits on the real machine, traces the light from the lamp to the sample and on to the camera, and
+shows the reflectance lobe that the measurement samples. The tool is a single web page built on the WebXR Device API.
+The same code and content run in augmented reality on a Microsoft HoloLens 2 and a Meta Quest, in virtual reality
+around a model of the machine, and in a desktop browser. Geometry and the reflectance model are taken from the
+instrument's own design files and analysis software, and automated tests hold the two together. Because both headsets
+run identical content, differences we measure belong to the platforms. We define a comparison protocol covering frame
+timing, registration error, drift, field of view, legibility, learning gain, usability, workload and discomfort.
+\tbd{two sentences of measured results; none exist yet}. The tool and the instrument are open source.
+\end{abstract}
+
+\noindent\textbf{Keywords:} augmented reality; virtual reality; WebXR; training; gonioreflectometer; reflectance
+
+\section{Introduction}
+The bidirectional reflectance distribution function (BRDF) describes how much light a surface sends toward a viewer
+for each direction of illumination \parencite{G1}. A gonioreflectometer measures it by moving a light source, a sample
+and a detector through many angle pairs \parencite{R1}. OpenGonio is an open-source, printable instrument of this kind with four
+motorised axes: a light arm (M4), a table (M3), a tilt (M2) and a spin (M1).
+
+New users make the same mistakes. They confuse motor angles with the angles of incidence and reflection, they do not
+know where an axis will stop, and they expect the camera to see a highlight where there is none. A diagram shows one
+pose. The machine itself shows no light path. Augmented reality (AR) can place the missing information on the
+instrument, and virtual reality (VR) can offer the same lesson to a student who has no instrument
+\parencite{X8,X12,X13}.
+
+This paper makes three contributions:
+\begin{enumerate}
+\item a training tool that overlays axis travel, light paths and the BRDF lobe on a real gonioreflectometer, generated
+ from the instrument's design files;
+\item an implementation as one web page that runs unchanged on an optical see-through and a video see-through headset;
+\item a protocol, and \tbd{its measured results}, comparing the two platforms on the same content.
+\end{enumerate}
+
+\section{Related work}
+\subsection{Mixed reality displays and registration}
+We use the terms of \textcite{X7}. \textcite{X8} separates optical see-through displays, which add light to the user's
+view, from video see-through displays, which show a camera image, and names registration as the central problem of
+AR. The two headsets compared here are one of each kind.
+
+\subsection{Augmented reality for learning}
+Reviews report learning benefits of AR for spatial content and note usability problems and attention costs
+\parencite{X12,X13}. \tbd{closest prior work on AR or VR training for optical instruments; search and cite before
+submission}.
+
+\subsection{Web delivery}
+The WebXR Device API gives a web page stereo views, tracking and input on a headset \parencite{X1}; its AR module adds
+sessions blended with the real environment \parencite{X2}. Both vendors document support
+\parencite{X3,X4}. The HoloLens 2 is out of production with updates until the end of 2027 \parencite{X5}, and users
+have reported periods in which its browser did not start AR sessions \parencite{X6}. We treat this as a risk to the
+study, not as a result.
+
+\section{System design}
+\subsection{Instrument and coordinate frames}
+The machine frame has its origin on the deck, $z$ up, and a zero point on the sample face 150~mm above it. The camera
+is fixed on the $+x$ axis, 350~mm from the zero point. The lamp rides the light arm on a circle of radius 300~mm at
+azimuth $M_4$, limited to $20^\circ$--$324^\circ$ so that it cannot reach the camera. The sample orientation is
+\begin{equation}
+R = R_z(M_3)\,R_y(-M_2)\,R_x(M_1), \qquad \mathbf{n} = R\,\mathbf{e}_x ,
+\end{equation}
+and the angles of incidence and reflection are $\theta_i = \arccos(\mathbf{n}\cdot\mathbf{l})$ and
+$\theta_r = \arccos(\mathbf{n}\cdot\mathbf{v})$ for unit vectors $\mathbf{l}$ to the lamp and $\mathbf{v}$ to the camera.
+
+\subsection{Lessons}
+Five lessons each add one idea: (1) the travel of every axis and its limits; (2) the incident ray and $\theta_i$;
+(3) the mirror direction, the camera ray and $\theta_r$; (4) the BRDF lobe for the current lamp position; (5) a sweep
+of the lamp in which one bar per lamp angle shows the camera reading. Lessons animate without input; one pinch or
+trigger press advances to the next.
+
+\subsection{Reflectance model}
+The lobe is the model the instrument's software fits to measured data: a Lambertian term plus a GGX microfacet term
+\parencite{R6} with base colour, roughness and metallic parameters. Its radius in direction $\boldsymbol\omega$ is
+$\sqrt{f(\mathbf{l},\boldsymbol\omega)\cos\theta_r}$, a square-root scale that keeps narrow and wide lobes visible.
+
+\subsection{Registration}
+In AR the user pinches at the centre of the sample and then at the camera lens. The first point fixes the zero point,
+the horizontal direction to the second fixes the heading, and gravity fixes the vertical. The difference between the
+distance of the two pinches and the designed 350~mm is logged as a residual. The method needs no marker and no access
+to the headset's cameras. It does not correct tilt.
+
+\subsection{Logging}
+Each session records the time between frames, the number of views, the framebuffer size, the reference space and the
+alignment residual, and reports mean and median frame time, 95th and 99th percentiles, and the count of frames longer
+than 1.5 times the median.
+
+\section{Implementation}
+The tool is one HTML page and one script of about 300 lines, drawn with WebGL and no engine. Each frame it rebuilds
+the overlay as triangles and draws it once per eye with the view and projection matrices supplied by the headset. Lines
+are two crossed ribbons with a width in millimetres, blended with premultiplied alpha so that the same colours are
+correct on an additive display and on a video display. In VR and in the desktop view the CAD model of the machine is
+drawn and posed with the same axis rotations as the design's interference check; in AR it is hidden.
+
+Axis positions, travel limits, and the lamp and camera points are read from a file generated by the CAD build. A
+project check fails if that file disagrees with the machine configuration. Automated tests run the page's own
+functions and compare the reflectance model with the analysis software to a relative tolerance of $10^{-9}$, the pose
+angles with the instrument's kinematics, and the two-point alignment against synthetic points.
+
+Software development and the first draft of this text used an AI assistant (Claude, Anthropic) under the direction of
+the authors, who reviewed the code and the text and are responsible for both. \tbd{confirm the scope of this statement
+with all authors before submission}.
+
+\section{Evaluation method}
+\subsection{Platforms}
+Microsoft HoloLens 2 (optical see-through), \tbd{operating system and browser versions}; Meta Quest \tbd{model},
+\tbd{operating system and browser versions} (video see-through). Both load the same page.
+
+\subsection{Technical measures}
+Frame rate and 95th percentile frame time from the session log; alignment residual from the log; drift measured with a
+ruler at the $20^\circ$ stop after one walk round the bench, five repeats; fraction of the light-arm arc in view from
+0.75~m without moving the head; legibility of lines rated 1--5 with the laboratory lights on and off.
+
+\subsection{User study}
+\tbd{design, number of participants, ethics approval number}. Planned measures: learning gain between a pre-quiz and a
+post-quiz, the System Usability Scale \parencite{X9}, the NASA Task Load Index \parencite{X10} and the Simulator
+Sickness Questionnaire \parencite{X11}; the control condition is the same lessons in a desktop browser. No participant
+data will be collected before approval.
+
+\section{Results}
+No measurement has been made. Table~\ref{tab:results} lists what will be reported.
+
+\begin{table}[ht]
+\caption{Comparison of the two platforms on identical content. All cells are empty until measured}\label{tab:results}
+\begin{tabularx}{\linewidth}{Xlll}
+\toprule
+Measure & Unit & HoloLens 2 & Meta Quest\\
+\midrule
+AR session starts & yes / no & \tbd{} & \tbd{}\\
+Frame rate & frames per second & \tbd{} & \tbd{}\\
+Frame time, 95th percentile & ms & \tbd{} & \tbd{}\\
+Alignment residual & mm & \tbd{} & \tbd{}\\
+Drift after one walk round the bench & mm & \tbd{} & \tbd{}\\
+Light-arm arc in view at 0.75 m & \% & \tbd{} & \tbd{}\\
+Legibility & 1--5 & \tbd{} & \tbd{}\\
+Learning gain & points & \tbd{} & \tbd{}\\
+System Usability Scale & 0--100 & \tbd{} & \tbd{}\\
+NASA Task Load Index & 0--100 & \tbd{} & \tbd{}\\
+Simulator Sickness Questionnaire & score & \tbd{} & \tbd{}\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Discussion}
+\tbd{write from the measured table}. Questions the data should answer: whether the narrower view of an optical
+see-through display hides part of the light-arm arc at working distance; whether video passthrough makes thin overlays
+easier to read under a bright lamp; whether fingertip pinches register the overlay well enough to read axis limits
+against the machine's printed scale; and whether a web page reaches the frame rate of each device.
+
+\section{Limitations}
+The overlay is not occluded by the real machine. Alignment assumes a level bench. The lobe is a fitted model, not
+measured data. The comparison uses a web runtime on both devices; a native build may perform differently.
+\tbd{limitations found during measurement}.
+
+\section{Conclusion}
+\tbd{write after the results}.
+
+\section*{Declarations}
+\textbf{Funding} \tbd{funder and grant number, or none}.\quad
+\textbf{Competing interests} \tbd{statement for every author}.\quad
+\textbf{Ethics approval and consent} \tbd{board, approval number, consent procedure; required for the user study}.\quad
+\textbf{Data availability} Source code, design files and session logs: \tbd{archive DOI}.\quad
+\textbf{Author contributions} \tbd{roles, CRediT taxonomy}.
+
+\printbibliography
+\end{document}

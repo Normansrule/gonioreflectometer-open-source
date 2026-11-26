@@ -23,7 +23,7 @@ scripts/             controller.sh · hub.sh · e4.sh · station.sh · publish.s
 docs/                interactive simulator (index.html, machine.js, plan.js) + figures (assets/, assets/steps/NN.svg)
 exports/             Word, Overleaf, Zotero, Excel, wiki PDF, glTF copies (generated; see exports/README.md)
 paper/               HardwareX manuscript: opengonio.tex · references.bib (generated) · build/opengonio.pdf
-wiki/                explanations, Bibliography (APA), Appendices A–E · src/ = sources · scripts/publish_wiki.sh
+wiki/                explanations, Bibliography (APA), Appendices A–F · src/ = sources · scripts/publish_wiki.sh
 papers/              PDFs: open/ (committed) · personal/ (local only)
 data/                measurement jobs: manifest.json, curve.csv, spectral.csv (images stay local; data/sim/ not committed)
 .github/phases.yml   stages + milestones (source of every checklist and issue)

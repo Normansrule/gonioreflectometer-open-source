@@ -86,3 +86,4 @@ Background papers and sources, by topic. Format: APA reference — *what this pr
 - Taubin, G. (1995). A signal processing approach to fair surface design. *SIGGRAPH*. — *λ/μ mesh smoothing without shrinkage: scanned visual hull → mesh (`render/mesh.py`)* `[T56]`
 - Karis, B. (2014). *Physically based shading on mobile*. — *Analytic environment-BRDF fit for the viewer's approximate studio light (`render/raster.py`, `render-gl.js`)* `[T57]`
 - Narkowicz, K. (2016). *ACES filmic tone mapping curve*. — *Tone curve shared by the software and WebGL renderers* `[T58]`
+- Kalman, R. E. (1960). A new approach to linear filtering and prediction problems. *Journal of Basic Engineering*, *82*(1), 35–45. https://doi.org/10.1115/1.3662552 — *Slip estimator: axis drift and belt creep from home-switch references (`gantry/slip.py`)* `[T59]`

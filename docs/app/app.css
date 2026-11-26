@@ -197,6 +197,31 @@ dialog.pair code { overflow-wrap: anywhere; }
 
 /* ---------- sensors, run quality, session ---------- */
 .sensors { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-4); }
+.trust { grid-column: 1 / -1; }
+.trust-tools { display: flex; align-items: center; gap: var(--s-3); flex-wrap: wrap; justify-content: flex-end; }
+.simslip { display: flex; align-items: center; gap: var(--s-2); font-size: 0.8125rem; color: var(--ink-2); }
+.simslip select { min-height: 34px; padding: 0 var(--s-2); background: var(--ground); color: var(--ink); border: 1px solid var(--ground-4); border-radius: var(--radius); font: inherit; }
+.trust-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--hair); border-radius: var(--radius); overflow: hidden; margin-top: var(--s-3); }
+.tcell { background: var(--panel); padding: var(--s-4); min-width: 0; display: grid; gap: var(--s-2); }
+.tcell.off { opacity: 0.5; }
+.tcell .top { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-2); }
+.tcell .ax { font-family: var(--font-display); font-size: 1.375rem; line-height: 1; }
+.tcell .ax small { font-family: var(--font-text); font-size: 0.75rem; color: var(--ink-2); margin-left: var(--s-2); }
+.tcell .bound { font-family: var(--font-display); font-size: 1.625rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.tcell .bound small { font-family: var(--font-text); font-size: 0.75rem; color: var(--ink-2); margin-left: 0.3em; }
+/* gauge: the track is +/-1.5 budgets wide; the two notches are the budget, the band the 2-sigma bound */
+.tg { position: relative; height: 22px; background: var(--ground); border-radius: 1px; overflow: hidden; }
+.tg::before, .tg::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--ink-3); }
+.tg::before { left: 16.667%; } .tg::after { left: 83.333%; }
+.tg .band { position: absolute; top: 5px; bottom: 5px; left: 0; width: 100%; background: var(--ink-3); transform-origin: center;
+  transition: transform var(--t-exposure) var(--ease-out), background-color var(--t-ui); }
+.tg .zero { position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: var(--ground-4); }
+.tcell.due .tg .band { background: var(--light); }
+.tcell .meta { font-size: 0.75rem; line-height: 1.45; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.tcell .meta .patch { margin-right: 6px; }
+@media (max-width: 900px) { .trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .trust-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { .tg .band { transition: none; } }
 .bars { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: var(--s-2); align-items: end; min-height: 168px; }
 .sbar { display: grid; grid-template-rows: auto 112px auto auto; gap: 4px; text-align: center; min-width: 0; }
 .sbar .v { font-size: 0.75rem; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }

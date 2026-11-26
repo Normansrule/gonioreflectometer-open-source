@@ -76,11 +76,11 @@ M3 returns to the same spot every time (≤ 0.1°). · 0/4 steps done · ~1.8 h 
 
 ### M16.1 Flag and homing
 
-**Time** 30 min · **Needs** TBL-04 endstop · TBL-07g riser, TBL-07h flag · 3 × M2 × 10 + washers, 2 × M2 × 6, 2 × M2 × 8 · CTL-06 leads (as M10.2)
+**Time** 30 min · **Needs** TBL-04 endstop · TBL-07g riser, TBL-07h flag · 3 × M2 × 10 + washers, 2 × M2 × 8, 2 × M2 × 8 · CTL-06 leads (as M10.2)
 
 #### Do
 
-1. Riser on the three deck pilots at x = 40 (y = −40, 0, +40; +X side, inside the lazy Susan opening), 3 × M2 × 10 + washer, post outward. Endstop on its pad: slot over the pad's middle, header end outward, 2 × M2 × 6 self-tap.
+1. Riser on the three deck pilots at x = 40 (y = −40, 0, +40; +X side, inside the lazy Susan opening), 3 × M2 × 10 + washer, post outward. Endstop on its pad: slot over the pad's middle, header end outward, 2 × M2 × 8 self-tap.
 2. Flag on the drum top's two flag holes (the close pair outside the four yoke pilots), 2 × M2 × 8 self-tap, fin hanging down outside the drum. Turn the table by hand: at −180° (fin on +X) the fin passes through the slot without touching either side.
 3. E-stop pressed. Lead into the SKR Pico Y-STOP socket, along the riser and the deck.
 4. `installed_phase: 5`; `opengonio home` ten times.

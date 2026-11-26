@@ -6,6 +6,21 @@
 
 Measures how materials reflect light — the bidirectional reflectance distribution function (BRDF) — and scans objects in 3D. Four motorised axes turn the sample and a lamp around a fixed camera. Runs from a laptop or on its own. Design after [Ansari-Asl et al. (2024)](https://doi.org/10.3390/jimaging10030055).
 
+<p>
+<a href="https://normansrule.github.io/gonioreflectometer-open-source/app/"><img src="docs/assets/buttons/app.svg" height="44" alt="Open the app in your browser (simulated machine)"></a>
+<a href="https://normansrule.github.io/gonioreflectometer-open-source/"><img src="docs/assets/buttons/website.svg" height="44" alt="Website"></a>
+<a href="https://normansrule.github.io/gonioreflectometer-open-source/build.html"><img src="docs/assets/buttons/manual.svg" height="44" alt="Build manual, 25 steps"></a>
+<a href="https://normansrule.github.io/gonioreflectometer-open-source/wiring.html"><img src="docs/assets/buttons/wiring.svg" height="44" alt="Wiring guide"></a>
+</p>
+<p>
+<b>Desktop app:</b>&nbsp;
+<a href="https://github.com/Normansrule/gonioreflectometer-open-source/releases/latest/download/OpenGonio-windows.zip"><img src="docs/assets/buttons/windows.svg" height="44" alt="Download for Windows (.zip)"></a>
+<a href="https://github.com/Normansrule/gonioreflectometer-open-source/releases/latest/download/OpenGonio-macos.zip"><img src="docs/assets/buttons/macos.svg" height="44" alt="Download for macOS (.zip)"></a>
+<a href="https://github.com/Normansrule/gonioreflectometer-open-source/releases/latest/download/OpenGonio-linux.zip"><img src="docs/assets/buttons/linux.svg" height="44" alt="Download for Linux (.zip)"></a>
+</p>
+
+Unzip and run `OpenGonio`: it opens the control app on the simulated machine, no hardware needed. The downloads appear with the first release tag (`git tag v0-app && git push origin v0-app`; `.github/workflows/desktop.yml` builds and attaches the three zips). Build manual as a PDF: [exports/build-book.pdf](exports/build-book.pdf).
+
 - **Printed parts, M2 screws and electronic modules.** The deck, posts and arms are 3D printed; every join is an M2 screw into a printed pilot (M3 only into the motors); electronics are modules joined by screw terminals, lever connectors and plug-in leads. A circuit-board version is specified for later: [pcb/](pcb/README.md).
 - **No soldering, drilling, sawing or crimping.** Tools: 3D printer, hex keys, screwdrivers, wire stripper, knife, multimeter.
 - **Every part from Digi-Key, Amazon or Adafruit**, each with a 3D model (STEP + STL) in this repo. Prices checked October 2026.
@@ -17,6 +32,7 @@ Measures how materials reflect light — the bidirectional reflectance distribut
 - **3D scans** of small objects from the same machine (stages 11–13).
 - **A control app** in the browser or a desktop window: connect, home, jog, light, capture and see the curve ([Website and app](#website-and-app)).
 - **Graphics:** the fitted material on the scanned object as a `.glb` for Blender, Unity, Unreal or three.js, and a live renderer in the browser ([Render page](docs/render.html), `opengonio render`).
+- **Training in AR and VR:** axis arcs with their limits, light paths and the BRDF lobe, in a headset or in the browser ([AR and VR page](docs/xr.html), [wiki](wiki/XR-training.md)). Runs in a desktop browser; not yet run on a headset.
 - **Every control works without hardware.** A simulated machine with a hidden table error runs the whole chain; `make sim` ends `ALL PASS`.
 - **Honest numbers.** Every claim says whether it is simulated, modeled or measured ([Status](#status)).
 
@@ -31,7 +47,7 @@ Measures how materials reflect light — the bidirectional reflectance distribut
 <!-- budget:start -->
 | Plan (every core part bought) | Still to buy | Have / ordered | Paid so far | Decided | Tools to buy (kept, separate) |
 |---:|---:|---:|---:|---:|---:|
-| $511.60 | $440.85 | $70.75 | $0.00 | 8/105 parts | $469.76 |
+| $504.11 | $236.93 | $267.18 | $0.00 | 24/105 parts | $469.76 |
 
 Optional spectral sensor +\$19.90 · Optional standalone kit +\$71.68 · Optional no-switching camera kit +\$90.10 · Optional colour kit (bands + polarizers) +\$114.62
 <!-- budget:end -->
@@ -46,7 +62,7 @@ Optional spectral sensor +\$19.90 · Optional standalone kit +\$71.68 · Optiona
 | Button + sensor hub | ESP32-S3-DevKitC-1 (owned) running MicroPython: 2 keypads, motor-power sense, optional OLED / spectral sensor | USB-C |
 | Motors | NEMA 17 17HS4401 5-pack for M4 arm, M3 table, M2 tilt (+2 spare) · 17HS08-1004S pancake for M1 spin (both bought) | — |
 | Camera | Arducam 12 MP IMX477 USB camera, 16 mm M12 lens at f/8 | USB |
-| Light | Citizen COB, CRI 97, 350 mA constant-current driver switched by the SKR Pico | — |
+| Light | Citizen COB, Colour Rendering Index (CRI) ≥ 90, 350 mA constant-current driver switched by the SKR Pico | — |
 | Power | 24 V 3 A wall adapter with a screw-terminal jack, latching e-stop in its own box, pre-wired limit switch (over-travel) | — |
 | Prints | black ABS (cuts stray reflections), enclosed printer, M2 self-tapping screws | — |
 
@@ -119,10 +135,9 @@ Click a picture for the 3D view. **STEP** / **STL**: true-size model to download
 | <a href="cad/bought/CAL-01_ptfe_tile_50mm_3x3mm.stl"><img src="docs/assets/parts/CAL-01_ptfe_tile_50mm_3x3mm.png" width="48" height="48" alt="CAL-01"></a> | **CAL-01** PTFE sheets 100 x 100 x 3 mm (2): white tile = 3 stacked 50 mm squares | 1 | \$16.99 | [Amazon](https://www.amazon.com/dp/B0F83XRXTV) | [STEP](cad/bought/CAL-01_ptfe_tile_50mm_3x3mm.step?raw=true) · [STL](cad/bought/CAL-01_ptfe_tile_50mm_3x3mm.stl?raw=true) |
 | <a href="cad/bought/CAL-02_mirror_tile_50mm.stl"><img src="docs/assets/parts/CAL-02_mirror_tile_50mm.png" width="48" height="48" alt="CAL-02"></a> | **CAL-02** Glass mirror tile ~50 mm | 1 | \$11.49 | [Amazon](https://www.amazon.com/dp/B01H0ZU1QA) | [STEP](cad/bought/CAL-02_mirror_tile_50mm.step?raw=true) · [STL](cad/bought/CAL-02_mirror_tile_50mm.stl?raw=true) |
 | <a href="cad/bought/CAL-04_charuco_glass_4x6in.stl"><img src="docs/assets/parts/CAL-04_charuco_glass_4x6in.png" width="48" height="48" alt="CAL-04"></a> | **CAL-04** ChArUco print + picture-frame glass | 1 | \$4.31 | [Amazon](https://www.amazon.com/dp/B000Y79K32) | [STEP](cad/bought/CAL-04_charuco_glass_4x6in.step?raw=true) · [STL](cad/bought/CAL-04_charuco_glass_4x6in.stl?raw=true) |
-| <a href="cad/bought/TLT-02_gt2_belt_280_loop.stl"><img src="docs/assets/parts/TLT-02_gt2_belt_280_loop.png" width="48" height="48" alt="TLT-02"></a> | **TLT-02** GT2 6 mm closed belt 280 mm | 1 | \$7.49 | [Amazon](https://www.amazon.com/dp/B07RK1TX8C) | [STEP](cad/bought/TLT-02_gt2_belt_280_loop.step?raw=true) · [STL](cad/bought/TLT-02_gt2_belt_280_loop.stl?raw=true) |
 | <a href="cad/bought/TLT-05_bolt_m8x35_nut.stl"><img src="docs/assets/parts/TLT-05_bolt_m8x35_nut.png" width="48" height="48" alt="TLT-05"></a> | **TLT-05** M8 x 35 hex bolts, half thread (10-pack; 2 used) | 1 | \$9.19 | [Amazon](https://www.amazon.com/dp/B08KSVMT7W) | [STEP](cad/bought/TLT-05_bolt_m8x35_nut.step?raw=true) · [STL](cad/bought/TLT-05_bolt_m8x35_nut.stl?raw=true) |
 | <a href="cad/bought/SCN-01_mounting_putty_blob.stl"><img src="docs/assets/parts/SCN-01_mounting_putty_blob.png" width="48" height="48" alt="SCN-01"></a> | **SCN-01** Mounting putty 2 oz | 1 | \$2.33 | [Amazon](https://www.amazon.com/dp/B003LZMHIY) | [STEP](cad/bought/SCN-01_mounting_putty_blob.step?raw=true) · [STL](cad/bought/SCN-01_mounting_putty_blob.stl?raw=true) |
-| | **Total** | | **\$235.11** | | |
+| | **Total** | | **\$227.62** | | |
 <!-- bom-mechanical:end -->
 
 ## Printed parts
@@ -177,7 +192,7 @@ Black ABS (acrylonitrile butadiene styrene) on an enclosed printer, ≈ 2.7 kg, 
 | <a href="phases/07-calibrate/3d/CAL-06c_ball_holder.stl"><img src="docs/assets/parts/CAL-06c_ball_holder.png" width="48" height="48" alt="CAL-06c"></a> | **CAL-06c** ball holder | [07 Calibrate → game material](phases/07-calibrate/) | [STL](phases/07-calibrate/3d/CAL-06c_ball_holder.stl?raw=true) · [STEP](phases/07-calibrate/3d/CAL-06c_ball_holder.step?raw=true) |
 | <a href="phases/07-calibrate/3d/ENC-04a_dowel_socket.stl"><img src="docs/assets/parts/ENC-04a_dowel_socket.png" width="48" height="48" alt="ENC-04a"></a> | **ENC-04a** dowel socket | [07 Calibrate → game material](phases/07-calibrate/) | [STL](phases/07-calibrate/3d/ENC-04a_dowel_socket.stl?raw=true) · [STEP](phases/07-calibrate/3d/ENC-04a_dowel_socket.step?raw=true) |
 | <a href="phases/08-tilt/3d/TLT-07a_tilt_yoke.stl"><img src="docs/assets/parts/TLT-07a_tilt_yoke.png" width="48" height="48" alt="TLT-07a"></a> | **TLT-07a** tilt yoke | [08 Tilt (M2)](phases/08-tilt/) | [STL](phases/08-tilt/3d/TLT-07a_tilt_yoke.stl?raw=true) · [STEP](phases/08-tilt/3d/TLT-07a_tilt_yoke.step?raw=true) |
-| <a href="phases/08-tilt/3d/TLT-07b_pulley_100T.stl"><img src="docs/assets/parts/TLT-07b_pulley_100T.png" width="48" height="48" alt="TLT-07b"></a> | **TLT-07b** pulley 100T | [08 Tilt (M2)](phases/08-tilt/) | [STL](phases/08-tilt/3d/TLT-07b_pulley_100T.stl?raw=true) · [STEP](phases/08-tilt/3d/TLT-07b_pulley_100T.step?raw=true) |
+| <a href="phases/08-tilt/3d/TLT-07b_pulley_60T.stl"><img src="docs/assets/parts/TLT-07b_pulley_60T.png" width="48" height="48" alt="TLT-07b"></a> | **TLT-07b** pulley 60T | [08 Tilt (M2)](phases/08-tilt/) | [STL](phases/08-tilt/3d/TLT-07b_pulley_60T.stl?raw=true) · [STEP](phases/08-tilt/3d/TLT-07b_pulley_60T.step?raw=true) |
 | <a href="phases/08-tilt/3d/TLT-07c_tilt_cradle.stl"><img src="docs/assets/parts/TLT-07c_tilt_cradle.png" width="48" height="48" alt="TLT-07c"></a> | **TLT-07c** tilt cradle | [08 Tilt (M2)](phases/08-tilt/) | [STL](phases/08-tilt/3d/TLT-07c_tilt_cradle.stl?raw=true) · [STEP](phases/08-tilt/3d/TLT-07c_tilt_cradle.step?raw=true) |
 | <a href="phases/09-spin/3d/SPN-07a_spin_platter.stl"><img src="docs/assets/parts/SPN-07a_spin_platter.png" width="48" height="48" alt="SPN-07a"></a> | **SPN-07a** spin platter | [09 Spin (M1)](phases/09-spin/) | [STL](phases/09-spin/3d/SPN-07a_spin_platter.stl?raw=true) · [STEP](phases/09-spin/3d/SPN-07a_spin_platter.step?raw=true) |
 | <a href="phases/10-color/3d/MSK-06a_led_ring.stl"><img src="docs/assets/parts/MSK-06a_led_ring.png" width="48" height="48" alt="MSK-06a"></a> | **MSK-06a** led ring | [10 Colour add-ons (optional)](phases/10-color/) | [STL](phases/10-color/3d/MSK-06a_led_ring.stl?raw=true) · [STEP](phases/10-color/3d/MSK-06a_led_ring.step?raw=true) |
@@ -456,7 +471,7 @@ Pin numbers as in Espressif's user guide (J1 on one long edge, J3 on the other).
 ## Build
 
 <!-- next:start -->
-**Next step: [M01.1 Get the papers](phases/00-plan/README.md#m011-get-the-papers)** · 20 min · 0 of 141 steps done
+**Next step: [M01.1 Get the papers](phases/00-plan/README.md#m011-get-the-papers)** · 20 min · 0 of 157 steps done
 <!-- next:end -->
 
 Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make next` prints the next step; `make done id=M05.1` ticks it and closes its issue.
@@ -472,9 +487,9 @@ Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make
 | 03 | [Frame](phases/03-frame/) | M11 Print and join the deck, M12 Assemble the frame | 2.8 h | 0/5 | $22 |
 | 04 | [Light arm (M4)](phases/04-light-arm/) | M13 Ring drive built, M14 Light arm homes and repeats | 5.4 h | 0/9 | $77 |
 | 05 | [Table (M3)](phases/05-table/) | M15 Table axis built, M16 Table homes and repeats | 3.2 h | 0/7 | $24 |
-| 06 | [Camera and light](phases/06-camera-light/) | M17 Camera sees the zero point, M18 Lamp on and safe, M19 Mirror test, M20 First reflectance curves | 5.8 h | 0/11 | $116 |
+| 06 | [Camera and light](phases/06-camera-light/) | M17 Camera sees the zero point, M18 Lamp on and safe, M19 Mirror test, M20 First reflectance curves | 6.2 h | 0/12 | $116 |
 | 07 | [Calibrate → game material](phases/07-calibrate/) | M21 Dark box, M22 Camera response and angle calibration, M23 Brightness calibration, M24 First game material | 4.8 h | 0/11 | $40 |
-| 08 | [Tilt (M2)](phases/08-tilt/) | M25 Tilt yoke built and homed, M26 Full isotropic scan | 3.8 h | 0/8 | $17 |
+| 08 | [Tilt (M2)](phases/08-tilt/) | M25 Tilt yoke built and homed, M26 Full isotropic scan | 3.8 h | 0/8 | $9 |
 | 09 | [Spin (M1)](phases/09-spin/) | M27 Spin wired and homed, M28 Anisotropic material measured | 2.3 h | 0/5 | $12 |
 | 10 | [Colour add-ons (optional)](phases/10-color/) | M29 Spectral sensor (optional kit), M30 LED bank and polarizers (optional kit) | 5.5 h | 0/8 | — |
 | 11 | [3D scan: capture](phases/11-scan-capture/) | M31 Scan hardware, M32 Camera position calibrated, M33 First full scan | 2.5 h | 0/7 | $2 |
@@ -482,8 +497,9 @@ Each step: **Time · Needs → Do → Verify → If it fails → Record**. `make
 | 13 | [Material on the 3D model](phases/13-object-material/) | M36 Textures on the mesh, M37 Object in a game engine | 6 h | 0/4 | — |
 | 14 | [Laptop app](phases/14-laptop-app/) | M38 Control page, M39 Presets and resume | 16 h | 0/6 | — |
 | 15 | [Standalone (no laptop)](phases/15-standalone/) | M40 Panel screen, M41 Pi Zero station set up, M42 Job with no laptop, M43 Laptop collects and verifies | 3.4 h | 0/9 | — |
-| 16 | [Release](phases/16-release/) | M44 Docs complete, M45 Public release | 4.2 h | 0/6 | — |
+| 16 | [Release](phases/16-release/) | M44 Docs complete, M45 Public release, M50 Publish | 9.7 h | 0/11 | — |
 | 17 | [Upgrades (optional)](phases/17-upgrades/) | M46 Adaptive sampling, M47 Space carving, M48 Compare with MERL / RGL data, M49 Battery power | 17.2 h | 0/7 | — |
+| 18 | [AR and VR training tool](phases/18-xr-training/) | M51 Trainer in the page, M52 Headset bring-up, M53 Platform comparison, M54 Graphics development, M55 Virtual Reality journal paper | 130.8 h | 0/10 | — |
 <!-- phases:end -->
 
 ## Software

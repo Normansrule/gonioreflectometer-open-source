@@ -3568,6 +3568,29 @@
     "type": ""
   },
   {
+    "DOI": "10.1115/1.3662552",
+    "author": [
+      {
+        "family": "Kalman",
+        "given": "R. E."
+      }
+    ],
+    "container-title": "Journal of Basic Engineering",
+    "id": "T59",
+    "issue": "1",
+    "issued": {
+      "date-parts": [
+        [
+          1960
+        ]
+      ]
+    },
+    "page": "35-45",
+    "title": "A new approach to linear filtering and prediction problems",
+    "type": "article-journal",
+    "volume": "82"
+  },
+  {
     "DOI": "10.1109/34.888718",
     "author": [
       {
@@ -7020,5 +7043,274 @@
     "id": "H60",
     "title": "W3C, portable network graphics (PNG) specification",
     "type": "webpage"
+  },
+  {
+    "URL": "https://www.w3.org/TR/webxr/",
+    "author": [
+      {
+        "literal": "W3C Immersive Web Working Group"
+      }
+    ],
+    "id": "X1",
+    "note": "W3C Candidate Recommendation Draft",
+    "title": "WebXR device API",
+    "type": ""
+  },
+  {
+    "URL": "https://www.w3.org/TR/webxr-ar-module-1/",
+    "author": [
+      {
+        "literal": "W3C Immersive Web Working Group"
+      }
+    ],
+    "id": "X2",
+    "note": "W3C Candidate Recommendation Draft",
+    "title": "WebXR augmented reality module - level 1",
+    "type": ""
+  },
+  {
+    "URL": "https://learn.microsoft.com/windows/mixed-reality/develop/javascript/webxr-overview",
+    "author": [
+      {
+        "literal": "Microsoft"
+      }
+    ],
+    "id": "X3",
+    "note": "(Mixed Reality documentation)",
+    "title": "WebXR overview",
+    "type": ""
+  },
+  {
+    "URL": "https://developers.meta.com/horizon/documentation/web/webxr-mixed-reality/",
+    "author": [
+      {
+        "literal": "Meta"
+      }
+    ],
+    "id": "X4",
+    "note": "(Meta Quest developer documentation)",
+    "title": "Mixed reality support in browser",
+    "type": ""
+  },
+  {
+    "URL": "https://www.uploadvr.com/microsoft-discontinuing-hololens-2/",
+    "author": [
+      {
+        "literal": "UploadVR"
+      }
+    ],
+    "id": "X5",
+    "issued": {
+      "date-parts": [
+        [
+          2024
+        ]
+      ]
+    },
+    "note": "2024",
+    "title": "Microsoft is discontinuing HoloLens 2, with no replacement",
+    "type": ""
+  },
+  {
+    "URL": "https://techcommunity.microsoft.com/t5/mixed-reality-general/hololens-2-edge-webxr-amp-immersive-ar-mode/m-p/3865166",
+    "author": [
+      {
+        "literal": "Microsoft Tech Community"
+      }
+    ],
+    "id": "X6",
+    "issued": {
+      "date-parts": [
+        [
+          2023
+        ]
+      ]
+    },
+    "note": "forum thread, 2023",
+    "title": "Hololens 2 - edge - WebXR & immersive-ar mode",
+    "type": ""
+  },
+  {
+    "author": [
+      {
+        "family": "Milgram",
+        "given": "P."
+      },
+      {
+        "family": "Kishino",
+        "given": "F."
+      }
+    ],
+    "container-title": "IEICE Transactions on Information and Systems",
+    "id": "X7",
+    "issued": {
+      "date-parts": [
+        [
+          1994
+        ]
+      ]
+    },
+    "title": "A taxonomy of mixed reality visual displays",
+    "type": "article-journal",
+    "volume": "12"
+  },
+  {
+    "DOI": "10.1162/pres.1997.6.4.355",
+    "author": [
+      {
+        "family": "Azuma",
+        "given": "R. T."
+      }
+    ],
+    "container-title": "Presence: Teleoperators and Virtual Environments",
+    "id": "X8",
+    "issue": "4",
+    "issued": {
+      "date-parts": [
+        [
+          1997
+        ]
+      ]
+    },
+    "page": "355-385",
+    "title": "A survey of augmented reality",
+    "type": "article-journal",
+    "volume": "6"
+  },
+  {
+    "author": [
+      {
+        "family": "Brooke",
+        "given": "J."
+      }
+    ],
+    "container-title": "Usability evaluation in industry",
+    "id": "X9",
+    "issued": {
+      "date-parts": [
+        [
+          1996
+        ]
+      ]
+    },
+    "page": "189-194",
+    "publisher": "Taylor & Francis",
+    "title": "SUS: A ’quick and dirty’ usability scale",
+    "title-short": "SUS",
+    "type": "chapter"
+  },
+  {
+    "DOI": "10.1016/S0166-4115(08",
+    "author": [
+      {
+        "family": "Hart",
+        "given": "S. G."
+      },
+      {
+        "family": "Staveland",
+        "given": "L. E."
+      }
+    ],
+    "container-title": "Advances in Psychology",
+    "id": "X10",
+    "issued": {
+      "date-parts": [
+        [
+          1988
+        ]
+      ]
+    },
+    "page": "139-183",
+    "title": "Development of NASA-TLX (task load index): Results of empirical and theoretical research",
+    "title-short": "Development of NASA-TLX (task load index)",
+    "type": "article-journal",
+    "volume": "52"
+  },
+  {
+    "DOI": "10.1207/s15327108ijap0303_3",
+    "author": [
+      {
+        "family": "Kennedy",
+        "given": "R. S."
+      },
+      {
+        "family": "Lane",
+        "given": "N. E."
+      },
+      {
+        "family": "Berbaum",
+        "given": "K. S."
+      },
+      {
+        "family": "Lilienthal",
+        "given": "M. G."
+      }
+    ],
+    "container-title": "The International Journal of Aviation Psychology",
+    "id": "X11",
+    "issue": "3",
+    "issued": {
+      "date-parts": [
+        [
+          1993
+        ]
+      ]
+    },
+    "page": "203-220",
+    "title": "Simulator sickness questionnaire: An enhanced method for quantifying simulator sickness",
+    "title-short": "Simulator sickness questionnaire",
+    "type": "article-journal",
+    "volume": "3"
+  },
+  {
+    "DOI": "10.1007/s00779-013-0747-y",
+    "author": [
+      {
+        "family": "Radu",
+        "given": "I."
+      }
+    ],
+    "container-title": "Personal and Ubiquitous Computing",
+    "id": "X12",
+    "issue": "6",
+    "issued": {
+      "date-parts": [
+        [
+          2014
+        ]
+      ]
+    },
+    "page": "1533-1543",
+    "title": "Augmented reality in education: A meta-review and cross-media analysis",
+    "title-short": "Augmented reality in education",
+    "type": "article-journal",
+    "volume": "18"
+  },
+  {
+    "DOI": "10.1016/j.compedu.2018.05.002",
+    "author": [
+      {
+        "family": "Ibáñez",
+        "given": "M.-B."
+      },
+      {
+        "family": "Delgado-Kloos",
+        "given": "C."
+      }
+    ],
+    "container-title": "Computers & Education",
+    "id": "X13",
+    "issued": {
+      "date-parts": [
+        [
+          2018
+        ]
+      ]
+    },
+    "page": "109-123",
+    "title": "Augmented reality for STEM learning: A systematic review",
+    "title-short": "Augmented reality for STEM learning",
+    "type": "article-journal",
+    "volume": "123"
   }
 ]

@@ -1,0 +1,29 @@
+# How to cite this project. GitHub shows it as "Cite this repository"; Zenodo reads it when it archives a release
+# (paper/submission.yaml, roadmap M50.1). Keep `version` equal to opengonio.__version__ (tools/paper_check.py checks).
+cff-version: 1.2.0
+message: "If you use this hardware, software or data, please cite it as below."
+type: software
+title: "Open Source Gonioreflectometer (OpenGonio): a printable four-axis BRDF instrument and 3D scanner"
+abstract: >-
+  A gonioreflectometer and turntable 3D scanner built from 3D-printed parts, stepper motors and a USB camera, without
+  soldering, with the opengonio Python package for control, calibration, BRDF fitting, scanning and glTF rendering.
+authors:
+  - family-names: Norman
+    given-names: Aleksander
+    affiliation: "California State University, Dominguez Hills"
+version: "0.7.0"
+license:
+  - CERN-OHL-S-2.0
+  - GPL-3.0-or-later
+  - CC-BY-SA-4.0
+repository-code: "https://github.com/Normansrule/gonioreflectometer-open-source"
+url: "https://normansrule.github.io/gonioreflectometer-open-source/"
+keywords:
+  - BRDF
+  - gonioreflectometer
+  - material appearance
+  - open hardware
+  - 3D printing
+  - photometric calibration
+  - 3D scanning
+  - glTF

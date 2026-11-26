@@ -81,6 +81,21 @@ input[type=range]:active::-moz-range-thumb { transform: scale(1.2); }
 .phase button.on { background: var(--ink); color: var(--ground); }
 @media (hover: hover) and (pointer: fine) { .phase button:not(.on):hover { background: var(--ground-4); color: var(--ink); } }
 
+/* slip lab: the control loop under the chart; the feedback half lights up for the modes that use it */
+#sliploop { display: block; width: 100%; height: auto; margin-top: var(--s-4); }
+#sliploop path { fill: none; stroke: var(--ink-3); stroke-width: 1.5; marker-end: url(#sl-ah); transition: stroke var(--t-exposure) var(--ease-in-out), opacity var(--t-exposure) var(--ease-in-out); }
+#sliploop marker path { fill: var(--ink-3); stroke: none; }
+#sliploop rect, #sliploop circle { fill: var(--ground); stroke: none; transition: opacity var(--t-exposure) var(--ease-in-out); }
+#sliploop text { fill: var(--ink); font: 500 15px var(--font-text); text-anchor: middle; transition: opacity var(--t-exposure) var(--ease-in-out); }
+#sliploop text.s, #sliploop text.lbl, #sliploop text.dist { fill: var(--ink-2); font-weight: 400; font-size: 12px; }
+#sliploop text.lbl { text-anchor: start; }
+#sliploop text.dist { fill: var(--patch-red); }
+#sliploop .sum text { font-size: 20px; }
+#sliploop [data-on] { opacity: 0.28; }
+#sliploop [data-on].on { opacity: 1; }
+#sliploop .fb.on path { stroke: var(--patch-blue); }
+@media (max-width: 560px) { #sliploop text { font-size: 17px; } #sliploop text.s, #sliploop text.lbl, #sliploop text.dist { font-size: 14px; } }
+
 .eq, .eq p { overflow-x: auto; text-wrap: wrap; }   /* text-wrap: pretty around KaTeX crashes some Chromium builds */
 .eq h3 { margin: var(--s-6) 0 var(--s-2); font-size: var(--step-body); font-weight: 600; color: var(--ink); }
 .nomath .eq::after { content: "(equation shown as TeX: the math renderer did not load)"; display: block; color: var(--ink-2); font-size: 0.8125rem; }

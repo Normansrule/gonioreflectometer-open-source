@@ -94,8 +94,8 @@ window.SITE = {
     "Mirror test",
     "First reflectance curves"
    ],
-   "steps": 11,
-   "hours": 5.8,
+   "steps": 12,
+   "hours": 6.2,
    "cost": 115.87
   },
   {
@@ -124,7 +124,7 @@ window.SITE = {
    ],
    "steps": 8,
    "hours": 3.8,
-   "cost": 16.68
+   "cost": 9.19
   },
   {
    "id": "09",
@@ -227,10 +227,11 @@ window.SITE = {
    "goal": "A new builder can finish stage 06 from the docs alone.",
    "milestones": [
     "Docs complete",
-    "Public release"
+    "Public release",
+    "Publish"
    ],
-   "steps": 6,
-   "hours": 4.2,
+   "steps": 11,
+   "hours": 9.7,
    "cost": 0.0
   },
   {
@@ -247,12 +248,28 @@ window.SITE = {
    "steps": 7,
    "hours": 17.2,
    "cost": 0.0
+  },
+  {
+   "id": "18",
+   "folder": "18-xr-training",
+   "title": "AR and VR training tool",
+   "goal": "The five lessons run in a desktop browser and match the machine's kinematics and BRDF model.",
+   "milestones": [
+    "Trainer in the page",
+    "Headset bring-up",
+    "Platform comparison",
+    "Graphics development",
+    "Virtual Reality journal paper"
+   ],
+   "steps": 10,
+   "hours": 130.8,
+   "cost": 0.0
   }
  ],
- "plan_usd": 511.6,
+ "plan_usd": 504.11,
  "cap_usd": 630.0,
- "steps": 141,
- "hours": 98.8,
+ "steps": 157,
+ "hours": 235.5,
  "parts": 86,
  "evidence": [
   {

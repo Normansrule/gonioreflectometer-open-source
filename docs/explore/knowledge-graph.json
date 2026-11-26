@@ -429,12 +429,12 @@
    "id": "module:phases/16-release",
    "type": "module",
    "name": "16 · Release",
-   "summary": "Stage 16: Release. A new builder can finish stage 06 from the docs alone. Public, certified open hardware.",
+   "summary": "Stage 16: Release. A new builder can finish stage 06 from the docs alone. Public, certified open hardware. Preprint, peer-reviewed hardware article and software paper, each pointing to an archived copy with a DOI.",
    "tags": [
     "stage",
-    "2 milestones"
+    "3 milestones"
    ],
-   "complexity": "simple",
+   "complexity": "moderate",
    "filePath": "phases/16-release/README.md"
   },
   {
@@ -448,6 +448,18 @@
    ],
    "complexity": "moderate",
    "filePath": "phases/17-upgrades/README.md"
+  },
+  {
+   "id": "module:phases/18-xr-training",
+   "type": "module",
+   "name": "18 · AR and VR training tool",
+   "summary": "Stage 18: AR and VR training tool. The five lessons run in a desktop browser and match the machine's kinematics and BRDF model. The same page starts an AR session on HoloLens 2 and on Meta Quest, aligned to the real machine. Measured tradeoffs between HoloLens 2 and Meta Quest on the same content.",
+   "tags": [
+    "stage",
+    "5 milestones"
+   ],
+   "complexity": "moderate",
+   "filePath": "phases/18-xr-training/README.md"
   },
   {
    "id": "file:firmware/hub/main.py",
@@ -538,7 +550,7 @@
    "filePath": "software/src/opengonio/app/server.py",
    "lineRange": [
     78,
-    426
+    461
    ]
   },
   {
@@ -610,8 +622,20 @@
     "software",
     "core"
    ],
-   "complexity": "moderate",
+   "complexity": "complex",
    "filePath": "software/src/opengonio/cli.py"
+  },
+  {
+   "id": "file:software/src/opengonio/doctor.py",
+   "type": "file",
+   "name": "doctor.py",
+   "summary": "`opengonio doctor`: which of the software this project uses is installed, and in which version.",
+   "tags": [
+    "software",
+    "core"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/doctor.py"
   },
   {
    "id": "file:software/src/opengonio/fit.py",
@@ -685,8 +709,8 @@
    "complexity": "simple",
    "filePath": "software/src/opengonio/gantry/fluidnc.py",
    "lineRange": [
-    49,
-    72
+    60,
+    83
    ]
   },
   {
@@ -701,15 +725,15 @@
    "complexity": "simple",
    "filePath": "software/src/opengonio/gantry/fluidnc.py",
    "lineRange": [
-    75,
-    99
+    86,
+    110
    ]
   },
   {
    "id": "class:software/src/opengonio/gantry/fluidnc.py:RecordingTransport",
    "type": "class",
    "name": "RecordingTransport",
-   "summary": "Offline stand-in: answers 'ok', records every line and tracks the machine position like the controller (G53 G1 moves the axes, $H<axis> puts an axis at homes[axis]) so endpoint checks work in dry runs and tests. for_machine() sets homes from the configured firmware: 0 for grblHAL, home_deg for FluidNC.",
+   "summary": "Offline stand-in: answers 'ok', records every line and tracks the machine position like the controller (G53 G1 moves the axes, $H<axis> puts an axis at homes[axis]) so endpoint checks work in dry runs and tests. for_machine() sets homes from the configured firmware: 0 for grblHAL, home_deg for FluidNC. Slip (off unless set): `phys` is where each axis really is; every move adds creep[axis] degrees ",
    "tags": [
     "software",
     "gantry"
@@ -717,8 +741,8 @@
    "complexity": "simple",
    "filePath": "software/src/opengonio/gantry/fluidnc.py",
    "lineRange": [
-    177,
-    218
+    188,
+    245
    ]
   },
   {
@@ -828,6 +852,34 @@
    ],
    "complexity": "simple",
    "filePath": "software/src/opengonio/gantry/safety.py"
+  },
+  {
+   "id": "file:software/src/opengonio/gantry/slip.py",
+   "type": "file",
+   "name": "slip.py",
+   "summary": "Slip model: how far an open-loop axis may have drifted from where the controller thinks it is, and what to do.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "moderate",
+   "filePath": "software/src/opengonio/gantry/slip.py"
+  },
+  {
+   "id": "class:software/src/opengonio/gantry/slip.py:AxisSlip",
+   "type": "class",
+   "name": "AxisSlip",
+   "summary": "Kalman filter for one axis. d, s: estimates; (pdd, pds, pss): their covariance; travel: degrees since the last reference.",
+   "tags": [
+    "software",
+    "gantry"
+   ],
+   "complexity": "simple",
+   "filePath": "software/src/opengonio/gantry/slip.py",
+   "lineRange": [
+    82,
+    159
+   ]
   },
   {
    "id": "file:software/src/opengonio/hdr/__init__.py",
@@ -1222,7 +1274,7 @@
    "filePath": "software/src/opengonio/station.py",
    "lineRange": [
     41,
-    230
+    233
    ]
   },
   {
@@ -1337,6 +1389,17 @@
    "filePath": "tools/inside_data.py"
   },
   {
+   "id": "file:tools/joss_bib.py",
+   "type": "file",
+   "name": "joss_bib.py",
+   "summary": "paper/joss/paper.bib: the entries of paper/references.bib that paper/joss/paper.md cites (keys = REFERENCES.md IDs).",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "simple",
+   "filePath": "tools/joss_bib.py"
+  },
+  {
    "id": "file:tools/machine3d.py",
    "type": "file",
    "name": "machine3d.py",
@@ -1390,6 +1453,17 @@
    ],
    "complexity": "moderate",
    "filePath": "tools/paper_assets.py"
+  },
+  {
+   "id": "file:tools/paper_check.py",
+   "type": "file",
+   "name": "paper_check.py",
+   "summary": "Is the paper ready to submit? Checks every venue in paper/submission.yaml.",
+   "tags": [
+    "tool"
+   ],
+   "complexity": "moderate",
+   "filePath": "tools/paper_check.py"
   },
   {
    "id": "file:tools/part_images.py",
@@ -1700,6 +1774,17 @@
    "filePath": "docs/wiring.html"
   },
   {
+   "id": "document:docs/xr.html",
+   "type": "document",
+   "name": "OpenGonio AR and VR training",
+   "summary": "Augmented and virtual reality training for the OpenGonio gonioreflectometer: the axis arcs and their limits, the light path and the BRDF lobe, in a headset or in this page. Not yet run on a headset.",
+   "tags": [
+    "website"
+   ],
+   "complexity": "simple",
+   "filePath": "docs/xr.html"
+  },
+  {
    "id": "document:docs/explore/index.html",
    "type": "document",
    "name": "This map",
@@ -1896,6 +1981,17 @@
    ],
    "complexity": "simple",
    "filePath": "wiki/src/Tools-and-joins.md"
+  },
+  {
+   "id": "document:wiki/src/XR-training.md",
+   "type": "document",
+   "name": "Wiki: XR training",
+   "summary": "Augmented Reality (AR) and Virtual Reality (VR) training for the gonioreflectometer: the axis arcs and their limits, the light path, and the Bidirectional Reflectance Distribution Function (BRDF) lobe, over the real machine or around its CAD model. Extended Reality (XR) covers both.",
+   "tags": [
+    "wiki"
+   ],
+   "complexity": "simple",
+   "filePath": "wiki/src/XR-training.md"
   },
   {
    "id": "document:README.md",
@@ -2184,6 +2280,14 @@
    "weight": 0.3
   },
   {
+   "source": "module:phases/17-upgrades",
+   "target": "module:phases/18-xr-training",
+   "type": "depends_on",
+   "direction": "forward",
+   "description": "comes before",
+   "weight": 0.3
+  },
+  {
    "source": "file:software/src/opengonio/app/server.py",
    "target": "class:software/src/opengonio/app/server.py:Refused",
    "type": "contains",
@@ -2242,6 +2346,14 @@
   {
    "source": "file:software/src/opengonio/gantry/hub.py",
    "target": "class:software/src/opengonio/gantry/hub.py:FakeHub",
+   "type": "contains",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/slip.py",
+   "target": "class:software/src/opengonio/gantry/slip.py:AxisSlip",
    "type": "contains",
    "direction": "forward",
    "description": "",
@@ -2641,6 +2753,14 @@
   },
   {
    "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/doctor.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
    "target": "file:software/src/opengonio/app/server.py",
    "type": "imports",
    "direction": "forward",
@@ -2841,7 +2961,7 @@
   },
   {
    "source": "file:software/src/opengonio/cli.py",
-   "target": "file:software/src/opengonio/plans/repeatability.py",
+   "target": "file:software/src/opengonio/gantry/slip.py",
    "type": "imports",
    "direction": "forward",
    "description": "",
@@ -2866,6 +2986,14 @@
   {
    "source": "file:software/src/opengonio/cli.py",
    "target": "file:software/src/opengonio/gantry/hub.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/cli.py",
+   "target": "file:software/src/opengonio/plans/repeatability.py",
    "type": "imports",
    "direction": "forward",
    "description": "",
@@ -2922,6 +3050,14 @@
   {
    "source": "file:software/src/opengonio/cli.py",
    "target": "file:software/src/opengonio/scan/run.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/doctor.py",
+   "target": "file:software/src/opengonio/__init__.py",
    "type": "imports",
    "direction": "forward",
    "description": "",
@@ -2994,6 +3130,14 @@
   {
    "source": "file:software/src/opengonio/gantry/gantry.py",
    "target": "file:software/src/opengonio/gantry/fluidnc.py",
+   "type": "imports",
+   "direction": "forward",
+   "description": "",
+   "weight": 0.5
+  },
+  {
+   "source": "file:software/src/opengonio/gantry/gantry.py",
+   "target": "file:software/src/opengonio/gantry/slip.py",
    "type": "imports",
    "direction": "forward",
    "description": "",
@@ -4338,7 +4482,8 @@
     "module:phases/15-standalone",
     "config:phases/15-standalone/bom.csv",
     "module:phases/16-release",
-    "module:phases/17-upgrades"
+    "module:phases/17-upgrades",
+    "module:phases/18-xr-training"
    ]
   },
   {
@@ -4366,6 +4511,7 @@
     "file:software/src/opengonio/camera/__init__.py",
     "file:software/src/opengonio/camera/uvc.py",
     "file:software/src/opengonio/cli.py",
+    "file:software/src/opengonio/doctor.py",
     "file:software/src/opengonio/fit.py",
     "file:software/src/opengonio/gantry/__init__.py",
     "file:software/src/opengonio/gantry/collision.py",
@@ -4382,6 +4528,8 @@
     "file:software/src/opengonio/gantry/kinematics.py",
     "file:software/src/opengonio/gantry/panel.py",
     "file:software/src/opengonio/gantry/safety.py",
+    "file:software/src/opengonio/gantry/slip.py",
+    "class:software/src/opengonio/gantry/slip.py:AxisSlip",
     "file:software/src/opengonio/hdr/__init__.py",
     "file:software/src/opengonio/hdr/merge.py",
     "file:software/src/opengonio/imageio.py",
@@ -4431,11 +4579,13 @@
     "file:tools/exports.py",
     "file:tools/grblhal_settings.py",
     "file:tools/inside_data.py",
+    "file:tools/joss_bib.py",
     "file:tools/machine3d.py",
     "file:tools/make_assets.py",
     "file:tools/new.py",
     "file:tools/optics.py",
     "file:tools/paper_assets.py",
+    "file:tools/paper_check.py",
     "file:tools/part_images.py",
     "file:tools/parts_doc.py",
     "file:tools/power_budget.py",
@@ -4471,6 +4621,7 @@
     "document:docs/power.html",
     "document:docs/render.html",
     "document:docs/wiring.html",
+    "document:docs/xr.html",
     "document:docs/explore/index.html",
     "document:wiki/src/3D-scanning.md",
     "document:wiki/src/Build-guide.md",
@@ -4489,6 +4640,7 @@
     "document:wiki/src/Test-materials.md",
     "document:wiki/src/Theory.md",
     "document:wiki/src/Tools-and-joins.md",
+    "document:wiki/src/XR-training.md",
     "document:README.md",
     "document:REFERENCES.md",
     "document:paper/opengonio.tex",

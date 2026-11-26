@@ -1,0 +1,17 @@
+# Measured results for paper/xr/opengonio-xr.tex. Every value is null until measured on the hardware (roadmap M52-M53).
+# Never type a value that was not measured; give the step record it came from.
+platforms:
+  hololens2: {os_version: null, browser_version: null}
+  quest: {model: null, os_version: null, browser_version: null}
+rows:
+  - {id: X-R1, measure: AR session starts, unit: yes/no, step: M52.1, hololens2: null, quest: null}
+  - {id: X-R2, measure: Frame rate, unit: frames per second, step: M53.1, hololens2: null, quest: null}
+  - {id: X-R3, measure: "Frame time, 95th percentile", unit: ms, step: M53.1, hololens2: null, quest: null}
+  - {id: X-R4, measure: Alignment residual, unit: mm, step: M52.2, hololens2: null, quest: null}
+  - {id: X-R5, measure: Drift after one walk round the bench, unit: mm, step: M53.1, hololens2: null, quest: null}
+  - {id: X-R6, measure: Fraction of the M4 arc in view at 0.75 m, unit: "%", step: M53.1, hololens2: null, quest: null}
+  - {id: X-R7, measure: Legibility rating, unit: 1-5, step: M53.1, hololens2: null, quest: null}
+  - {id: X-R8, measure: Learning gain, unit: points, step: M53.2, hololens2: null, quest: null}
+  - {id: X-R9, measure: System Usability Scale, unit: 0-100, step: M53.2, hololens2: null, quest: null}
+  - {id: X-R10, measure: NASA Task Load Index, unit: 0-100, step: M53.2, hololens2: null, quest: null}
+  - {id: X-R11, measure: Simulator Sickness Questionnaire, unit: score, step: M53.2, hololens2: null, quest: null}

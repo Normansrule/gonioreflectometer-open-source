@@ -30,7 +30,7 @@
   const codeify = t => esc(t).replace(/`([^`]+)`/g, "<code>$1</code>");
   const ACT_NAMES = { "/api/home": "Home all", "/api/move": "Move", "/api/stop": "STOP", "/api/light": "Light",
     "/api/connect": "Connect", "/api/disconnect": "Disconnect", "/api/run": "Capture", "/api/spectral": "Spectral reading",
-    "/api/fit": "Material fitted" };
+    "/api/fit": "Material fitted", "/api/reference": "Reference check", "/api/simslip": "Simulated slip" };
   async function act(path, body, after) {
     const what = ACT_NAMES[path] || path;
     try { const r = await api(path, body); say(""); log(describe(path, body), "ok"); if (after) after(r); }
@@ -41,6 +41,8 @@
     if (path === "/api/move") return "Moved to " + Object.entries(body.pose).map(([k, v]) => `${k} ${(+v).toFixed(1)}°`).join(", ");
     if (path === "/api/light") return `${body.name === "white" ? "White lamp" : body.name} ${body.on ? "on" : "off"}`;
     if (path === "/api/connect") return body.mode === "sim" ? `Connected to the simulator (${body.material})` : "Connected over USB";
+    if (path === "/api/simslip") return body.lost_deg ? `Simulator: the table will lose ${Math.abs(body.lost_deg)}° on its next move`
+      : body.creep_pct ? `Simulator: belts creep ${body.creep_pct} % of travel` : "Simulator: slip off";
     if (path === "/api/run") return `Capture started: ${PLAN_INFO[body.plan].label.toLowerCase()}`;
     return ACT_NAMES[path] || path;
   }
@@ -80,7 +82,7 @@
     setConn(running ? "lamp live" : S.mode === "sim" ? "sim" : "ok",
       (S.mode === "sim" ? `Simulated machine · ${S.material}` : "Machine over USB · untested") + (running ? " · capturing" : ""));
     if (S.last_error && S.last_error !== dismissed && $("banner").hidden) say(S.last_error);
-    renderAxes(running); renderLights(running); renderPose(); renderAngles(); renderRun(running); renderSensors(running);
+    renderAxes(running); renderLights(running); renderPose(); renderAngles(); renderRun(running); renderSensors(running); renderTrust(running);
     trackJob();
   }
 
@@ -126,6 +128,32 @@
     const inst = ORDER.filter(k => S.axes[k].installed), h = inst.filter(k => S.axes[k].homed);
     $("q-homed").textContent = `${h.length} / ${inst.length}`; $("q-homed-n").textContent = h.length === inst.length ? "every axis trusted" : "home before moving";
   }
+  /* ---------- position trust: the slip model's error bound per axis (opengonio/gantry/slip.py) ---------- */
+  function renderTrust(running) {
+    const T = S.trust || {}, sl = S.slip || {}, on = sl.mode && sl.mode !== "off";
+    const homed = ORDER.filter(k => S.axes[k].installed && S.axes[k].homed && T[k]);
+    $("trust-check").disabled = !!running || !on || !homed.length;
+    $("simslip-wrap").hidden = S.mode !== "sim"; $("simslip").disabled = !!running;
+    if (document.activeElement !== $("simslip")) $("simslip").value = String((sl.sim || {}).creep_pct || 0);
+    $("trust-note").innerHTML = !on ? "The slip model is off (`slip.mode: off` in machine.yaml): axis drift is neither bounded nor corrected.".replace(/`([^`]+)`/g, "<code>$1</code>")
+      : `The motors have no encoders, so each axis carries an error bound that grows with travel. Past the budget it goes back to its home switch before the next shot` +
+        (sl.measures ? ", measures how far it drifted and learns the belt's creep." : ".") + (S.mode === "sim" ? " Simulated: slip here is injected, not measured." : " Nominal parameters until M19.2.");
+    $("trust-grid").innerHTML = ORDER.map(k => {
+      const a = S.axes[k], t = T[k];
+      if (!a.installed || !t || !on) return `<div class="tcell off"><div class="top"><span class="ax">${k}<small>${NAMES[k]}</small></span></div><div class="tg"><i class="zero"></i></div><p class="meta">${!a.installed ? `built in stage ${String(a.stage).padStart(2, "0")}` : "model off"}</p></div>`;
+      const span = 1.5 * t.budget_deg, band = Math.min(1, t.bound_deg / span);
+      const state = !a.homed ? ["open", "not homed: no bound"] : t.due ? ["lamp", "due: re-references before the next shot"] : ["ok", "inside the budget"];
+      return `<div class="tcell${a.homed && t.due ? " due" : ""}${a.homed ? "" : " off"}" role="group" aria-label="${k} ${NAMES[k]}: ${a.homed ? `error bound ${t.bound_deg.toFixed(3)} of ${t.budget_deg} degrees` : "not homed"}">` +
+        `<div class="top"><span class="ax">${k}<small>${NAMES[k]}</small></span><span class="bound num">${a.homed ? "±" + t.bound_deg.toFixed(3) + "°" : "–"}<small>of ${t.budget_deg}°</small></span></div>` +
+        `<div class="tg" aria-hidden="true"><i class="zero"></i><i class="band" style="transform:scaleX(${(a.homed ? band : 0).toFixed(4)})"></i></div>` +
+        `<p class="meta"><span class="patch ${state[0]}" aria-hidden="true"></span>${state[1]}<br>${t.travel_deg.toFixed(0)}° since the switch · corrected ${t.offset_deg >= 0 ? "+" : "−"}${Math.abs(t.offset_deg).toFixed(3)}°<br>` +
+        `creep ${t.creep_pct >= 0 ? "+" : "−"}${Math.abs(t.creep_pct).toFixed(3)} % ± ${t.creep_sd_pct.toFixed(3)} · ${t.checks} reference${t.checks === 1 ? "" : "s"}${t.events ? ` · <b>${t.events} lost-step event${t.events === 1 ? "" : "s"}</b>` : ""}</p></div>`;
+    }).join("");
+  }
+  $("trust-check").addEventListener("click", () => act("/api/reference", {}, r => (r.checks || []).forEach(c =>
+    log(`${c.axis}: ` + (c.measured_deg == null ? "re-homed (edge learned, nothing to compare yet)" : `drift ${c.measured_deg > 0 ? "+" : ""}${c.measured_deg.toFixed(3)}° (predicted ${c.predicted_deg.toFixed(3)}°)` + (c.event ? `, ${c.event}` : "")), c.event ? "lamp" : "ok"))));
+  $("simslip").addEventListener("change", e => { const v = e.target.value;
+    act("/api/simslip", v === "lost" ? { creep_pct: (S.slip.sim || {}).creep_pct || 0, lost_deg: -0.5 } : { creep_pct: +v }); if (v === "lost") e.target.value = String((S.slip.sim || {}).creep_pct || 0); });
   let jobSeen = "";
   function trackJob() {
     const j = S.job; if (!j) return; const key = j.name + j.status; if (key === jobSeen) return;

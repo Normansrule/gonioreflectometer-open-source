@@ -335,7 +335,7 @@ B_PARTS = {   # id: (file stem, builder, source of the dimensions)
     "CAL-05": ("colorchecker_mini", lambda: box(63.5, 108, 3), "ColorChecker Mini envelope"),
     "CAL-07": ("grey_card_8x10in", lambda: box(203, 254, 1), "8 x 10 in card"),
     "TLT-05": ("bolt_m8x35_nut", lambda: bolt(8, 35, 13, 5.3, True, (13, 6.5)), "DIN 931 M8 x 35 + nut"),
-    "TLT-02": ("gt2_belt_280_loop", lambda: belt_loop(6.37, 31.83, 75.6), "GT2 280 mm loop on 20T + 100T at 75.6 mm"),
+    "TLT-02": ("gt2_belt_232_loop", lambda: belt_loop(6.37, 19.10, 74.9), "GT2 232 mm loop on 20T + 60T at 74.9 mm"),
     "SPN-01": ("nema17_17hs08_1004s_pancake", lambda: nema17(21.5, 20), "StepperOnline 17HS08-1004S: 42.3 x 42.3 x 21.5, shaft 20 [P48]"),
     "MSK-01": ("star_led_20mm", star_led, "20 mm hex star LED"),
     "MSK-03": ("mosfet_module_4ch", lambda: pcb(60, 45).union(box(8, 40, 10).translate((-26, 0, 1.6))).union(box(8, 40, 10).translate((26, 0, 1.6))),

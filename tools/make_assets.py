@@ -90,7 +90,7 @@ def axes() -> str:
     poses, active = m3d.demo_poses()
     body = f"""<text x="40" y="44" class="t b" font-size="20">Four axes, one zero point</text>
 <text x="40" y="70" class="m" font-size="13">each axis moves in turn [R1]</text>
-<text x="40" y="330" class="m" font-size="12">M4 ring 12 in, 24:1 · M3, M2 5:1 · M1 direct drive</text>
+<text x="40" y="330" class="m" font-size="12">M4 ring 12 in, 24:1 · M3 5:1 · M2 3:1 · M1 direct drive</text>
 <text x="40" y="350" class="m" font-size="12">orange square = sample · blue = fixed camera</text>
 {m3d.machine(m3d.View(560, 225, 0.68), poses, active, labels=(40, 120))}"""
     return svg(1000, 420, body)

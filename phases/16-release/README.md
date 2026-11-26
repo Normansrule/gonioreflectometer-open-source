@@ -108,4 +108,101 @@ UID in the README title line; commit.
 
 - [ ] GitHub → Releases shows `v0.16` with the 3D zip.
 
+## M50 · Publish
+
+Preprint, peer-reviewed hardware article and software paper, each pointing to an archived copy with a DOI. · 0/5 steps done · ~5.5 h hands-on · ~4 wk
+
+### M50.1 Archive with a DOI
+
+**Time** 30 min · **Needs** public repo (M45.1) · zenodo.org account (sign in with GitHub)
+
+#### Do
+
+1. Zenodo → GitHub: switch the repository on; then `make release s=16` (M45.3) makes Zenodo archive that release.
+2. Copy the DOI into `paper/submission.yaml` → `archive.zenodo_doi`; set `author.orcid`.
+
+#### Verify
+
+- [ ] `make paper-check`: no "archive DOI" blocker; the specifications table shows the DOI.
+
+#### Record
+
+DOI in `paper/submission.yaml`; commit.
+
+### M50.2 Fill the validation table
+
+**Time** 1 h · **Needs** records of M18.3, M19.1, M20.1, M21.2, M22.1, M22.2, M23.2, M23.3, M24.2, M24.3, M25.4, M26.3, M35.2, M44.3
+
+#### Do
+
+1. For each row of `paper/results.yaml`, copy the measured value from that step's record (design.md → Results). Never type a value that was not measured.
+2. Replace the red [TBD]s in `paper/opengonio.tex` (abstract numbers, application figure, acknowledgements, email, AI declaration scope).
+
+#### Verify
+
+- [ ] `make paper-check` prints "Validation: 14 of 14 measured" and no [TBD] blocker.
+- [ ] A second reader checks every number in Table 3 against its step record.
+
+#### If a check fails
+
+- A row fails its criterion: report it as measured and say why in "Capabilities and limitations"; do not drop the row.
+
+#### Record
+
+Commit `paper/results.yaml` and `paper/opengonio.tex`.
+
+### M50.3 Preprint on arXiv
+
+**Time** 1 h (+ endorsement, moderation 1–3 days) · **Needs** arXiv account; endorser for physics.ins-det if you have no earlier arXiv paper there
+
+#### Do
+
+1. `make paper-submit`; upload `paper/build/submission/opengonio-source.zip`; category physics.ins-det (cross-list cs.GR).
+
+#### Verify
+
+- [ ] arXiv's compiled PDF matches `paper/build/submission/opengonio-hardwarex.pdf` (references resolved, tables present).
+
+#### Record
+
+arXiv ID in phases/16-release/design.md → Results; commit.
+
+### M50.4 Submit to HardwareX
+
+**Time** 2 h (+ review 1–3 months) · **Needs** Editorial Manager account (HardwareX)
+
+#### Do
+
+1. Re-read the current HardwareX guide for authors against `paper/submission.yaml`; update it if the guide changed.
+2. Upload `opengonio-source.zip` (LaTeX) with `opengonio-hardwarex.pdf` and `graphical_abstract.png` from `paper/build/submission/`; give the Zenodo DOI where the form asks for data/code availability.
+
+#### Verify
+
+- [ ] Submission confirmation e-mail with a manuscript number.
+
+#### If a check fails
+
+- Desk rejection for missing validation: finish M50.2 rows the editor names, then resubmit.
+
+#### Record
+
+Manuscript number and dates in phases/16-release/design.md → Results; commit.
+
+### M50.5 Submit the software paper to JOSS
+
+**Time** 1 h (+ review in a public GitHub issue) · **Needs** real measurements published (M50.2) for the research impact statement
+
+#### Do
+
+1. Write the "Research impact statement" in `paper/joss/paper.md` from real results; preview it (command printed by `make paper-submit`).
+2. Submit at joss.theoj.org with the repository URL and the Zenodo DOI.
+
+#### Verify
+
+- [ ] `make paper-check`: no joss blocker; JOSS opens a pre-review issue.
+
+#### Record
+
+JOSS review issue link in phases/16-release/design.md → Results; commit.
+
 [Sources](../../REFERENCES.md): T50 · T51 · N50 · H31 · H32 · H33 · H34 · H35 · H36 · H45

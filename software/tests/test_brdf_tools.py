@@ -47,6 +47,15 @@ def test_ggx_reciprocity_and_energy(r):
     assert directional_albedo(sph_to_vec(45, 0), lambda a, b: ggx_brdf(a, b, 1.0, r, metallic=1.0)) <= 1.001
 
 
+def test_gltf_form_gains_energy_at_grazing_for_bright_dielectrics():
+    """Documented limit of the fitted model (wiki Theory): the diffuse term is weighted by 1 - F(w.h), so a white
+    dielectric reflects more than it receives at grazing incidence. Pinned so a change to the model shows up here."""
+    alb = lambda th, base: directional_albedo(sph_to_vec(th, 0), lambda a, b: ggx_brdf(a, b, base, 0.5), 96, 192)
+    assert alb(45, 1.0) <= 1.005
+    assert alb(80, 1.0) == pytest.approx(1.08, abs=0.01)
+    assert alb(80, 0.8) == pytest.approx(0.89, abs=0.01)
+
+
 def test_bom_valid_and_under_hard_cap():
     boms = bom_check.load()
     assert bom_check.validate(boms) == []

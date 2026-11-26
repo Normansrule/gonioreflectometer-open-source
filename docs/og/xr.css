@@ -1,0 +1,15 @@
+/* AR / VR training page (docs/xr.html). Tokens: og.css. SPDX-License-Identifier: GPL-3.0-or-later */
+.xr-lessons { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.xr-lessons button { flex: 1 1 auto; }
+.xr-lesson { margin: 0; display: grid; gap: var(--s-1); }
+.xr-lesson span { color: var(--ink-2); }
+.xr-read { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-4); margin: 0; }
+.xr-read div { display: grid; gap: 2px; }
+.xr-read dt { color: var(--ink-2); font-size: var(--step-small); }
+.xr-read dd { margin: 0; font-variant-numeric: tabular-nums; }
+.xr-steps { margin: var(--s-3) 0 0; padding-left: 1.2em; display: grid; gap: var(--s-2); }
+.xr-log { margin: 0; max-height: 16rem; overflow: auto; font-size: var(--step-small); white-space: pre-wrap; }
+.key.k4 { background: #29c79e; } .key.k3 { background: #f2a833; } .key.k2 { background: #9e85f2; }
+.key.k1 { background: #549efa; } .key.kstop { background: #eb423d; }
+.limits { display: grid; gap: var(--s-2); padding-left: 1.2em; }
+@media (max-width: 560px) { .xr-read { grid-template-columns: 1fr; } }

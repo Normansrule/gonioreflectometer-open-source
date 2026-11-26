@@ -1,5 +1,7 @@
 % Open Source Gonioreflectometer -- manuscript for HardwareX (Elsevier). Build: `make paper` (repo root) -> paper/build/opengonio.pdf
-% Structure: HardwareX hardware-article template. Citations: APA 7 (biblatex-apa); keys = IDs in REFERENCES.md.
+% Structure: HardwareX hardware-article template (paper/submission.yaml lists the required sections; `make paper-check`).
+% Citations: APA 7 here; `make paper-submit` builds the numbered version HardwareX prints. Keys = IDs in REFERENCES.md.
+% Validation table: paper/results.yaml (measured values only). Publishing steps: roadmap milestone M50.
 % Tables in generated/ and figures in figures/ come from the repo (tools/paper_assets.py): do not edit them by hand.
 % SPDX-License-Identifier: CC-BY-SA-4.0
 \documentclass[preprint,12pt,nonatbib]{elsarticle}
@@ -8,9 +10,11 @@
 \usepackage[american]{babel}
 \usepackage{csquotes}
 \makeatletter\let\c@author\relax\makeatother   % elsarticle and biblatex both define the author counter
-\usepackage[style=apa,backend=biber]{biblatex}
+\providecommand{\ogrefstyle}{apa}   % make paper-submit: numeric
+\edef\ogbib{\noexpand\usepackage[style=\ogrefstyle,backend=biber]{biblatex}}\ogbib
 \addbibresource{references.bib}
 \usepackage{amsmath,amssymb,graphicx,tabularx,longtable,booktabs,xcolor,siunitx}
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={Open Source Gonioreflectometer: a four-axis BRDF instrument and 3D scanner built from printed parts without soldering},
   pdfauthor={Aleksander Norman}, pdfsubject={Open-source scientific hardware},
@@ -38,11 +42,12 @@ A light arm on a \SI{305}{mm} ring and three sample axes (yaw, tilt, spin) set e
 relative to a fixed camera, following \textcite{R1}. All \nprinted{} structural parts are 3D printed in ABS; the
 \nbought{} bought parts cost \costparts{} from three distributors. No soldering, drilling, sawing or crimping is needed.
 Calibration uses a mirror for angles, an exposure series for camera response and a pressed-PTFE tile for absolute
-reflectance. Fitted Lambert + GGX parameters export to game engines. \tbd{repeatability, accuracy vs. reference data}.
+reflectance. Fitted Lambert + GGX parameters and the scanned shape export as one glTF file that Blender, Unity and
+Unreal render. \tbd{key validation numbers from Table~\ref{tab:validation}}.
 \end{abstract}
 
 \begin{keyword}
-BRDF \sep gonioreflectometer \sep material appearance \sep open hardware \sep 3D printing \sep photometric calibration
+BRDF \sep gonioreflectometer \sep material appearance \sep open hardware \sep 3D printing \sep photometric calibration \sep 3D scanning \sep glTF
 \end{keyword}
 \end{frontmatter}
 
@@ -72,16 +77,20 @@ ring, measuring camera on the right.}\label{fig:assembly}
 
 \begin{itemize}
 \item \textbf{Geometry.} M4 (light arm, 20--324\textdegree, 24:1 belt on the ring), M3 (yaw, $\pm$180\textdegree, 5:1),
-  M2 (tilt, $\pm$90\textdegree, 5:1), M1 (spin, direct drive). Camera fixed at \SI{350}{mm}; light at \SI{300}{mm}
+  M2 (tilt, $\pm$90\textdegree, 3:1), M1 (spin, direct drive). Camera fixed at \SI{350}{mm}; light at \SI{300}{mm}
   (Fig.~\ref{fig:axes}). Anisotropic materials need M1 \parencite{G9}.
-\item \textbf{Light.} Chip-on-board LED, colour rendering index 97, \SI{350}{mA} constant current, collimating printed
-  tube with a \SI{10}{mm} aperture; solderless holder clamped by the lamp body.
+\item \textbf{Light.} Chip-on-board LED (Citizen CLU701, colour rendering index $\geq$ 90, \SI{2700}{K}) at \SI{350}{mA} from a
+  wire-lead constant-current driver, on a pin-fin heatsink; collimating printed tube with a \SI{10}{mm} aperture; solderless
+  holder clamped by the lamp body.
 \item \textbf{Camera.} 12 MP IMX477 USB module, \SI{16}{mm} lens, printed f/8 stop; exposure, gain and white balance locked.
 \item \textbf{Control.} grblHAL on an RP2040 board (BTT SKR Pico, USB-C) drives four steppers; a microcontroller reads keypads and sensors;
   optical homing on every axis; over-travel switches in the emergency-stop loop.
 \item \textbf{One screw size.} Every printed join and module mount is an M2 screw self-tapping into a printed pilot;
   M3 only into the motors, M8 bolts as axles. The base is a printed deck of nine tiles with a pilot at every mount point.
 \item \textbf{No-tool joins.} Lever connectors, screw terminals and modules (optocoupler, LED driver) instead of loose chips.
+\item \textbf{Software.} One Python package runs the machine, calibrates, fits and renders: a browser control app, a
+  simulator for every command, and \texttt{opengonio render}, which writes the fitted material on a sphere or on the
+  scanned mesh as a glTF 2.0 file \parencite{T40} drawn with the same GGX formula as the fit.
 \end{itemize}
 
 \section{Design files summary}
@@ -107,19 +116,38 @@ Each step lists time, parts, actions, a measured pass criterion and what to chec
 \begin{enumerate}
 \item \texttt{opengonio check-pose M4=60 M3=30}: angle and collision check.
 \item \texttt{opengonio capture inplane --step 10 --out data/s}: in-plane sweep.
-\item \texttt{opengonio curve data/s}: calibrated BRDF curve and Lambert + GGX fit \parencite{R6,T11}.
+\item \texttt{opengonio curve data/s}: calibrated BRDF curve; \texttt{opengonio fit data/s}: Lambert + GGX fit with a
+  holdout check \parencite{R6,T11}.
+\item \texttt{opengonio render data/s --mesh scan\_out/hull\_mesh.ply}: the material on the scanned object as glTF.
 \end{enumerate}
 Safety: the lamp is viewed only through the sample; the emergency stop cuts motor power.
 
 \section{Validation and characterization}\label{sec:validation}
-\paragraph{Calibration.} Angle offset from the mirror peak ($M_3 = M_4/2$ in-plane); dark level from a lamp-off frame;
+\paragraph{Calibration} Angle offset from the mirror peak ($M_3 = M_4/2$ in-plane); dark level from a lamp-off frame;
 camera response from an exposure series \parencite{R5}; absolute scale from pressed PTFE \parencite{N30}:
 \begin{equation}
 f_r=\frac{C_{\mathrm{lin}}}{C_{w,\mathrm{lin}}}\,\frac{\rho_w}{\pi}\,\frac{\cos 45^\circ}{\cos\theta_i},\qquad
 C_{\mathrm{lin}}=(C-C_d)^{\gamma}.
 \end{equation}
-\paragraph{Results.} \tbd{angular repeatability per axis (mirror, 10 repeats); lamp drift over a run; PTFE reflectance
-vs. reference; matte and glossy samples vs. MERL \parencite{G15} or RGL \parencite{R16} data; scan accuracy}.
+\paragraph{Results} Table~\ref{tab:validation} lists every characterization, the roadmap step that measures it and that
+step's pass criterion; \nvalidated{} of \nvalidation{} are measured so far.
+\begin{table}[h]\centering
+\caption{Validation and characterization (from \texttt{paper/results.yaml}; each row is one step of the build roadmap).}
+\label{tab:validation}
+\input{generated/validation.tex}
+\end{table}
+
+\paragraph{Application} \tbd{figure: a measured swatch rendered in a game engine next to a photo of it (V13)}.
+
+\paragraph{Capabilities and limitations}
+\begin{itemize}
+\item Isotropic BRDF over the light arm's 20--324\textdegree{} and the sample's yaw and tilt; anisotropic with the spin axis.
+\item One grey channel per photo: colour needs the optional spectral sensor or LED bank.
+\item Absolute scale rests on one pressed-PTFE reference; between and beyond the measured angles values are the model's.
+\item The quick scan is a visual hull: cavities fill in; the photogrammetry mesh recovers them.
+\item Axes run open loop: a per-axis Kalman filter \parencite{T59} bounds belt creep and lost steps from the travel since the last home-switch reference, corrects the predicted part and re-references past a 0.1\textdegree{} budget; its parameters are nominal until measured.
+\item Comparison with published BRDF databases \parencite{G15,R16} is planned (roadmap M48), not part of this validation.
+\end{itemize}
 
 \section*{Ethics statements}
 No human or animal subjects.
@@ -132,6 +160,11 @@ None.
 
 \section*{Acknowledgements}
 \tbd{acknowledgements}
+
+\section*{Declaration of generative AI and AI-assisted technologies in the writing process}
+\tbd{author to confirm tool names, versions and scope}. During the preparation of this work the author used Claude
+(Anthropic) to draft and revise software, documentation and manuscript text. After using this tool, the author reviewed
+and edited the content as needed and takes full responsibility for the content of the publication.
 
 \printbibliography
 \end{document}

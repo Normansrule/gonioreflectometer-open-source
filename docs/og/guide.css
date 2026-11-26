@@ -210,6 +210,8 @@ code { font-size: 0.9em; background: var(--ground-3); padding: 0 4px; border-rad
   .page { break-after: page; break-inside: avoid; background: none; padding: 0; }
   .page:last-child { break-after: auto; }
   .page .pic img { max-height: 150mm; object-fit: contain; }
+  .page .txt { font-size: 13.5px; gap: var(--s-2); }          /* the longest step (boards on the tray) must stay on its page */
+  .page .steps-text { font-size: 13px; }
 }
 
 /* power walkthrough (power.html): the bench drawing, wires in their real colours */

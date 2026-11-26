@@ -155,7 +155,7 @@ steps:
   - title: Stub axles and bearings
     ref: M25.2
     lines: [2]
-    add: [TLT-07b_pulley_100T, TLT-05_stub_bolt, TLT-05_stub_bolt_2, "FRM-08_608_[34]"]
+    add: [TLT-07b_pulley_60T, TLT-05_stub_bolt, TLT-05_stub_bolt_2, "FRM-08_608_[34]"]
     from: out
     view: [-60, 20]
 

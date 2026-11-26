@@ -204,6 +204,9 @@ class Station:
 
     def shoot(self, pose: dict, name: str) -> dict:
         pose = complete(self.cfg, pose)
+        checks = self.g.maintain()
+        if checks:
+            self.manifest.setdefault("slip_checks", []).extend({"before": name, **c} for c in checks)
         reported = self.g.move(pose)
         img = self._cam().grab()
         rel = f"{self.folder}/{name}" if self.folder else name
@@ -257,8 +260,13 @@ def run_plan(g: Gantry, cam, plan: list[dict], out_dir: Path, save: Callable[[Pa
 
     def shoot(pose: dict, f: str, exp: float | None = None) -> dict:
         pose = complete(g.cfg, pose)
+        checks = g.maintain()                # axes whose drift bound passed the budget go back to their switch first
+        if checks:
+            man.setdefault("slip_checks", []).extend({"before": f, **c} for c in checks)
         reported = g.move(pose)
         shot = {"pose": pose, "reported_pose": reported or None, "file": None}
+        if g.slip:                           # 2-sigma angle error bound of each axis at this shot (slip model)
+            shot["angle_bound_deg"] = {k: v["bound_deg"] for k, v in g.trust().items()}
         if exp is not None:
             applied = cam.configure(CameraSettings(exp))
             shot["exposure_ms"] = exp

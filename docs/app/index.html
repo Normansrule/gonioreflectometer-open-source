@@ -153,6 +153,18 @@
  </section>
 
  <section class="sensors" id="sensors" aria-labelledby="h-sensors" hidden>
+  <div class="group trust" id="trust">
+   <div class="group-head">
+    <h2>Position trust</h2>
+    <div class="trust-tools">
+     <label class="simslip" id="simslip-wrap" hidden>Simulated slip
+      <select id="simslip"><option value="0">None</option><option value="0.02">Belt creep 0.02 %</option><option value="0.08">Belt creep 0.08 %</option><option value="lost">Lose 0.5° on the next table move</option></select></label>
+     <button class="btn ghost" type="button" id="trust-check">Check on the switches</button>
+    </div>
+   </div>
+   <p class="small" id="trust-note"></p>
+   <div class="trust-grid" id="trust-grid"></div>
+  </div>
   <div class="group spectral">
    <div class="group-head"><h2 id="h-sensors">Spectral sensor</h2><button class="btn ghost" type="button" id="spec-read">Read once</button></div>
    <div class="bars" id="spec-bars" role="img" aria-label="No spectral reading yet"></div>

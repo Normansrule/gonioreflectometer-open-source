@@ -45,6 +45,8 @@ F(\theta)=F_0+(1-F_0)(1-\cos\theta)^5,\quad F_0=\left(\tfrac{\eta-1}{\eta+1}\rig
 f_r=(1-m)(1-F)\frac{\rho}{\pi}+\frac{D\,G_2\,F}{4\cos\theta_i\cos\theta_r},\quad D=\frac{\alpha^2}{\pi\left((h\cdot n)^2(\alpha^2-1)+1\right)^2},\quad h=\frac{\omega_i+\omega_r}{\lVert\omega_i+\omega_r\rVert}
 ```
 
+Energy: this model (the glTF metallic-roughness form, so a fit loads into a game engine unchanged) weights the diffuse term by $1-F(\omega\cdot h)$ per direction, not by the specular albedo. For bright dielectrics at grazing incidence it reflects more than it receives: computed directional albedo 1.01 at 60°, 1.08 at 80° for base colour 1.0, roughness 0.5 (0.82 and 0.89 for base colour 0.8). Fits are therefore scored on measured angles only, and `tests/test_brdf_tools.py` pins these numbers.
+
 **Sample orientation and angles** (Ansari-Asl et al., 2024)
 
 ``` math
@@ -86,6 +88,20 @@ g(Z_{ij})=\ln E_i+\ln\Delta t_j
 ``` math
 \Delta\theta_L=\frac{s\,p_{px}\,P}{f\,D_L}
 ```
+
+**Slip model (open-loop axes)** (Kalman, 1960)
+
+Stepper axes have no encoder: belt creep and lost steps move the true angle away from the controller’s count. Per axis, $d$ = true − controller angle, $s$ = creep per degree travelled, $a$ = degrees travelled in a move:
+
+``` math
+\begin{bmatrix}d\\ s\end{bmatrix}_{k+1}=\begin{bmatrix}1&a\\0&1\end{bmatrix}\begin{bmatrix}d\\ s\end{bmatrix}_k+w,\quad w\sim\mathcal N\!\left(0,\begin{bmatrix}q\,a&0\\0&q_s a\end{bmatrix}\right),\qquad y=d+v,\quad v\sim\mathcal N(0,r)
+```
+
+``` math
+K=\frac{P H^\top}{H P H^\top+r},\quad \hat x\leftarrow\hat x+K\,(y-\hat d),\quad P\leftarrow(I-KH)P,\qquad \text{due when } 2\sqrt{P_{dd}}>\text{budget}
+```
+
+$y$ is the home-switch edge found again (probe) compared with where it was after homing. Each command is corrected by $\hat d$ (feedforward); a due axis is re-homed, which resets $d$ to $0\pm\sqrt r$; $|y-\hat d|>4\sigma$ is reported as lost steps; $|y|>1^\circ$ stops the run. Travel allowed between references with the nominal values ($q=10^{-6}\,\deg^2/\deg$, creep spread 0.02 %, switch 0.02°, budget 0.1°): 217°, longer once the creep is measured. Details: [Calibration](Calibration.md).
 
 **Calibration: angle offset, camera response, absolute BRDF, lamp drift** (Ansari-Asl et al., 2024; Debevec & Malik, 1997; Hanrahan, 2016)
 
@@ -141,6 +157,8 @@ Debevec, P., & Malik, J. (1997). Recovering high dynamic range radiance maps fro
 Hanrahan, P. (2016). *Reflection models I: Ideal materials*.
 
 Heitz, E. (2014). Understanding the masking-shadowing function in microfacet-based BRDFs. *Journal of Computer Graphics Techniques*, *3*(2), 48–107. <https://jcgt.org/published/0003/02/03/paper.pdf>
+
+Kalman, R. E. (1960). A new approach to linear filtering and prediction problems. *Journal of Basic Engineering*, *82*(1), 35–45. <https://doi.org/10.1115/1.3662552>
 
 Laurentini, A. (1994). The visual hull concept for silhouette-based image understanding. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, *16*(2). <https://doi.org/10.1109/34.273735>
 

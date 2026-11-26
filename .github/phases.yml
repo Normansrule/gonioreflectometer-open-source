@@ -7,8 +7,8 @@ stages:
   safety: 'ABS gives off fumes (styrene) while printing: enclosed printer, door shut, in a ventilated room you don''t sleep in; open the door only after it cools.'
 - folder: 01-power
   title: Power
-  safety: 'Only 24 V inside the machine: the wall adapter stays outside it. Before touching any screw terminal: press the e-stop and pull the adapter out of the wall. Wire everything with the adapter
-    unplugged; it goes into the wall last.'
+  safety: 'Only 24 V inside the machine: the wall adapter stays outside it. Before touching any screw terminal: press the e-stop and pull the adapter out of the wall. Wire everything with the adapter unplugged;
+    it goes into the wall last.'
 - folder: 02-controller
   title: Controller and buttons
   safety: Never plug or unplug motors with 24 V on.
@@ -22,7 +22,7 @@ stages:
   safety: 'Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.'
 - folder: 06-camera-light
   title: Camera and light
-  safety: "Don't stare into the lamp. Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter."
+  safety: 'Don''t stare into the lamp. Before touching a motor plug or a screw terminal: press the e-stop and unplug the adapter.'
 - folder: 07-calibrate
   title: Calibrate → game material
 - folder: 08-tilt
@@ -47,6 +47,8 @@ stages:
   title: Release
 - folder: 17-upgrades
   title: Upgrades (optional)
+- folder: 18-xr-training
+  title: AR and VR training tool
 milestones:
 - id: M01
   stage: 00-plan
@@ -293,8 +295,8 @@ milestones:
     - Stage 01 in `PARTS.md` has no `agreed` or `suggested` parts left; *Paid so far* went up.
     - Tools TLS-02 to TLS-06 are `have` or `ordered`.
     fail:
-    - 'Part out of stock: its *Must meet* line says what a substitute needs (adapter: regulated 24 V ≥ 3 A with short-circuit protection and a screw-terminal jack; e-stop: latching, NC rated for DC at ≥ 24 V / 3 A where the listing gives a DC rating); set `swap`
-      + `note:`, or add one with `python tools/new.py part …`.'
+    - 'Part out of stock: its *Must meet* line says what a substitute needs (adapter: regulated 24 V ≥ 3 A with short-circuit protection and a screw-terminal jack; e-stop: latching, NC rated for DC at ≥
+      24 V / 3 A where the listing gives a DC rating); set `swap` + `note:`, or add one with `python tools/new.py part …`.'
     record: Commit the dated BOM.
   - id: M04.2
     title: Check parts
@@ -363,8 +365,9 @@ milestones:
     - README → Wiring → 1, 2 (or `docs/wiring.html`)
     do:
     - Adapter **unplugged** from the wall, round plug in the jack. E-stop pressed.
-    - 'Cut list (measure your own route along the deck edge first): red 10 cm (jack → NC 1) and one run NC 2 → tray (≈ 1 m); black one run jack → tray (≈ 1 m). Keep the rest: 10 cm offcuts for M08.3 and M10.3, 15 cm leads for the lamp (M18.1).'
-    - 'Jack `+` → red wire → e-stop NC terminal 1. Strip 8 mm, twist, under either gap of the terminal screw, tighten, tug.'
+    - 'Cut list (measure your own route along the deck edge first): red 10 cm (jack → NC 1) and one run NC 2 → tray (≈ 1 m); black one run jack → tray (≈ 1 m). Keep the rest: 10 cm offcuts for M08.3 and
+      M10.3, 15 cm leads for the lamp (M18.1).'
+    - Jack `+` → red wire → e-stop NC terminal 1. Strip 8 mm, twist, under either gap of the terminal screw, tighten, tug.
     - 'E-stop NC terminal 2 → red wire (the whole run to the tray) → a 3-way lever connector: MOT+, slot 1. Mark it with tape. (M14.1 puts the limit switch in place of this wire.)'
     - 'Jack `−` → black wire (the whole run to the tray) → a second 3-way lever connector: MOT−, slot 1. Mark it.'
     - 'Tug every wire: none slips out. Lid back on the e-stop box.'
@@ -483,7 +486,8 @@ milestones:
     - CTL-03 USB-C cable
     - Windows PowerShell (admin)
     do:
-    - 'Plug the SKR Pico into the laptop by USB-C (no motor power needed: its schematic feeds USB 5 V into the logic supply through a diode; if no LED lights, check the USB-C cable carries data; the board gets motor power only in M08.3).'
+    - 'Plug the SKR Pico into the laptop by USB-C (no motor power needed: its schematic feeds USB 5 V into the logic supply through a diode; if no LED lights, check the USB-C cable carries data; the board
+      gets motor power only in M08.3).'
     - 'PowerShell (admin): `usbipd list` (the board shows as 2e8a:…); `usbipd bind --busid <busid>`; `usbipd attach --wsl --busid <busid>`.'
     - 'Ubuntu: `sudo usermod -aG dialout $USER && newgrp dialout`; `ls /dev/ttyACM*`.'
     verify:
@@ -521,7 +525,8 @@ milestones:
     - 2 × 10 cm PWR-15 offcuts (red, black)
     - tape flag on the shaft
     do:
-    - 'E-stop pressed, adapter unplugged. 10 cm red offcut from MOT+ slot 3 → SKR Pico POWER `+`, 10 cm black from MOT− slot 3 → POWER `−` (screw terminal). Motor → the X socket. Adapter in, release the e-stop.'
+    - E-stop pressed, adapter unplugged. 10 cm red offcut from MOT+ slot 3 → SKR Pico POWER `+`, 10 cm black from MOT− slot 3 → POWER `−` (screw terminal). Motor → the X socket. Adapter in, release the
+      e-stop.
     - '`opengonio send ''M122 I''` (drivers configured now that motor power is on).'
     - '`opengonio send ''$20=0'' ''$X'' ''G91'' ''G1 X10 F600'' ''G1 X-10 F600'' ''G90''` (soft limits off and `$X` unlock: unhomed bench test only).'
     - '`opengonio send ''$X'' ''G91'' ''G1 X360 F300'' ''G90''`; press the e-stop halfway.'
@@ -606,7 +611,8 @@ milestones:
     - PWR-10 opto module
     - TLS-09 double-sided foam tape
     do:
-    - 'Measure the ESP32-S3 board first: the tray''s frame fits Espressif''s 62.7 × 25.4 mm board. A clone that is longer (up to ~69 × 26): set `ESP` in `tools/cad/parts.py`, `make parts`. Then print `CTL-10a_button_panel.stl`, `CTL-10b_controller_tray.stl`.'
+    - 'Measure the ESP32-S3 board first: the tray''s frame fits Espressif''s 62.7 × 25.4 mm board. A clone that is longer (up to ~69 × 26): set `ESP` in `tools/cad/parts.py`, `make parts`. Then print `CTL-10a_button_panel.stl`,
+      `CTL-10b_controller_tray.stl`.'
     - Drive M2 × 8 into the 4 SKR Pico standoffs once; mount the board (holes 58 × 49 mm), USB-C toward the tray edge, a washer under each head.
     - 'ESP32-S3 (flashed in M09.1): a square of foam tape on the pedestal, then the board upside down (module can on the tape, header pins up), USB end at the opening.'
     - 'Opto module (PWR-10) into the long frame, double-sided tape under it, terminals up. The short frame is for the LED driver (M18.1). Keypads: peel and stick into the panel recesses, tails through the
@@ -646,9 +652,10 @@ milestones:
     - 2 × short PWR-15 offcuts (red, black)
     - M-F jumpers
     do:
-    - 'E-stop pressed, adapter unplugged. Short red offcut from MOT+ slot 2 → the opto module''s IN+ screw; short black from MOT− slot 2 → IN−. 8 mm under the module screws, 11 mm in the lever connectors.'
+    - E-stop pressed, adapter unplugged. Short red offcut from MOT+ slot 2 → the opto module's IN+ screw; short black from MOT− slot 2 → IN−. 8 mm under the module screws, 11 mm in the lever connectors.
     - 'Output side: module VCC ← ESP32-S3 J1-1 (3V3), GND ← J3-21 (GND), OUT → J1-10 (GPIO 17) (female jumper ends on the hub pins; bare ends under the module screws, or female ends on its pins).'
-    - 'Motor holding (`opengonio home`, then wait): measure SKR Pico POWER (T4), and DC volts from jack `+` to SKR Pico POWER `+` (T12, the drop along the wires and switches). Press the e-stop: watch the hub output and the panel; release; `opengonio home`.'
+    - 'Motor holding (`opengonio home`, then wait): measure SKR Pico POWER (T4), and DC volts from jack `+` to SKR Pico POWER `+` (T12, the drop along the wires and switches). Press the e-stop: watch the
+      hub output and the panel; release; `opengonio home`.'
     verify:
     - T4 ≥ 22.5 V; T12 ≤ 0.3 V.
     - Module input LED on with motor power on; hub prints `POWER 0` on e-stop, `POWER 1` after release, 20 times out of 20 (T7); moves refused until HOME (C7).
@@ -764,9 +771,11 @@ milestones:
     - controller tray
     - 8 × M2 × 12 (FRM-06)
     do:
-    - 'Power plate: 4 × M2 × 12 through its counterbored holes into the SE tile''s pilots (centre 220, −220), jack socket toward the +X edge. Lift the e-stop box off its tape to reach the two holes under it, then press it back.'
+    - 'Power plate: 4 × M2 × 12 through its counterbored holes into the SE tile''s pilots (centre 220, −220), jack socket toward the +X edge. Lift the e-stop box off its tape to reach the two holes under
+      it, then press it back.'
     - 'Controller tray: 4 × M2 × 12 through its corner bosses into the NW tile''s pilots (centre −200, 220).'
-    - Red and black runs along the deck edge to MOT+ / MOT− on the tray; take the red run up the +X side, past the ring at about 17° (the limit switch is spliced into it there in M14.1), and leave 10 cm of slack there.
+    - Red and black runs along the deck edge to MOT+ / MOT− on the tray; take the red run up the +X side, past the ring at about 17° (the limit switch is spliced into it there in M14.1), and leave 10 cm
+      of slack there.
     verify:
     - '`opengonio status` still answers; e-stop still cuts (repeat T5).'
     record: Photo `phases/03-frame/frame.jpg`; commit.
@@ -879,8 +888,10 @@ milestones:
     - flag on the arm
     do:
     - 'Mount the TCST2103 so the arm flag cuts it at 20°: M2 × 8 + washer through one module hole into the nearest spare deck pilot (40 mm grid), double-sided tape under it (lead as in M10.2).'
-    - 'Limit switch (LAR-06) on the deck at 17° (3° past home, outside the 20–324° travel), lever toward the arm (double-sided tape). Find its wires with the meter: COM–NC beeps with the lever untouched and opens when pressed (black = COM, grey = NC, blue = NO on the units bought).'
-    - 'Press the e-stop, unplug the adapter. Splice the switch into the red run (e-stop NC 2 → MOT+ slot 1), so the length of its own leads doesn''t matter: lay the run past the switch and cut it where both the black and the grey lead reach it with slack. Strip 11 mm on both cut ends and on the black and grey leads.'
+    - 'Limit switch (LAR-06) on the deck at 17° (3° past home, outside the 20–324° travel), lever toward the arm (double-sided tape). Find its wires with the meter: COM–NC beeps with the lever untouched
+      and opens when pressed (black = COM, grey = NC, blue = NO on the units bought).'
+    - 'Press the e-stop, unplug the adapter. Splice the switch into the red run (e-stop NC 2 → MOT+ slot 1), so the length of its own leads doesn''t matter: lay the run past the switch and cut it where
+      both the black and the grey lead reach it with slack. Strip 11 mm on both cut ends and on the black and grey leads.'
     - 'One 221-2401: red from the e-stop + black (COM). A second: grey (NC) + red on to the tray. Blue (NO) alone in the third. Tug each; tape the connectors to the deck beside the switch.'
     - 'Check before power (adapter unplugged, e-stop released): continuity e-stop NC 2 → MOT+ beeps; press the lever: it opens (proves the switch is in the + line). Ω MOT+ to MOT−: > 10 kΩ or OL (T1).'
     - Adapter in, release the e-stop.
@@ -947,7 +958,9 @@ milestones:
     needs:
     - stage-05 parts `have` in `PARTS.md`
     do:
-    - Print `TBL-07a_table_drum`, 2 × `TBL-07b_home_flag` (tilt and spin), `TBL-07c_table_motor_bracket`, `TBL-07d_table_post`, `TBL-07f_spacers`, `TBL-07g_endstop_riser` (foot on the bed), `TBL-07h_table_flag` (as exported: bridge on the bed, fin up).
+    - ? Print `TBL-07a_table_drum`, 2 × `TBL-07b_home_flag` (tilt and spin), `TBL-07c_table_motor_bracket`, `TBL-07d_table_post`, `TBL-07f_spacers`, `TBL-07g_endstop_riser` (foot on the bed), `TBL-07h_table_flag`
+        (as exported
+      : bridge on the bed, fin up).
     verify:
     - A 608 presses into each drum seat by thumb and stays.
     - The M8 bolt head drops into the post's hex pocket from below and can't turn.
@@ -1003,11 +1016,13 @@ milestones:
     needs:
     - TBL-04 endstop
     - TBL-07g riser, TBL-07h flag
-    - 3 × M2 × 10 + washers, 2 × M2 × 6, 2 × M2 × 8
+    - 3 × M2 × 10 + washers, 2 × M2 × 8, 2 × M2 × 8
     - CTL-06 leads (as M10.2)
     do:
-    - 'Riser on the three deck pilots at x = 40 (y = −40, 0, +40; +X side, inside the lazy Susan opening), 3 × M2 × 10 + washer, post outward. Endstop on its pad: slot over the pad''s middle, header end outward, 2 × M2 × 6 self-tap.'
-    - 'Flag on the drum top''s two flag holes (the close pair outside the four yoke pilots), 2 × M2 × 8 self-tap, fin hanging down outside the drum. Turn the table by hand: at −180° (fin on +X) the fin passes through the slot without touching either side.'
+    - 'Riser on the three deck pilots at x = 40 (y = −40, 0, +40; +X side, inside the lazy Susan opening), 3 × M2 × 10 + washer, post outward. Endstop on its pad: slot over the pad''s middle, header end
+      outward, 2 × M2 × 8 self-tap.'
+    - 'Flag on the drum top''s two flag holes (the close pair outside the four yoke pilots), 2 × M2 × 8 self-tap, fin hanging down outside the drum. Turn the table by hand: at −180° (fin on +X) the fin
+      passes through the slot without touching either side.'
     - E-stop pressed. Lead into the SKR Pico Y-STOP socket, along the riser and the deck.
     - '`installed_phase: 5`; `opengonio home` ten times.'
     verify:
@@ -1154,10 +1169,10 @@ milestones:
     - Holder face-down in the body's round seat, wire entries toward the lead groove (the side away from the clamp), leads along the groove. COB into the holder's square seat, light-emitting face down through
       the window. Thermal tape (LSR-04) on the COB's back; heatsink on top, fins out. Cap on with 4 × M2 × 12, leads through its slot; tighten evenly until the heatsink no longer turns.
     - Lamp clamp onto the arm bar's outer pilot (M2 × 16), aperture facing the zero point.
-    - 'E-stop pressed, adapter unplugged (HE `+` carries motor-power voltage). Driver (LSR-02, NLDD-350HW) into the short frame on the controller tray (double-sided tape). Read which lead colour is which on its label.
-      +Vin lead (bare 5 mm end) under the SKR Pico HE `+` screw (terminal marked 12/24V); −Vin lead under HE `−` (terminal marked IO23; output port from M08.2, normally `M62 P4`).'
-    - 'Driver +Vo / −Vo leads → one lever connector each on the tray → two chains of 5 male–female jumpers along the arm (slack for 20–324°) → lever connectors at the lamp → the holder''s red (+) / black (−)
-      lead. Jumper ends into lever connectors: plug cut off, stripped 11 mm, folded double. DIM lead alone in a 2-way lever connector (open = on; never tie it to −Vin).'
+    - E-stop pressed, adapter unplugged (HE `+` carries motor-power voltage). Driver (LSR-02, NLDD-350HW) into the short frame on the controller tray (double-sided tape). Read which lead colour is which
+      on its label. +Vin lead (bare 5 mm end) under the SKR Pico HE `+` screw (terminal marked 12/24V); −Vin lead under HE `−` (terminal marked IO23; output port from M08.2, normally `M62 P4`).
+    - 'Driver +Vo / −Vo leads → one lever connector each on the tray → two chains of 5 male–female jumpers along the arm (slack for 20–324°) → lever connectors at the lamp → the holder''s red (+) / black
+      (−) lead. Jumper ends into lever connectors: plug cut off, stripped 11 mm, folded double. DIM lead alone in a 2-way lever connector (open = on; never tie it to −Vin).'
     verify:
     - Each lead holds when tugged (poke-in locked, levers closed).
     - 'Polarity checked with the meter before power: +Vo lead → holder red lead beeps.'
@@ -1215,6 +1230,25 @@ milestones:
     - 'Same sign every time: table zero offset — fixed in M22.2.'
     - 'No clear peak: mirror not facing the camera at M3 = 0; reseat the holder.'
     record: Three errors in phases/06-camera-light/design.md → Results; commit.
+  - id: M19.2
+    title: Slip check
+    time: 30 min
+    needs:
+    - M19.1 passed
+    - grblHAL controller (the probe reads the home-switch pins)
+    do:
+    - '`opengonio slip M4`, then `opengonio slip M3` (5 rounds each: 360° of travel, then the home switch is found again).'
+    - Copy `creep_pct` and the spread of `measured_deg` into `slip:` in `software/config/machine.yaml` (`creep_sd` = 2 × the larger |creep| ÷ 100; `switch_sd_deg` = spread with the belt off load, at least
+      0.02); `make build`.
+    - 'Set `slip.mode: probe`.'
+    verify:
+    - No round reports `"event"`; the command exits 0.
+    - '`measured_deg` of every round within ±0.1.'
+    fail:
+    - '`step loss`: tension the belt, tighten the pulley set screw, lower that axis''s acceleration in `tools/grblhal_settings.py` (`make build`, `bash scripts/controller.sh settings`); repeat.'
+    - '`switch not found`: the probe search is `pulloff_deg + max_correct_deg`; check `$27` = 2 and the flag still enters the switch.'
+    - 'FluidNC board: keep `slip.mode: rehome` (no probe); skip the measurement and note it in design.md.'
+    record: Both JSON reports in phases/06-camera-light/design.md → Results; commit.
 - id: M20
   stage: 06-camera-light
   title: First reflectance curves
@@ -1429,7 +1463,7 @@ milestones:
     needs:
     - stage-08 and stage-09 parts `have` in `PARTS.md`
     do:
-    - Print `TLT-07a_tilt_yoke.stl` (upright, 184 mm tall), `TLT-07b_pulley_100T.stl`, `TLT-07c_tilt_cradle.stl`, `SPN-07a_spin_platter.stl` (top face down).
+    - Print `TLT-07a_tilt_yoke.stl` (upright, 184 mm tall), `TLT-07b_pulley_60T.stl`, `TLT-07c_tilt_cradle.stl`, `SPN-07a_spin_platter.stl` (top face down).
     verify:
     - A 608 presses into each arm seat; an M8 nut drops into each cradle trap and can't turn.
     record: Tick the boxes; `make done id=M25.1`.
@@ -1442,14 +1476,14 @@ milestones:
     - spacers (TBL-07f)
     - SPN-01 pancake motor
     - 4 × M3 × 8 (FRM-07), 4 × M2 × 12
-    - M2 × 6 + M2 nut
+    - M2 × 8 + M2 nut
     - TLS-10 spanner
     do:
-    - 'Pancake motor under the cradle floor (shaft up through it, 4 × M3 × 8). Platter on the shaft: M2 nut in its slot, M2 × 6 through the hub onto the D flat; platter top level with the stub-bolt axis
+    - 'Pancake motor under the cradle floor (shaft up through it, 4 × M3 × 8). Platter on the shaft: M2 nut in its slot, M2 × 8 through the hub onto the D flat; platter top level with the stub-bolt axis
       (the end blocks stand 10 mm higher).'
     - 'Yoke on the drum (4 × M2 × 12 self-tap into the OG-40 pilots) with its arms along ±Y: at M3 = 0 the tilt axis is square to the camera direction (+X) and the flag holes on the drum stay clear. The
       pulley-side arm is +Y.'
-    - 'Pulley side: bolt through 100T pulley → 1 mm shim → 608 (outer face of the arm) → 6.8 mm spacer → cradle nut. Other side: the same with the 9.4 mm spacer instead of the pulley. Hold each bolt head
+    - 'Pulley side: bolt through 60T pulley → 1 mm shim → 608 (outer face of the arm) → 6.8 mm spacer → cradle nut. Other side: the same with the 9.4 mm spacer instead of the pulley. Hold each bolt head
       with the spanner; snug, not tight.'
     verify:
     - Cradle tilts ±90° by hand, no play you can feel at the platter edge.
@@ -1462,15 +1496,15 @@ milestones:
     time: 45 min
     needs:
     - TLT-01 motor
-    - TLT-02 280 mm belt
+    - TLT-02 232 mm belt (second one from the TBL-02 pack)
     - TLT-03 pulley
     - TLT-04 endstop
     - TBL-07b flag
-    - 4 × M3 × 16 (FRM-07; through the 12 mm arm into the motor)
+    - 4 × M3 × 8 (FRM-07; in the counterbored slots of the motor pad)
     do:
     - 'E-stop pressed: motor cable into the SKR Pico Z1 socket first, along the yoke arm with slack for the table''s ±180°.'
-    - Motor on the inner face of the pulley-side arm above the axis, shaft out through the arm slot (4 × M3 × 16 in the slots; the arm is 12 mm thick); 20T pulley outside, level with the 100T; belt on; slide the motor up to tension
-      (~3 mm deflection); tighten.
+    - Motor on the inner face of the pulley-side arm above the axis, shaft out through the arm slot (4 × M3 × 8 in the counterbored slots of the 46 mm motor pad); 20T pulley outside, level with the 60T;
+      belt on; slide the motor up to tension (~3 mm deflection); tighten.
     - Flag on a cradle end block at −90°; endstop on the arm; lead into the SKR Pico Z-STOP socket (CTL-06, as M10.2).
     verify:
     - '`?` shows `Pn:Z` with the flag in the slot.'
@@ -1566,8 +1600,8 @@ milestones:
       different pairs read open). Tape-label them pair 1 and pair 2.'
     - 'Spare 5-pack cable: cut off the 6-pin (motor-end) plug, strip 11 mm of each of its 4 wires, twist the strands. At the 4-pin XH plug, note which wire colour sits in pins 1 + 4 (board labels 2B, 2A:
       one driver coil) and 2 + 3 (1B, 1A: the other), from the SKR Pico schematic.'
-    - '3 × WAGO 221-412 + 1 × 221-415 (one motor lead and one cable wire in each): pair 1''s two leads to the wires of plug pins 1 and 4; pair 2''s two leads to the wires of pins 2 and 3. Tug-test each; tape the four connectors together. Check:
-      meter at the plug, 1–4 and 2–3 read a few ohms, 1–2 open. Table: README → Wiring → 3.'
+    - '3 × WAGO 221-412 + 1 × 221-415 (one motor lead and one cable wire in each): pair 1''s two leads to the wires of plug pins 1 and 4; pair 2''s two leads to the wires of pins 2 and 3. Tug-test each;
+      tape the four connectors together. Check: meter at the plug, 1–4 and 2–3 read a few ohms, 1–2 open. Table: README → Wiring → 3.'
     - E-stop pressed. XH plug into the SKR Pico E socket (route the cable along the yoke arm with slack for ±90° tilt and ±180° table).
     - Flag on the platter rim (2 × M2 × 8), endstop on the cradle.
     - 'Endstop lead into E0-STOP (3-pin: signal, GND, 5 V, as M10.2): grblHAL uses it as the A limit.'
@@ -1661,7 +1695,8 @@ milestones:
     needs:
     - SPC-02 cable
     do:
-    - 'SPC-02 cable: SDA (blue) → ESP32-S3 J3-4 (GPIO 1), SCL (yellow) → J3-5 (GPIO 2), VIN (red) → 3V3 lever connector (fed from J1-2), GND (black) → sensor GND lever connector (fed from J3-22) (same bus as the OLED: README → Wiring → 8).'
+    - 'SPC-02 cable: SDA (blue) → ESP32-S3 J3-4 (GPIO 1), SCL (yellow) → J3-5 (GPIO 2), VIN (red) → 3V3 lever connector (fed from J1-2), GND (black) → sensor GND lever connector (fed from J3-22) (same bus
+      as the OLED: README → Wiring → 8).'
     - '`bash scripts/hub.sh`; `python -m serial.tools.miniterm /dev/ttyACM1 115200` (the hub''s port); type `SPEC?`.'
     verify:
     - Reply `SPEC` + 10 numbers; covering the tube drops all to < 5 % of uncovered.
@@ -2102,8 +2137,8 @@ milestones:
     - STA-05 OLED
     - STA-06 jumpers
     do:
-    - 'OLED SDA → ESP32-S3 J3-4 (GPIO 1), SCL → J3-5 (GPIO 2), VIN → 3V3 lever connector (fed from J1-2), GND → sensor GND lever connector (fed from J3-22). With the AS7341 fitted: plug the OLED into the sensor''s second STEMMA QT socket instead (README → Wiring →
-      8).'
+    - 'OLED SDA → ESP32-S3 J3-4 (GPIO 1), SCL → J3-5 (GPIO 2), VIN → 3V3 lever connector (fed from J1-2), GND → sensor GND lever connector (fed from J3-22). With the AS7341 fitted: plug the OLED into the
+      sensor''s second STEMMA QT socket instead (README → Wiring → 8).'
     - '`bash scripts/hub.sh`'
     verify:
     - Screen shows `OpenGonio ready` and the button names.
@@ -2123,7 +2158,8 @@ milestones:
     - Print `STA-10a_screen_stand` and `STA-10b_screen_bezel`. Before printing, lay the module on the bezel drawing (50 mm window, 4 mm at each short end) and check the display sits inside the window.
     - 'Module into the stand''s pocket, display outward, cable socket through the window behind it; bezel on, 4 × M2 × 8 snug (it presses only the two short ends: stop when the module no longer moves).'
     - Stand onto its 4 deck pilots on the NW tile beside the controller tray (M2 × 12), face toward the laptop side; cable out of the open back to the hub.
-    - 'Wire it with the hub add-ons walkthrough (docs/addons.html, README → Wiring → 8): VCC, RST, BL to the 3V3 lever connector; GND to the sensor GND lever connector; CLK J3-6, DIN J3-7, DC J1-11, CS J3-10.'
+    - 'Wire it with the hub add-ons walkthrough (docs/addons.html, README → Wiring → 8): VCC, RST, BL to the 3V3 lever connector; GND to the sensor GND lever connector; CLK J3-6, DIN J3-7, DC J1-11, CS
+      J3-10.'
     - '`bash scripts/hub.sh send "SCREEN ON"` (the hub restarts), then `bash scripts/hub.sh send "SHOW Bench test|line two"`.'
     verify:
     - Screen shows the status lines, and `Bench test` / `line two` after SHOW.
@@ -2159,8 +2195,8 @@ milestones:
     - cut jumpers
     do:
     - 'Buck input: adapter unplugged first. A thin red / black pair under the jack''s `+` / `−` screws beside the wires already there (before the e-stop, so the Pi stays on when the motors stop).'
-    - 'Set the output **before anything is on it**: nothing on the buck output, adapter in, meter (DC volts) on the output terminals; turn the trim screw until it reads 5.1 V (it can start near 24 V: many turns).
-      Unplug the adapter.'
+    - 'Set the output **before anything is on it**: nothing on the buck output, adapter in, meter (DC volts) on the output terminals; turn the trim screw until it reads 5.1 V (it can start near 24 V: many
+      turns). Unplug the adapter.'
     - A powered USB hub on the Pi's OTG port (STA-04) carries the camera(s) and the SKR Pico's USB-C cable.
     - 'Wire buck output, UART and hub power per README → Wiring → 9: buck 5.1 V → Pi pin 2, buck − → Pi pin 14; Pi pin 8 (GPIO14 TX) → hub J3-16 (GPIO 48), Pi pin 10 (GPIO15 RX) ← hub J3-17 (GPIO 47), Pi
       pin 6 → hub J3-1 (GND), Pi pin 4 (5V) → hub J1-21 (5V); never with the hub''s USB in the laptop at the same time.'
@@ -2299,6 +2335,75 @@ milestones:
     verify:
     - GitHub → Releases shows `v0.16` with the 3D zip.
     record: —
+- id: M50
+  stage: 16-release
+  title: Publish
+  goal: Preprint, peer-reviewed hardware article and software paper, each pointing to an archived copy with a DOI.
+  weeks: 4
+  steps:
+  - id: M50.1
+    title: Archive with a DOI
+    time: 30 min
+    needs:
+    - public repo (M45.1)
+    - zenodo.org account (sign in with GitHub)
+    do:
+    - 'Zenodo → GitHub: switch the repository on; then `make release s=16` (M45.3) makes Zenodo archive that release.'
+    - Copy the DOI into `paper/submission.yaml` → `archive.zenodo_doi`; set `author.orcid`.
+    verify:
+    - '`make paper-check`: no "archive DOI" blocker; the specifications table shows the DOI.'
+    record: DOI in `paper/submission.yaml`; commit.
+  - id: M50.2
+    title: Fill the validation table
+    time: 1 h
+    needs:
+    - records of M18.3, M19.1, M20.1, M21.2, M22.1, M22.2, M23.2, M23.3, M24.2, M24.3, M25.4, M26.3, M35.2, M44.3
+    do:
+    - For each row of `paper/results.yaml`, copy the measured value from that step's record (design.md → Results). Never type a value that was not measured.
+    - Replace the red [TBD]s in `paper/opengonio.tex` (abstract numbers, application figure, acknowledgements, email, AI declaration scope).
+    verify:
+    - '`make paper-check` prints "Validation: 14 of 14 measured" and no [TBD] blocker.'
+    - A second reader checks every number in Table 3 against its step record.
+    fail:
+    - 'A row fails its criterion: report it as measured and say why in "Capabilities and limitations"; do not drop the row.'
+    record: Commit `paper/results.yaml` and `paper/opengonio.tex`.
+  - id: M50.3
+    title: Preprint on arXiv
+    time: 1 h
+    wait: endorsement, moderation 1–3 days
+    needs:
+    - arXiv account; endorser for physics.ins-det if you have no earlier arXiv paper there
+    do:
+    - '`make paper-submit`; upload `paper/build/submission/opengonio-source.zip`; category physics.ins-det (cross-list cs.GR).'
+    verify:
+    - arXiv's compiled PDF matches `paper/build/submission/opengonio-hardwarex.pdf` (references resolved, tables present).
+    record: arXiv ID in phases/16-release/design.md → Results; commit.
+  - id: M50.4
+    title: Submit to HardwareX
+    time: 2 h
+    wait: review 1–3 months
+    needs:
+    - Editorial Manager account (HardwareX)
+    do:
+    - Re-read the current HardwareX guide for authors against `paper/submission.yaml`; update it if the guide changed.
+    - Upload `opengonio-source.zip` (LaTeX) with `opengonio-hardwarex.pdf` and `graphical_abstract.png` from `paper/build/submission/`; give the Zenodo DOI where the form asks for data/code availability.
+    verify:
+    - Submission confirmation e-mail with a manuscript number.
+    fail:
+    - 'Desk rejection for missing validation: finish M50.2 rows the editor names, then resubmit.'
+    record: Manuscript number and dates in phases/16-release/design.md → Results; commit.
+  - id: M50.5
+    title: Submit the software paper to JOSS
+    time: 1 h
+    wait: review in a public GitHub issue
+    needs:
+    - real measurements published (M50.2) for the research impact statement
+    do:
+    - Write the "Research impact statement" in `paper/joss/paper.md` from real results; preview it (command printed by `make paper-submit`).
+    - Submit at joss.theoj.org with the repository URL and the Zenodo DOI.
+    verify:
+    - '`make paper-check`: no joss blocker; JOSS opens a pre-review issue.'
+    record: JOSS review issue link in phases/16-release/design.md → Results; commit.
 - id: M46
   stage: 17-upgrades
   title: Adaptive sampling
@@ -2365,7 +2470,8 @@ milestones:
     - INA219 (BAT-05) + STEMMA QT cable (BAT-05b)
     do:
     - 'Power off: adapter unplugged. Move the red lead that runs from the jack `+` to the e-stop: jack `+` → INA219 `VIN+`, INA219 `VIN−` → e-stop (lever connector). Now it reads every source.'
-    - 'Chain it on the hub''s first I²C pair: hub → AS7341 (SPC-02) → INA219 (BAT-05b) → OLED. Female jumper from a hub GND pin to the 24 V `−` lever connector (the INA219 reads bus volts against the hub ground).'
+    - 'Chain it on the hub''s first I²C pair: hub → AS7341 (SPC-02) → INA219 (BAT-05b) → OLED. Female jumper from a hub GND pin to the 24 V `−` lever connector (the INA219 reads bus volts against the hub
+      ground).'
     - '`bash scripts/hub.sh` (copies the new firmware); `python -m serial.tools.miniterm /dev/ttyACM1 115200` (the hub''s port); type `SOURCE WALL`, then `BATT?`.'
     verify:
     - '`BATT WALL` reads 24.0 ± 0.3 V, about 0.03 A with the motors asleep, `OK` (design.md → Battery power).'
@@ -2379,7 +2485,7 @@ milestones:
     do:
     - Set the trigger's DIP switch to 20 V; plug in the bank; its display must read 20 V (not 5 V).
     - 'Plug lead into the trigger''s screw terminals: red `+`, black `−`. Meter on the plug (T-B1): centre `+`, 20.0 V.'
-    - 'E-stop pressed. Adapter out, plug lead into the jack, then release the e-stop. Send `SOURCE USBC <bank Wh>` (the Wh printed on the bank).'
+    - E-stop pressed. Adapter out, plug lead into the jack, then release the e-stop. Send `SOURCE USBC <bank Wh>` (the Wh printed on the bank).
     verify:
     - Home, then one mirror sweep finishes; `BATT USBC` reads 19.5–20.5 V throughout.
     record: Bank model, Wh, and the sweep's Wh used in design.md → Results.
@@ -2395,7 +2501,7 @@ milestones:
     - 'Fuse holder on the pack `+`. Lever connectors: node `+` = fuse lead + module out `+` + plug lead `+`; node `−` = pack `−` + module out `−` + plug lead `−`. Never use the pack''s own 25.2 V charger.'
     - Charge until the module's current falls below 0.1 A at 24.0 V. Then e-stop pressed, plug lead into the jack, release. Send `SOURCE PACK`.
     verify:
-    - 'Charging stops at 24.0 V (T-B3); `BATT PACK` reads 23.8–24.1 V full; a mirror sweep runs with USB-C both plugged in and unplugged.'
+    - Charging stops at 24.0 V (T-B3); `BATT PACK` reads 23.8–24.1 V full; a mirror sweep runs with USB-C both plugged in and unplugged.
     record: Charge time from empty, pack volts full and after one sweep, in design.md → Results.
   - id: M49.4
     title: Runtime and warnings
@@ -2408,3 +2514,182 @@ milestones:
     verify:
     - CRIT at 20.3–20.5 V; the run paused; hours and Wh replace the estimates in design.md.
     record: Hours, Wh used and the volts curve (from `BATT?` every minute) in design.md → Results.
+- id: M51
+  stage: 18-xr-training
+  title: Trainer in the page
+  goal: The five lessons run in a desktop browser and match the machine's kinematics and BRDF model.
+  weeks: 0
+  steps:
+  - id: M51.1
+    title: Run the trainer
+    time: 15 min
+    needs:
+    - laptop, browser
+    - Node.js (for the test)
+    do:
+    - Open `docs/xr.html` (or the website → AR and VR). Step through lessons 1–5; move M4, M3, M2, M1 and the roughness.
+    - '`make test` (runs `software/tests/test_xr.py`: the page''s JavaScript against `fit.py` and `kinematics.py`).'
+    verify:
+    - 'Lesson 1: the M4 arc is solid from 20° to 324° and red across the gap at the camera.'
+    - 'Lesson 3 at M3 = 45°, M2 = 0°, M4 = 90°: θi = θr = 45°, camera 0° off the mirror direction.'
+    - '`make test` passes with test_xr not skipped.'
+    fail:
+    - 'Blank view: the browser has no WebGL; try another browser.'
+    - 'test_xr skipped: install Node.js.'
+    record: Browser and version in phases/18-xr-training/design.md → Results; commit.
+- id: M52
+  stage: 18-xr-training
+  title: Headset bring-up
+  goal: The same page starts an AR session on HoloLens 2 and on Meta Quest, aligned to the real machine.
+  weeks: 1
+  steps:
+  - id: M52.1
+    title: Serve the page to the headsets
+    time: 30 min
+    needs:
+    - HoloLens 2 and Meta Quest on the lab network (lab equipment, not in the parts list)
+    - website published (HTTPS), or `opengonio app --lan`
+    do:
+    - 'WebXR needs HTTPS: open the published website''s `xr.html` in each headset''s browser (Edge on HoloLens 2, Browser on Quest).'
+    - 'Note for each headset: operating system version, browser version, whether Enter AR and Enter VR are enabled.'
+    verify:
+    - Both headsets load the page and show the 3D view.
+    fail:
+    - 'Enter AR greyed on HoloLens 2: record the Edge version; this is a known risk [X6]. Go to M54.3 (native build).'
+    record: Versions and button states in phases/18-xr-training/design.md → Results; commit.
+  - id: M52.2
+    title: AR session and alignment
+    time: 1 h
+    needs:
+    - machine built to stage 06 (arm, table, camera in place)
+    - 'e-stop pressed: nothing moves during training'
+    do:
+    - Enter AR. Pinch at the centre of the sample, then at the camera lens.
+    - Step through the five lessons with a pinch. End the session; press Download log.
+    - Repeat three times per headset, from a different standing position each time.
+    verify:
+    - Log `alignment.residual_mm` within ± 15 mm on all three runs (design target, not yet measured).
+    - The red stops of the M4 arc sit at the 20° and 324° marks of the ring scale, by eye, within one scale division.
+    fail:
+    - 'Overlay tilted: the bench is not level, or the second pinch was not at the lens.'
+    - 'No log: the session was closed by taking the headset off; end it from the menu.'
+    record: The six JSON logs in `phases/18-xr-training/logs/`; residuals in phases/18-xr-training/design.md → Results; commit.
+- id: M53
+  stage: 18-xr-training
+  title: Platform comparison
+  goal: Measured tradeoffs between HoloLens 2 and Meta Quest on the same content.
+  weeks: 3
+  steps:
+  - id: M53.1
+    title: Technical measurements
+    time: 3 h
+    needs:
+    - logs of M52.2
+    - ruler, the ring scale on the machine
+    do:
+    - 'From the logs: frames per second, 95th percentile frame time, late frames, per headset and per mode (AR, VR).'
+    - 'Drift: align, walk once round the bench, measure the overlay''s offset at the 20° stop with a ruler. Five repeats per headset.'
+    - 'Field of view: standing 0.75 m from the zero point, the fraction of the M4 arc visible without moving the head.'
+    - 'Legibility: rate the arcs and rays 1–5 with the lab lights on and the lamp on, then lights off.'
+    verify:
+    - Every row of the protocol table (wiki → XR training) has a measured value with its number of repeats, or is marked not measurable with the reason.
+    fail:
+    - 'A row cannot be measured on one headset: report that as the result; do not estimate.'
+    record: Table in phases/18-xr-training/design.md → Results and `paper/xr/results.yaml`; commit.
+  - id: M53.2
+    title: User study
+    time: 20 h
+    wait: ethics approval
+    needs:
+    - Institutional Review Board approval, consent forms
+    - 'participants: students who have not used the machine'
+    do:
+    - Within-subject or between-subject design, fixed before recruiting and written in `paper/xr/protocol.md`.
+    - 'Each participant: pre-quiz, training on one headset, post-quiz, System Usability Scale [X9], NASA Task Load Index [X10], Simulator Sickness Questionnaire [X11].'
+    - 'Control condition: the same lessons in the page on a laptop.'
+    verify:
+    - Approval number recorded before the first session.
+    - Anonymised data file with one row per participant; analysis script reproduces every reported number.
+    fail:
+    - 'No approval yet: do M53.1 and M54 first; never collect participant data without it.'
+    record: Anonymised data and script in `phases/18-xr-training/study/`; summary in phases/18-xr-training/design.md → Results; commit.
+- id: M54
+  stage: 18-xr-training
+  title: Graphics development
+  goal: The trainer shows measured data and renders the fitted material in the headset.
+  weeks: 3
+  steps:
+  - id: M54.1
+    title: Measured BRDF in the lobe
+    time: 8 h
+    needs:
+    - a real `curve.csv` (stage 07)
+    do:
+    - Load a run's `curve.csv` and `fit.json` in the page; draw the measured points on the lobe next to the fitted surface.
+    verify:
+    - Points lie on the lobe where the holdout error is low; `make test` passes.
+    fail:
+    - 'Points far off the lobe everywhere: check the angle convention against `kinematics.py`.'
+    record: Screenshot and run name in phases/18-xr-training/design.md → Results; commit.
+  - id: M54.2
+    title: Lit sample and occlusion
+    time: 16 h
+    needs:
+    - M52.2 passed
+    do:
+    - Draw the sample disc lit with the fitted material (shader of `docs/og/render-gl.js`) under the virtual lamp.
+    - 'Occlusion: render the CAD model depth-only before the overlay in AR, so real parts hide lines behind them.'
+    verify:
+    - A line passing behind the table post disappears behind it in the headset.
+    - Frame rate stays within 10 % of M53.1.
+    fail:
+    - 'Occlusion edges swim: alignment error; repeat M52.2.'
+    record: Before and after frame times in phases/18-xr-training/design.md → Results; commit.
+  - id: M54.3
+    title: Native build for comparison
+    time: 40 h
+    needs:
+    - Unity with the Mixed Reality Toolkit 3 (HoloLens 2) and the Meta XR SDK (Quest), or one OpenXR build for both
+    do:
+    - Export the machine as `.glb` (already produced by `make cad`). Port the five lessons; keep the same geometry constants and BRDF formula.
+    - Log the same frame-time summary as the page.
+    verify:
+    - The native build shows the same θi, θr and BRDF value as the page for three poses.
+    fail:
+    - 'Values differ: the engine is left-handed, y up; check the axis conversion.'
+    record: Build settings and the comparison in phases/18-xr-training/design.md → Results; commit.
+- id: M55
+  stage: 18-xr-training
+  title: Virtual Reality journal paper
+  goal: A manuscript for Springer's Virtual Reality journal reporting the design, the implementation and the measured comparison.
+  weeks: 4
+  steps:
+  - id: M55.1
+    title: Fill the draft from measured results
+    time: 40 h
+    needs:
+    - M53.1 done; M53.2 done or explicitly out of scope
+    - '`paper/xr/opengonio-xr.tex`'
+    do:
+    - Replace every [TBD] in `paper/xr/opengonio-xr.tex` with a value from `paper/xr/results.yaml`. Never type a value that was not measured.
+    - Move the text into the Springer Nature LaTeX template; figures to the journal's rules (wiki → XR training → Journal rules).
+    verify:
+    - '`grep -c TBD paper/xr/opengonio-xr.tex` prints 0.'
+    - Abstract 150–250 words; 4–6 keywords; Declarations section complete.
+    fail:
+    - 'A result is missing: report the gap in Limitations; do not fill it.'
+    record: Commit the manuscript and `paper/xr/results.yaml`.
+  - id: M55.2
+    title: Submit
+    time: 2 h
+    wait: review
+    needs:
+    - all authors agree on the text and the author order
+    - use of AI tools described in Methods, as the journal requires
+    do:
+    - Re-read the journal's current submission guidelines; submit the editable source files with the PDF.
+    verify:
+    - Submission confirmation with a manuscript number.
+    fail:
+    - 'Returned as incomplete: a declaration is missing; add it and resubmit.'
+    record: Manuscript number and date in phases/18-xr-training/design.md → Results; commit.

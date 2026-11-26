@@ -133,6 +133,7 @@ def _main(argv: list[str] | None = None) -> int:
     ap.add_argument("--sim-drift", type=float, default=0.0, metavar="PCT", help="simulated lamp dimming per shot")
     ap.add_argument("--sim-gamma", type=float, default=1.0, metavar="G", help="simulated camera response (2.2 = sRGB-like)")
     sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("doctor", help="which software this project uses is installed (OpenCV, pyserial, COLMAP, LaTeX): versions and gaps")
     it = sub.add_parser("init", help="copy the default machine.yaml to ~/.config/opengonio/ (installed package)")
     it.add_argument("--force", action="store_true", help="replace an existing user machine.yaml (old one kept as .bak)")
     cp = sub.add_parser("check-pose"); cp.add_argument("pose", nargs="+")
@@ -164,6 +165,10 @@ def _main(argv: list[str] | None = None) -> int:
     rp.add_argument("axis", choices=["M4", "M3", "M2", "M1"]); rp.add_argument("--at", type=float, required=True)
     rp.add_argument("--away", type=float, default=30.0); rp.add_argument("--n", type=int, default=20)
     rp.add_argument("--wall-mm", type=float, default=2000.0); rp.add_argument("--home", action="store_true", help="re-home instead of moving away")
+    sl = sub.add_parser("slip", help="measure an axis's drift: travel, find the home switch again, repeat (grblHAL)")
+    sl.add_argument("axis", choices=["M4", "M3", "M2", "M1"]); sl.add_argument("--travel", type=float, default=360.0, help="degrees per round")
+    sl.add_argument("--n", type=int, default=5, help="rounds"); sl.add_argument("--span", type=float, default=60.0, help="degrees per stroke")
+    sl.add_argument("--creep", type=float, default=0.0, help="with --sim: slip the simulated axis by this many degrees per degree")
     cb = sub.add_parser("calibrate", help="measured values -> calibration.yaml")
     cb.add_argument("action", choices=["show", "mirror", "dark", "white", "linearity"]); cb.add_argument("dirs", nargs="*")
     cb.add_argument("--rho", type=float, default=0.99, help="PTFE reflectance (datasheet)")
@@ -200,6 +205,11 @@ def _main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if a.cmd == "init":
         return _init(a.force)
+    if a.cmd == "doctor":
+        from .doctor import report
+        text, code = report()
+        print(text)
+        return code
     cfg = load_config(a.config) if a.config else load_config()
     cal = load_calibration(a.cal)
 
@@ -374,6 +384,27 @@ def _main(argv: list[str] | None = None) -> int:
                        reference=a.plan in ("mirror", "inplane", "isotropic", "spin", "anisotropic"),
                        warmup_s=0.0 if a.sim else None, exposure_ms=exposure,
                        exposures=a.exposures if a.plan == "linearity" else None, overwrite=a.overwrite))
+    elif a.cmd == "slip":
+        from .gantry.slip import travel_until_due
+        ax = cfg.active_axes.get(a.axis)
+        if ax is None or not g.slip:
+            ap.error(f"{a.axis} is not installed (installed_phase) or slip.mode is off in machine.yaml")
+        if a.sim and a.creep:
+            t.creep[ax.fluidnc_axis] = a.creep
+        g.home()
+        away = g._away(a.axis)
+        lo = ax.home_deg + away * 5.0
+        hi = lo + away * min(a.span, abs(ax.max_deg - ax.min_deg) - 10.0)
+        rows = []
+        for _ in range(a.n):
+            for _ in range(max(1, round(a.travel / (2 * abs(hi - lo))))):
+                g.move({a.axis: hi}); g.move({a.axis: lo})
+            rows.append(g.check(a.axis, measure=True))
+        est = g.slip[a.axis]
+        print(json.dumps({"axis": a.axis, "simulated": bool(a.sim), "rounds": rows, "creep_pct": round(100 * est.s, 4),
+                          "creep_sd_pct": round(100 * est.pss ** 0.5, 4), "events": est.events,
+                          "travel_between_references_deg": round(travel_until_due(g.slip_cfg, est.pss ** 0.5), 0)}, indent=1))
+        return 1 if est.events else 0
     elif a.cmd == "repeat":  # pragma: no cover - needs hardware and a person
         from .plans.repeatability import laser_angle_deg, laser_limit_mm, summarize
         limit = laser_limit_mm(cfg.repeatability_target_deg, a.wall_mm)

@@ -33,8 +33,8 @@ jobs:
         run: set -o pipefail; make export 2>&1 | tee /tmp/step.out
       - name: Commit PDFs and exports
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"   # the person who pushed: no bot in the history
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           git add -A paper exports wiki README.md PARTS.md phases docs cad
           git diff --cached --quiet || { git commit -m "Rebuild paper PDF and exports"; git pull --rebase -q; git push; }
       - name: Show the error

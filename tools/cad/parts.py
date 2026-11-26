@@ -438,7 +438,7 @@ MOTOR_BODY = 48.0                                         # clearance for bodies
 
 
 def gt2_pulley(teeth: int, bore: float = 8.0 + CLEAR):
-    """Printed GT2 pulley (simplified round-tooth profile), hubless: clamped on the tilt stub bolt. 100T = tilt (5:1)."""
+    """Printed GT2 pulley (simplified round-tooth profile), hubless: clamped on the tilt stub bolt. 60T = tilt (3:1)."""
     pd = teeth * GT2_PITCH / math.pi
     od = pd - 0.508
     body = cq.Workplane("XY").circle(od / 2).extrude(7)
@@ -575,14 +575,20 @@ def endstop_riser():
 YOKE_INNER = 116.0
 YOKE_BASE = 6.0
 YOKE_SEAT = 150.0 - TABLE_Z["hub_top"]                                  # tilt axis through the zero point
-TILT_BELT_C = 75.6                                                       # 280 mm GT2 loop, 20T-100T
+TILT_PULLEY = 60                                                         # 3:1: the size that lets the tilt use the table's 232 mm belt
+TILT_BELT_C = 74.9                                                       # 232 mm GT2 loop (the same belt as the table), 20T-60T
 YOKE_TOP = YOKE_SEAT + TILT_BELT_C + 21 + 8                              # the tilt motor sits above the axis, inside the yoke
+
+
+MOTOR_PAD = 46.0                                                         # arm width at the tilt motor (NEMA 17 is 42.3)
+M3_HEAD, M3_SINK = 6.4, 7.0                                              # M3 socket head 5.5 + clearance; sunk so 5 mm stays under it
 
 
 def tilt_yoke():
     """U yoke on the table hub (OG-40). 608 seats (outer face of each arm) put the tilt axis through the zero point.
     The tilt motor hangs on the inner face of the +X arm, above the axis, shaft out through the arm (slots = belt
-    tension); its pulley drives the 100T on the stub axle outside the arm. Everything stays within r 70 of the table axis."""
+    tension). There the arm widens to a 46 mm motor pad, so the four screw slots have material on both sides, and each
+    slot is counterbored 7 mm from the outer face: 5 mm of plastic under the head, the same M3 x 8 joint as every other motor; its pulley drives the 60T on the stub axle outside the arm. Everything stays within r 70 of the table axis."""
     base = cq.Workplane("XY").box(YOKE_INNER + 24, 34, YOKE_BASE, centered=(True, True, False))
     base = og40_holes(base.faces(">Z").workplane())
     base = base.cut(cq.Workplane("XY").circle(5).extrude(YOKE_BASE))                     # bolt end of the table axle
@@ -594,10 +600,14 @@ def tilt_yoke():
         arm = arm.cut(cq.Workplane("YZ").circle(6.5).extrude(14).translate((x0 - 7, 0, YOKE_SEAT)))
         if s > 0:
             mz = YOKE_SEAT + TILT_BELT_C
+            pad = cq.Workplane("XY").box(12, MOTOR_PAD, YOKE_TOP - (mz - 27), centered=(True, True, False)).translate((x0, 0, mz - 27))
+            pad = pad.union(cq.Workplane("YZ").polyline([(-MOTOR_PAD / 2, mz - 27), (-17, mz - 33), (17, mz - 33), (MOTOR_PAD / 2, mz - 27)]).close().extrude(12).translate((x0 - 6, 0, 0)))   # 45 deg underside: no support
+            arm = arm.union(pad)
             arm = arm.cut(cq.Workplane("YZ").slot2D(NEMA17_BOSS + 8, NEMA17_BOSS, 90).extrude(14).translate((x0 - 7, 0, mz)))
             for dy in (-1, 1):
                 for dz in (-1, 1):
                     arm = arm.cut(cq.Workplane("YZ").slot2D(3.4 + 8, 3.4, 90).extrude(14).translate((x0 - 7, dy * NEMA17_HOLES / 2, mz + dz * NEMA17_HOLES / 2)))
+                    arm = arm.cut(cq.Workplane("YZ").slot2D(M3_HEAD + 8, M3_HEAD, 90).extrude(M3_SINK).translate((x0 + 6 - M3_SINK, dy * NEMA17_HOLES / 2, mz + dz * NEMA17_HOLES / 2)))
         base = base.union(arm)
     return base
 
@@ -607,11 +617,13 @@ SPIN = {"platter": 8.0, "hub": 10.0, "motor_face": -24.0, "motor_body": 21.5}   
 
 def tilt_cradle():
     """Turns about the tilt axis (local z = 0 = sample face = zero point). End blocks trap the M8 nuts of the two
-    M8 x 35 stub axles; the floor holds the pancake spin motor face-up (4 x M3 x 8). Printed upside down."""
+    M8 x 35 stub axles; the floor holds the pancake spin motor face-up (4 x M3 x 8) on a 46 mm pad, so each screw has
+    plastic all round. Printed upside down."""
     w = YOKE_INNER - 4
     depth = 34.0
     zb = SPIN["motor_face"]
     floor = cq.Workplane("XY").box(w, depth, 5, centered=(True, True, False)).translate((0, 0, zb))
+    floor = floor.union(cq.Workplane("XY").box(MOTOR_PAD, MOTOR_PAD, 5, centered=(True, True, False)).translate((0, 0, zb)))   # screw holes at +-15.5 need more than the 34 mm floor
     floor = floor.cut(cq.Workplane("XY").circle(NEMA17_BOSS / 2 + 0.3).extrude(5).translate((0, 0, zb)))
     floor = floor.cut(cq.Workplane("XY").rect(NEMA17_HOLES, NEMA17_HOLES, forConstruction=True).vertices().circle(M3 / 2).extrude(5).translate((0, 0, zb)))
     c = floor
@@ -627,12 +639,12 @@ def tilt_cradle():
 
 def spin_platter():
     """Sample face (top = tilt axis = zero point), r 42 between the cradle end blocks. Hub clamps the pancake motor's
-    5 mm D-shaft: M2 x 6 into a captive M2 nut, tip on the flat. M2 holes for risers (stage 11); flag holes on the rim.
+    5 mm D-shaft: M2 x 8 into a captive M2 nut, tip on the flat (hub r 10, so the screw is the same M2 x 8 as the flags). M2 holes for risers (stage 11); flag holes on the rim.
     Printed upside down (top face on the bed)."""
     p = cq.Workplane("XY").circle(42).extrude(SPIN["platter"])
-    p = p.union(cq.Workplane("XY").circle(8).extrude(SPIN["hub"]).translate((0, 0, -SPIN["hub"])))
+    p = p.union(cq.Workplane("XY").circle(10).extrude(SPIN["hub"]).translate((0, 0, -SPIN["hub"])))
     p = p.cut(cq.Workplane("XY").circle(2.6 + CLEAR / 2).extrude(SPIN["hub"] + SPIN["platter"] - 4).translate((0, 0, -SPIN["hub"])))
-    g = cq.Workplane("YZ").circle(M2 / 2).extrude(10).translate((0, 0, -SPIN["hub"] / 2))
+    g = cq.Workplane("YZ").circle(M2 / 2).extrude(12).translate((0, 0, -SPIN["hub"] / 2))
     g = g.union(cq.Workplane("XY").box(1.8, M2_NUT / math.cos(math.radians(30)), 7).translate((4.2, 0, -SPIN["hub"] / 2 - 2.5)))   # nut slot from below
     p = p.cut(g)
     p = p.faces(">Z").workplane().polarArray(15, 45, 360, 4).hole(M2_TAP, 5)      # risers (stage 11): M2 self-tap
@@ -977,7 +989,7 @@ PARTS = {   # id: (stage folder, file stem, function, what)
     "CAL-06c": ("07-calibrate", "ball_holder", ball_holder, "Chrome-ball holder"),
     "ENC-04a": ("07-calibrate", "dowel_socket", dowel_socket, "Dowel socket (print 4)"),
     "TLT-07a": ("08-tilt", "tilt_yoke", tilt_yoke, "Tilt yoke: 608 seats, motor slots above the axis"),
-    "TLT-07b": ("08-tilt", "pulley_100T", lambda: gt2_pulley(100), "GT2 100T pulley (5:1) on the stub axle"),
+    "TLT-07b": ("08-tilt", "pulley_60T", lambda: gt2_pulley(TILT_PULLEY), "GT2 60T pulley (3:1) on the stub axle"),
     "TLT-07c": ("08-tilt", "tilt_cradle", tilt_cradle, "Tilt cradle: stub-axle nut traps, spin motor floor"),
     "SPN-07a": ("09-spin", "spin_platter", spin_platter, "Spin platter: clamps the motor D-shaft (direct drive)"),
     "MSK-06a": ("10-color", "led_ring", led_ring, "LED ring (8 bands)"),

@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
     paths: ["docs/**", ".github/workflows/pages.yml"]
-  workflow_run:                       # the docs workflow commits regenerated files as the bot: deploy those too
+  workflow_run:                       # the docs workflow commits regenerated files: deploy those too
     workflows: [docs]
     types: [completed]
   workflow_dispatch:

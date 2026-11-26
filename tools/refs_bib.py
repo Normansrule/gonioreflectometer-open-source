@@ -21,7 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPO = "https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main"   # wiki pages live outside the tree
 REFS, BIB, CSL, WIKI = ROOT / "REFERENCES.md", ROOT / "paper" / "references.bib", ROOT / "paper" / "apa.csl", ROOT / "wiki"
-SCHOLARLY = re.compile(r"^(R[1-9]|[SGTVNH]\d+)$")
+SCHOLARLY = re.compile(r"^(R[1-9]|[SGTVNHX]\d+)$")
 R_SECTIONS = {"Primary design references", "Theory and algorithms", "Other rigs and data"}   # R IDs that are literature
 APPENDICES = [   # (page, title, ID prefixes)
     ("Appendix-A-Measurement", "Appendix A · Reflectance measurement and gonioreflectometers", ("R", "G")),
@@ -29,6 +29,7 @@ APPENDICES = [   # (page, title, ID prefixes)
     ("Appendix-C-Calibration-and-3D", "Appendix C · Calibration, HDR, photometric stereo, 3D scanning", ("V", "S")),
     ("Appendix-D-Standards-and-colour", "Appendix D · Standards, colour, optics, safety", ("N",)),
     ("Appendix-E-Hardware", "Appendix E · Motion control, electronics, open hardware", ("H",)),
+    ("Appendix-F-Mixed-reality", "Appendix F · Mixed reality, training and evaluation", ("X",)),
 ]
 VENUE = {   # APA wants full journal / proceedings names
     "ACM TOG": "ACM Transactions on Graphics", "ACM TOG (SIGGRAPH)": "ACM Transactions on Graphics",

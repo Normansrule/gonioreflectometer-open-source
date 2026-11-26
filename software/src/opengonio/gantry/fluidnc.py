@@ -37,6 +37,17 @@ def home_mpos(cfg) -> dict[str, float]:
     """Controller machine position right after homing each axis (keyed by controller axis letter)."""
     zero = dialect(cfg)["origin_at_home"]
     return {a.fluidnc_axis: (0.0 if zero else a.home_deg) for a in cfg.axes.values()}
+
+
+def switch_edges(cfg, pulloff_deg: float | None = None) -> dict[str, tuple[float, float]]:
+    """Where each home switch trips, in controller units: (position, direction of travel into it). Homing stops one
+    pull-off away from it, on the travel side."""
+    pull = float((getattr(cfg, "slip", None) or {}).get("pulloff_deg", 2.0)) if pulloff_deg is None else pulloff_deg
+    homes = home_mpos(cfg)
+    return {a.fluidnc_axis: (homes[a.fluidnc_axis] + way * pull, way)
+            for a in cfg.axes.values() for way in [-1.0 if a.home_deg == a.min_deg else 1.0]}
+
+
 STATUS_RE = re.compile(r"<([A-Za-z]+)(?::\d+)?\|MPos:([-\d.,]+)(?:\|.*?Pn:([A-Z]*))?")
 
 
@@ -177,18 +188,30 @@ class FluidNC:
 class RecordingTransport:
     """Offline stand-in: answers 'ok', records every line and tracks the machine position like the controller
     (G53 G1 moves the axes, $H<axis> puts an axis at homes[axis]) so endpoint checks work in dry runs and tests.
-    for_machine() sets homes from the configured firmware: 0 for grblHAL, home_deg for FluidNC."""
+    for_machine() sets homes from the configured firmware: 0 for grblHAL, home_deg for FluidNC.
+    Slip (off unless set): `phys` is where each axis really is; every move adds creep[axis] degrees per degree travelled
+    and any one-off jump[axis] (lost steps). `edges` = {axis: (position, direction)} of the home switches: the status
+    report then carries Pn:<axes on their switch>, read from phys, as the real pins would."""
     lines: list[str] = field(default_factory=list)
     pending: list[str] = field(default_factory=list)
     mpos: dict[str, float] = field(default_factory=lambda: dict.fromkeys(AXIS_ORDER[:4], 0.0))
     homes: dict[str, float] = field(default_factory=dict)
     state: str = "Idle"
+    phys: dict[str, float] = field(default_factory=dict)
+    creep: dict[str, float] = field(default_factory=dict)
+    jump: dict[str, float] = field(default_factory=dict)
+    edges: dict[str, tuple[float, float]] = field(default_factory=dict)
+
+    def where(self, axis: str) -> float:
+        """Physical position of an axis (controller units): the count plus whatever slipped."""
+        return self.phys.get(axis, self.mpos[axis])
 
     def write(self, data: bytes) -> None:
         txt = data.decode()
         if txt == "?":
             vals = ",".join(f"{self.mpos[a]:.4f}" for a in AXIS_ORDER[:4])
-            self.pending.append(f"<{self.state}|MPos:{vals}|FS:0,0>")
+            pins = "".join(a for a, (at, way) in sorted(self.edges.items()) if (self.where(a) - at) * way >= -1e-9)
+            self.pending.append(f"<{self.state}|MPos:{vals}|FS:0,0" + (f"|Pn:{pins}>" if pins else ">"))
             return
         if len(txt) == 1:                 # other realtime bytes
             self.lines.append(repr(txt))
@@ -196,8 +219,11 @@ class RecordingTransport:
         line = txt.strip()
         if line.startswith("$H") and len(line) == 3 and line[2] in self.mpos:
             self.mpos[line[2]] = self.homes.get(line[2], self.mpos[line[2]])
+            self.phys[line[2]] = self.mpos[line[2]]               # the switch is the truth: slip is gone
         elif line.startswith("G53 G1"):
             for k, v in re.findall(r"([XYZA])(-?[\d.]+)", line.split("F")[0]):
+                step = float(v) - self.mpos[k]
+                self.phys[k] = self.where(k) + step + self.creep.get(k, 0.0) * abs(step) + (self.jump.pop(k, 0.0) if step else 0.0)
                 self.mpos[k] = float(v)
         elif line == "$I":
             self.pending.append("[VER:recording transport]")
@@ -215,4 +241,5 @@ class RecordingTransport:
         """Homes like the real controller of the configured firmware (home_mpos)."""
         t = cls()
         t.homes = home_mpos(cfg)
+        t.edges = switch_edges(cfg)
         return t

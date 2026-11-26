@@ -9,6 +9,7 @@
 - [Calibration](Calibration.md)
 - [3D scanning](3D-scanning.md)
 - [Rendering](Rendering.md)
+- [XR training](XR-training.md)
 - [Software](Software.md)
 - [Commands](Commands.md)
 - [Build guide](Build-guide.md)
@@ -18,4 +19,4 @@
 - [Repository map](Repository-map.md)
 - [Paper](Paper.md)
 - [Bibliography](Bibliography.md)
-- Appendices: [A](Appendix-A-Measurement.md) · [B](Appendix-B-Reflectance-models.md) · [C](Appendix-C-Calibration-and-3D.md) · [D](Appendix-D-Standards-and-colour.md) · [E](Appendix-E-Hardware.md)
+- Appendices: [A](Appendix-A-Measurement.md) · [B](Appendix-B-Reflectance-models.md) · [C](Appendix-C-Calibration-and-3D.md) · [D](Appendix-D-Standards-and-colour.md) · [E](Appendix-E-Hardware.md) · [F](Appendix-F-Mixed-reality.md)

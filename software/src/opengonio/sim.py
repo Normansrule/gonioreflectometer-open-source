@@ -22,7 +22,7 @@ import numpy as np
 
 from .brdf.models import ggx_brdf, lambert
 from .gantry.config import Machine
-from .gantry.fluidnc import AXIS_ORDER, RecordingTransport, home_mpos
+from .gantry.fluidnc import AXIS_ORDER, RecordingTransport, home_mpos, switch_edges
 from .gantry.kinematics import camera_dir, light_dir, sample_rotation
 
 MATERIALS = {   # name: (BRDF of unit vectors in the sample frame, camera gain)
@@ -51,6 +51,7 @@ def sim_transport(cfg: Machine) -> SimTransport:
     t = SimTransport()
     t.homes = home_mpos(cfg)
     t.mpos = dict.fromkeys(AXIS_ORDER[:4], 0.0)
+    t.edges = switch_edges(cfg)
     return t
 
 
@@ -86,7 +87,7 @@ class SimCamera:
         zero = {k: v for k, v in home_mpos(self.cfg).items()}                  # machine position at home
         home = {a.fluidnc_axis: a.home_deg for a in self.cfg.axes.values()}
         p = {**self.cfg.default_pose(), **{LETTER[k]: v - zero.get(k, 0.0) + home.get(k, 0.0)
-                                           for k, v in self.t.mpos.items() if LETTER.get(k) in self.cfg.active_axes}}
+                                           for k in self.t.mpos for v in [self.t.where(k)] if LETTER.get(k) in self.cfg.active_axes}}
         return {k: v + self.error_deg.get(k, 0.0) for k, v in p.items()}
 
     def signal(self) -> float:

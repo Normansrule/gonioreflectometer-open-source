@@ -9,7 +9,7 @@ cd "$(git rev-parse --show-toplevel)"
 PYBIN=$(command -v python3.12 || command -v python3)
 T=$(mktemp -d); trap 'rm -rf "$T"' EXIT
 git clone -q . "$T/repo" && cd "$T/repo"
-"$PYBIN" -m venv "$T/venv" && "$T/venv/bin/pip" install -q -e "./software[dev]" pyyaml numpy openpyxl pillow
+"$PYBIN" -m venv "$T/venv" && "$T/venv/bin/pip" install -q -e "./software[dev]" pyyaml numpy openpyxl pillow opencv-python-headless
 fail=0
 step() { local name=$1; shift; if "$@" > "$T/out" 2>&1; then echo "PASS $name"; else echo "FAIL $name"; tail -n 20 "$T/out"; fail=1; fi; }
 # PATH without pandoc: folders holding it are mirrored (every other program symlinked) into $T/nopandoc-N

@@ -6,7 +6,7 @@
 |---|---|---|---|---|---|
 | M4 | light arm around the sample | 20–324° | GT2 belt on 12 in ring, 24:1 | 0.0047° | stage 04 |
 | M3 | table (sample yaw) | ±180° | 20T → 100T, 5:1 | 0.0225° | stage 05 |
-| M2 | sample tilt (yoke) | ±90° | 20T → 100T, 5:1 | 0.0225° | stage 08 |
+| M2 | sample tilt (yoke) | ±90° | 20T → 60T, 3:1 (1/32) | 0.0188° | stage 08 |
 | M1 | sample spin (platter) | ±180° | direct drive (pancake motor), 1/64 microstep | 0.028° | stage 09 |
 
 Measuring camera fixed on +X at 350 mm; scan camera fixed at 650 mm, 15° up, looking over it, so no camera ever moves or refocuses (one-camera option: move it, $81 cheaper). Light 300 mm from the zero point. Optical homing on every axis, one over-travel switch in the e-stop loop (light arm, at 17°; the other ends rely on soft limits and the e-stop), 30 mm keep-out and 5° minimum light–camera angle [@R1].

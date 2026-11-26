@@ -32,12 +32,12 @@ $131=360    ; Y travel, deg (-180 to 180)
 $141=800    ; Y motor current, mA RMS (SKR Pico: add the fan above 800 mA)
 $151=16    ; Y microsteps
 $211=50    ; Y hold current, % of run current
-$102=44.444    ; Z = M2 sample_tilt: steps per degree (gear 5, 1/16)
+$102=53.333    ; Z = M2 sample_tilt: steps per degree (gear 3, 1/32)
 $112=900    ; Z max rate, deg/min
 $122=40    ; Z acceleration, deg/s^2
 $132=180    ; Z travel, deg (-90 to 90)
 $142=800    ; Z motor current, mA RMS (SKR Pico: add the fan above 800 mA)
-$152=16    ; Z microsteps
+$152=32    ; Z microsteps
 $212=50    ; Z hold current, % of run current
 $103=35.556    ; A = M1 sample_spin: steps per degree (gear 1, 1/64)
 $113=1800    ; A max rate, deg/min

@@ -1,0 +1,91 @@
+# Validation numbers for the paper's "Validation and characterization" section (HardwareX).
+# Each row is measured by one roadmap step (.github/phases.yml) with that step's own pass criterion. Leave `value`
+# null until the step is done, then copy the number from the step's record (phases/<stage>/design.md → Results).
+# `make paper` turns this file into paper/generated/validation.tex; `make paper-check` lists what is still missing.
+# Never type a value that was not measured.
+# SPDX-License-Identifier: CC-BY-SA-4.0
+
+- id: V1
+  group: Angles
+  what: Mirror peak error, five sweeps before angle calibration
+  step: M19.1
+  criterion: within ±0.5°
+  value: null
+- id: V2
+  group: Angles
+  what: Mirror peak error after angle calibration
+  step: M22.2
+  criterion: within ±0.2°
+  value: null
+- id: V3
+  group: Angles
+  what: Tilt homing repeatability and platter level at M2 = 0
+  step: M25.4
+  criterion: 10/10 homes; level within ±0.5°
+  value: null
+- id: V4
+  group: Light and camera
+  what: Lamp settling time after switch-on
+  step: M18.3
+  criterion: ≤ 300 s
+  value: null
+- id: V5
+  group: Light and camera
+  what: Lamp drift over a run
+  step: M20.1
+  criterion: within ±2 %
+  value: null
+- id: V6
+  group: Light and camera
+  what: Stray light (dark vs lit room, centre brightness)
+  step: M21.2
+  criterion: < 0.5 % difference
+  value: null
+- id: V7
+  group: Light and camera
+  what: Camera response fit (gamma, R²)
+  step: M22.1
+  criterion: R² ≥ 0.995, gamma 0.9–2.6
+  value: null
+- id: V8
+  group: Absolute reflectance
+  what: Pressed PTFE BRDF (expected 0.99/π = 0.315 sr⁻¹)
+  step: M23.2
+  criterion: 0.315 sr⁻¹ ± 5 % for θi, θr ≤ 60°
+  value: null
+- id: V9
+  group: Absolute reflectance
+  what: Helmholtz reciprocity (swap light and camera)
+  step: M23.3
+  criterion: agree within 5 %
+  value: null
+- id: V10
+  group: Materials
+  what: Lambert + GGX fit error on a measured swatch (all rows / holdout)
+  step: M24.2
+  criterion: RMS < 10 % of peak
+  value: null
+- id: V11
+  group: Materials
+  what: Roughness from the full isotropic scan vs the in-plane fit
+  step: M26.3
+  criterion: within 10 %
+  value: null
+- id: V12
+  group: 3D scanning
+  what: Scanned 40 mm reference cube, edge lengths
+  step: M35.2
+  criterion: 40.0 ± 0.5 mm
+  value: null
+- id: V13
+  group: Application
+  what: Measured material rendered next to a photo of the sample (game engine)
+  step: M24.3
+  criterion: highlight size and position match by eye (figure)
+  value: null
+- id: V14
+  group: Reproducibility
+  what: Independent test build (time, money actually spent, questions asked)
+  step: M44.3
+  criterion: finished without asking the author
+  value: null

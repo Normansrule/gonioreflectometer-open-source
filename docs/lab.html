@@ -23,7 +23,7 @@
 <header class="bar">
  <a class="mark display" href="./">OpenGonio</a>
  <nav aria-label="Lab sections">
-  <a href="#machine">Machine</a><a href="#brdf">BRDF</a><a href="#calibrate">Calibrate</a><a href="#scanner">3D scan</a><a href="#equations">Equations</a>
+  <a href="#machine">Machine</a><a href="#brdf">BRDF</a><a href="#calibrate">Calibrate</a><a href="#slip">Slip</a><a href="#scanner">3D scan</a><a href="#equations">Equations</a>
   <a href="#build">Build</a><a href="#budget">Budget</a><a href="#refs">References</a>
  </nav>
  <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
@@ -108,6 +108,45 @@
  </div>
 </section>
 
+<section id="slip" class="reveal">
+ <h2>Slip lab</h2>
+ <p class="sub">The motors count steps but nothing checks the belts, so every axis may drift. <code>gantry/slip.py</code> keeps an error bound per axis, corrects the part it can predict and sends the axis back to its home switch when the bound passes the budget. Made-up axis, nominal parameters: nothing here is a measurement.</p>
+ <div class="grid">
+  <div class="card" data-ui>
+   <canvas id="slipc" role="img" aria-label="Angle error against axis travel, with and without the slip model; the numbers are given as text beside it"></canvas>
+   <svg id="sliploop" viewBox="0 0 900 232" role="img" aria-label="Control loop: the wanted angle minus the predicted drift goes to the controller, motor and belt; the home switch measures the drift; a Kalman filter estimates drift and creep, corrects the command and schedules re-homing">
+    <defs><marker id="sl-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z"/></marker></defs>
+    <g class="fwd"><path d="M150 65H184"/><path d="M216 65H250"/><path d="M410 65H460"/><path d="M620 65H680"/><path d="M540 22V40"/></g>
+    <g class="fb" data-on="any"><path d="M330 160V92"/></g>
+    <g class="fb" data-on="probe"><path d="M800 90V185H762"/><path d="M600 185H412"/></g>
+    <g class="fb" data-on="any"><path d="M250 185H200V81"/></g>
+    <g class="box"><rect x="10" y="40" width="140" height="50"/><text x="80" y="62">Plan</text><text class="s" x="80" y="78">angle wanted</text></g>
+    <g class="sum"><circle cx="200" cy="65" r="14"/><text x="200" y="70">−</text></g>
+    <g class="box"><rect x="250" y="40" width="160" height="50"/><text x="330" y="62">Controller</text><text class="s" x="330" y="78">counts steps</text></g>
+    <g class="box"><rect x="460" y="40" width="160" height="50"/><text x="540" y="62">Motor + belt</text><text class="s" x="540" y="78">no encoder</text></g>
+    <g class="box"><rect x="680" y="40" width="210" height="50"/><text x="785" y="62">True angle</text><text class="s" x="785" y="78">what the photo records</text></g>
+    <text class="dist" x="540" y="14">creep · lost steps</text>
+    <g class="box est" data-on="any"><rect x="250" y="160" width="160" height="50"/><text x="330" y="182">Kalman filter</text><text class="s" x="330" y="198">drift d, creep s, bound</text></g>
+    <g class="box est" data-on="probe"><rect x="600" y="160" width="160" height="50"/><text x="680" y="182">Home switch</text><text class="s" x="680" y="198">edge found again</text></g>
+    <text class="lbl" x="208" y="130">predicted drift</text><text class="lbl" x="338" y="130">re-home when 2σ &gt; budget</text><text class="lbl" x="506" y="178">measured drift</text>
+   </svg>
+  </div>
+  <div class="card" data-ui>
+   <div class="phase" id="sl-mode" role="group" aria-label="slip.mode"><button data-mode="off" aria-pressed="false">off</button><button data-mode="rehome" aria-pressed="false">rehome</button><button data-mode="probe" class="on" aria-pressed="true">probe</button></div>
+   <label>belt creep <input id="sl-creep-in" type="range" min="0" max="0.15" step="0.01" value="0.06"><output></output></label>
+   <label>budget (2σ) <input id="sl-budget-in" type="range" min="0.06" max="0.3" step="0.01" value="0.1"><output></output></label>
+   <div class="phase"><button id="sl-lost" aria-pressed="false">Lose 0.5° at 1500°</button><button id="sl-play">Play again</button></div>
+   <div class="read">
+    <div><small>worst error, nothing done</small><span id="sl-raw">–</span></div><div><small>worst error with the model</small><span id="sl-err">–</span></div>
+    <div><small>references in 3600°</small><span id="sl-refs">–</span></div><div><small>travel between references</small><span id="sl-every">–</span></div>
+    <div><small>creep learned</small><span id="sl-creep">–</span></div><div><small>switch repeatability (nominal)</small><span>0.02°</span></div>
+   </div>
+   <div class="status" id="sl-stat" role="status">–</div>
+   <p class="sub" style="margin-top:10px;font-size:13px">Steps: M19.2 (slip check, sets the parameters). In the app: Position trust. Equations: below.</p>
+  </div>
+ </div>
+</section>
+
 <section id="scanner" class="reveal">
  <h2>3D photo scanner</h2>
  <p class="sub">Stages 11–12. Fixed camera; M1 spins and M2 tilts the object, so every pose is known [S9].</p>
@@ -149,6 +188,8 @@
  $$R=R_z(M_3)R_y(-M_2)R_x(M_1)\qquad \omega^s=R^\top\omega^w\qquad \omega_i(p)=\frac{P_L-p}{\|P_L-p\|},\;\omega_r(p)=\frac{P_C-p}{\|P_C-p\|}$$
  <h3>Fixed-camera optics [R1]</h3>
  $$\frac{1}{p'}-\frac{1}{p}=\frac{1}{f}\qquad m=\frac{p'}{p}\qquad d_{\mathrm{Airy}}=2.44\lambda N\qquad \mathrm{DOF}\approx\frac{2Nc(1+m)}{m^2}$$
+ <h3>Slip model: drift d, creep s, travel a, switch reference y [T59]</h3>
+ $$\begin{bmatrix}d\\s\end{bmatrix}_{k+1}=\begin{bmatrix}1&a\\0&1\end{bmatrix}\begin{bmatrix}d\\s\end{bmatrix}_k+w\qquad y=d+v\qquad K=\frac{PH^\top}{HPH^\top+r}\qquad \hat x\leftarrow\hat x+K(y-\hat d)\qquad 2\sqrt{P_{dd}}>\text{budget}\Rightarrow\text{re-home}$$
  <h3>HDR response (Debevec & Malik) [R5]</h3>
  $$g(Z_{ij})=\ln E_i+\ln\Delta t_j$$
 </section>
@@ -187,7 +228,7 @@
 </main>
 </main>
 <footer class="site-foot">
- <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html" aria-current="page">Lab</a><a href="render.html">Render</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html" aria-current="page">Lab</a><a href="render.html">Render</a><a href="xr.html">AR and VR</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
  <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span><span>Figures are original drawings.</span></p>
 </footer>
 
@@ -562,6 +603,7 @@ $("build").addEventListener("input", e => { const b = +e.target.value; e.target.
 $("build").nextElementSibling.textContent = "17"; buildInfo(17);
 setPhase(6); fillMats(); drawLobe(); drawSphere();
 </script>
+<script src="og/slip-lab.js" defer></script>
 <script>
 // ---------- calibration lab: same model as software/src/opengonio/sim.py ----------
 (() => {

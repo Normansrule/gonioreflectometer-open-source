@@ -3,14 +3,14 @@
 PY := $(shell [ -x .venv/bin/python ] && echo .venv/bin/python || echo python3)
 m ?= update
 
-.PHONY: help setup build check test parts cad cad-check cad-zip publish all sim render release done next paper export ci
+.PHONY: help setup build check test parts cad cad-check cad-zip publish all sim render release done next paper paper-check paper-submit export ci
 
 help:            ## list commands
 	@grep -E '^[a-z-]+:.*## ' Makefile | sed 's/:.*## /\t/'
 
 setup:           ## once: .venv with the software, tests and tools
 	python3 -m venv .venv
-	.venv/bin/pip install -q -e "./software[dev]" pyyaml numpy openpyxl pillow
+	.venv/bin/pip install -q -e "./software[dev]" pyyaml numpy openpyxl pillow opencv-python-headless
 	@echo "done. optional for 3D parts: .venv/bin/pip install cadquery numpy-stl matplotlib"
 
 build:           ## regenerate checklists, README tables, figures, budgets, 3D index (+ apply PARTS.md decisions)
@@ -33,6 +33,8 @@ build:           ## regenerate checklists, README tables, figures, budgets, 3D i
 	$(PY) tools/cad/catalog.py
 	$(PY) tools/bom_readme.py
 	$(PY) tools/refs_bib.py
+	$(PY) tools/joss_bib.py > /dev/null
+	$(PY) tools/paper_check.py --sync
 	$(PY) tools/site_data.py > /dev/null
 	mkdir -p software/src/opengonio/app/static/og/fonts   # the app shares the website's tokens, script and fonts
 	cp docs/og/og.css docs/og/og.js docs/og/icon.svg docs/og/render-gl.js software/src/opengonio/app/static/og/
@@ -66,8 +68,9 @@ cad-zip:         ## every STEP (printed + bought + open + assembly) in dist/open
 	$(PY) -m zipfile -c dist/opengonio-cad.zip cad/README.md cad/bought cad/open cad/assembly $$(ls phases/*/3d/*.step)
 	@echo "dist/opengonio-cad.zip ($$(du -h dist/opengonio-cad.zip | cut -f1))"
 
-check:           ## milestones, parts lists, budget, references, links, machine config
+check:           ## milestones, parts lists, budget, references, links, machine config, paper structure
 	$(PY) tools/check.py
+	$(PY) tools/paper_check.py --strict
 
 test:            ## software tests
 	$(PY) -m pytest -q software
@@ -79,6 +82,13 @@ paper:           ## paper/build/opengonio.pdf (LaTeX + biber; skipped if latexmk
 	  cd paper && SOURCE_DATE_EPOCH=$$(git log -1 --format=%ct -- . ':!build' ':!generated' ':!figures' ':!references.bib' ../REFERENCES.md ../tools 2>/dev/null || echo 0) FORCE_SOURCE_DATE=1 latexmk -g -r latexmkrc -interaction=nonstopmode -halt-on-error -quiet opengonio.tex > build.log 2>&1 \
 	  && echo "paper/build/opengonio.pdf" || (tail -30 build.log; exit 1); \
 	else echo "paper: skipped (sudo apt install latexmk biber texlive-publishers texlive-bibtex-extra texlive-latex-extra)"; fi
+
+paper-check:     ## is the paper ready to submit? sections, validation rows still unmeasured, DOI, [TBD]s (paper/submission.yaml)
+	$(PY) tools/paper_assets.py > /dev/null
+	$(PY) tools/paper_check.py
+
+paper-submit: paper   ## submission copies -> paper/build/submission/: HardwareX PDF (numbered refs), arXiv source zip, JOSS files
+	bash scripts/paper_submit.sh
 
 export:          ## exports/: Word + Overleaf paper, Zotero refs, Excel BOM, wiki PDF/Word, build book PDF (needs pandoc; see exports/README.md)
 	$(PY) tools/exports.py

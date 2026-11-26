@@ -1,0 +1,6 @@
+# latexmk settings: PDF via pdflatex + biber, everything into build/
+$pdf_mode = 1;
+$out_dir = 'build';
+$aux_dir = 'build';
+$bibtex_use = 2;
+@default_files = ('opengonio-xr.tex');

@@ -184,7 +184,7 @@ Temperature in phases/06-camera-light/design.md → Results.
 
 ## M19 · Mirror test
 
-First real data proves the angles are right. · 0/1 steps done · ~30 min hands-on · ~1 wk
+First real data proves the angles are right. · 0/2 steps done · ~1 h hands-on · ~1 wk
 
 ### M19.1 Mirror sweeps
 
@@ -210,6 +210,31 @@ First real data proves the angles are right. · 0/1 steps done · ~30 min hands-
 #### Record
 
 Three errors in phases/06-camera-light/design.md → Results; commit.
+
+### M19.2 Slip check
+
+**Time** 30 min · **Needs** M19.1 passed · grblHAL controller (the probe reads the home-switch pins)
+
+#### Do
+
+1. `opengonio slip M4`, then `opengonio slip M3` (5 rounds each: 360° of travel, then the home switch is found again).
+2. Copy `creep_pct` and the spread of `measured_deg` into `slip:` in `software/config/machine.yaml` (`creep_sd` = 2 × the larger |creep| ÷ 100; `switch_sd_deg` = spread with the belt off load, at least 0.02); `make build`.
+3. Set `slip.mode: probe`.
+
+#### Verify
+
+- [ ] No round reports `"event"`; the command exits 0.
+- [ ] `measured_deg` of every round within ±0.1.
+
+#### If a check fails
+
+- `step loss`: tension the belt, tighten the pulley set screw, lower that axis's acceleration in `tools/grblhal_settings.py` (`make build`, `bash scripts/controller.sh settings`); repeat.
+- `switch not found`: the probe search is `pulloff_deg + max_correct_deg`; check `$27` = 2 and the flag still enters the switch.
+- FluidNC board: keep `slip.mode: rehome` (no probe); skip the measurement and note it in design.md.
+
+#### Record
+
+Both JSON reports in phases/06-camera-light/design.md → Results; commit.
 
 ## M20 · First reflectance curves
 

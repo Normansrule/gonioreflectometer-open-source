@@ -36,7 +36,7 @@ import socket
 import threading
 import time
 import traceback
-from dataclasses import dataclass, field
+from dataclasses import replace, dataclass, field
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -92,6 +92,7 @@ class App:
         self.stop_flag = threading.Event()
         self.last_error: str | None = None
         self.spectral_last: dict | None = None
+        self.sim_slip: dict = {}
 
     # ---- connection -----------------------------------------------------------------------------------------
     def connect(self, mode: str, material: str | None = None) -> None:
@@ -104,6 +105,9 @@ class App:
                 if material not in MATERIALS:
                     raise Refused(f"unknown material {material!r}: choose one of {', '.join(MATERIALS)}")
                 self.cfg = self.base_cfg.with_phase(max(self.base_cfg.installed_phase, 9))   # every axis to try
+                if self.cfg.slip.get("mode", "rehome") == "rehome":                         # the simulator has switch pins: measure
+                    self.cfg = replace(self.cfg, slip={**self.cfg.slip, "mode": "probe"})
+                self.sim_slip = {}
                 t = sim_transport(self.cfg)
                 self.g = Gantry(self.cfg, FluidNC(t, timeout_s=1), offsets=cal.offsets)
                 self.cam = SimCamera(self.cfg, t, material, {"M3": 0.4})                   # the same hidden table error as the demo
@@ -168,6 +172,34 @@ class App:
             if not isinstance(on, bool):
                 raise ValueError("'on' must be true or false")
             self._gantry().light(name, on)
+
+    def reference(self, axis: str | None = None) -> dict:
+        """Send axes back to their home switch (measuring the drift first where the controller can) and return."""
+        with self.lock:
+            self._busy_refuse()
+            g = self._gantry()
+            keys = [axis] if axis else [k for k in g.axes if k in g.homed and k in g.slip]
+            if not keys:
+                raise Refused("nothing to check: home the axes first" if g.slip else "slip.mode is off in machine.yaml")
+            measure = g.dialect["wake"] is None                    # grblHAL: the status report carries the switch pins
+            return {"checks": [g.check(k, measure=measure) for k in keys]}
+
+    def set_sim_slip(self, creep_pct: float = 0.0, lost_deg: float = 0.0) -> dict:
+        """Simulator only: make the virtual belts creep (percent of travel) and/or lose steps on the next table move."""
+        with self.lock:
+            self._busy_refuse()
+            g = self._gantry()
+            if self.mode != "sim":
+                raise Refused("slip can only be injected into the simulated machine")
+            creep_pct, lost_deg = float(creep_pct), float(lost_deg)
+            if not (0 <= creep_pct <= 1 and abs(lost_deg) <= 2):
+                raise ValueError("creep_pct must be 0 to 1, lost_deg within 2")
+            t = g.nc.t
+            t.creep = {a.fluidnc_axis: creep_pct / 100.0 for a in g.axes.values()}
+            if lost_deg:
+                t.jump[g.axes["M3"].fluidnc_axis] = lost_deg
+            self.sim_slip = {"creep_pct": creep_pct, "lost_deg": lost_deg}
+            return self.sim_slip
 
     def stop(self) -> None:
         """Always accepted: flag the running job, then hold and reset the controller (re-home needed)."""
@@ -420,6 +452,9 @@ class App:
              "position": dict(g.position) if g else {}, "last_error": self.last_error,
              "job": self.job.__dict__ if self.job else None, "data_dir": str(self.data),
              "devices": self.devices(), "spectral": self.spectral_last,
+             "trust": g.trust() if g else {},
+             "slip": {"mode": g.slip_cfg.mode if g else None, "sim": self.sim_slip if self.mode == "sim" else None,
+                      "measures": bool(g and g.dialect["wake"] is None)},
              "camera": {"exposure_ms": float(cfg.camera.get("exposure_ms", 20)), "width": cfg.camera["width"], "height": cfg.camera["height"]}}
         if g and all(k in g.position and k in g.homed for k in g.axes):     # angles only from a trusted (homed) pose
             s["angles"] = self.check({})
@@ -624,6 +659,8 @@ def respond(app: App, method: str, path: str, query: str, b: dict) -> tuple[int,
             "/api/check": lambda: a.check(b.get("pose", {})),
             "/api/light": lambda: a.light(b["name"], b["on"]),
             "/api/spectral": a.spectral,
+            "/api/reference": lambda: a.reference(b.get("axis")),
+            "/api/simslip": lambda: a.set_sim_slip(b.get("creep_pct", 0), b.get("lost_deg", 0)),
             "/api/fit": lambda: a.fit_material(b["run"]),
             "/api/run": lambda: {"job": a.run(b.get("plan", "mirror"), b.get("theta", 30), b.get("step", 10)).__dict__},
         }

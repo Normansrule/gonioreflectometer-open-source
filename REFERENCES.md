@@ -1,6 +1,6 @@
 # References
 
-510 sources. IDs are cited in docs, code and the BOM `Refs` column; each phase README lists its IDs. Accessed 2026-10-03/07. All figures are original.
+523 sources. IDs are cited in docs, code and the BOM `Refs` column; each phase README lists its IDs. Accessed 2026-10-03/07. All figures are original.
 
 | Prefix | Topic |
 |---|---|
@@ -11,6 +11,7 @@
 | V | [Calibration, HDR, photometric stereo, 3D scanning](#calibration-hdr-photometric-stereo-and-3d-scanning) |
 | N | [Standards, colour, optics, safety](#standards-colour-optics-and-safety) |
 | H | [Motion control, electronics, open hardware](#motion-control-electronics-and-open-hardware) |
+| X | [Mixed reality, training and evaluation](#mixed-reality-training-and-evaluation) |
 | P C K L M F E | [Parts](#parts-power-and-electrical) |
 
 ## Primary design references
@@ -274,6 +275,7 @@
 | **T56** | G. Taubin, "A Signal Processing Approach to Fair Surface Design," *SIGGRAPH* 1995 (bibliographic; not fetched) | λ/μ mesh smoothing without shrinkage: scanned visual hull → mesh (`render/mesh.py`) |
 | **T57** | B. Karis, "Physically Based Shading on Mobile," Unreal Engine blog, 2014 (bibliographic; not fetched) | Analytic environment-BRDF fit for the viewer's approximate studio light (`render/raster.py`, `render-gl.js`) |
 | **T58** | K. Narkowicz, "ACES Filmic Tone Mapping Curve," blog, 2016 (bibliographic; not fetched) | Tone curve shared by the software and WebGL renderers |
+| **T59** | R. E. Kalman, "A New Approach to Linear Filtering and Prediction Problems," *Journal of Basic Engineering* 82(1):35–45, 1960 — [doi:10.1115/1.3662552](https://doi.org/10.1115/1.3662552) (bibliographic; not fetched) | Slip estimator: axis drift and belt creep from home-switch references (`gantry/slip.py`) |
 
 ## Calibration, HDR, photometric stereo and 3D scanning
 
@@ -580,6 +582,26 @@
 | **H59** | ams AS7341 11-channel spectral sensor; Adafruit breakout #4698 — [product](https://www.adafruit.com/product/4698) (not fetched; price to confirm) | Spectral sensor (phase 10) |
 | **H60** | W3C, Portable Network Graphics (PNG) Specification — [w3.org/TR/png](https://www.w3.org/TR/png/) | Built-in PNG reader/writer in `opengonio.imageio` (phase 00) |
 
+
+## Mixed reality, training and evaluation
+
+Accessed 2026-11-25. Web standards and vendor pages were read; rows marked "bibliographic; not fetched" were not opened.
+
+| ID | Source | Used for |
+|---|---|---|
+| **X1** | W3C Immersive Web Working Group, "WebXR Device API," W3C Candidate Recommendation Draft — [w3.org/TR/webxr](https://www.w3.org/TR/webxr/) | Sessions, views, reference spaces, input sources of the trainer (stage 18) |
+| **X2** | W3C Immersive Web Working Group, "WebXR Augmented Reality Module - Level 1," W3C Candidate Recommendation Draft — [w3.org/TR/webxr-ar-module-1](https://www.w3.org/TR/webxr-ar-module-1/) | The `immersive-ar` session mode |
+| **X3** | Microsoft, "WebXR overview" (Mixed Reality documentation) — [learn.microsoft.com](https://learn.microsoft.com/windows/mixed-reality/develop/javascript/webxr-overview) | Which WebXR modules Edge on HoloLens 2 lists as supported |
+| **X4** | Meta, "Mixed Reality Support in Browser" (Meta Quest developer documentation) — [developers.meta.com](https://developers.meta.com/horizon/documentation/web/webxr-mixed-reality/) | Passthrough through `immersive-ar` on Meta Quest |
+| **X5** | UploadVR, "Microsoft Is Discontinuing HoloLens 2, With No Replacement," 2024 — [uploadvr.com](https://www.uploadvr.com/microsoft-discontinuing-hololens-2/) | HoloLens 2 out of production; updates until 31 December 2027 |
+| **X6** | Microsoft Tech Community, "Hololens 2 - Edge - WebXR & immersive-ar mode," forum thread, 2023 — [techcommunity.microsoft.com](https://techcommunity.microsoft.com/t5/mixed-reality-general/hololens-2-edge-webxr-amp-immersive-ar-mode/m-p/3865166) | User reports that AR sessions stopped starting in Edge on HoloLens 2: a risk, not a measured result |
+| **X7** | P. Milgram, F. Kishino, "A Taxonomy of Mixed Reality Visual Displays," *IEICE Transactions on Information and Systems* E77-D(12):1321–1329, 1994 (bibliographic; not fetched) | Terms: augmented, virtual, mixed reality |
+| **X8** | R. T. Azuma, "A Survey of Augmented Reality," *Presence: Teleoperators and Virtual Environments* 6(4):355–385, 1997 — [doi:10.1162/pres.1997.6.4.355](https://doi.org/10.1162/pres.1997.6.4.355) (bibliographic; not fetched) | Registration, optical and video see-through displays |
+| **X9** | J. Brooke, "SUS: A 'Quick and Dirty' Usability Scale," in *Usability Evaluation in Industry*, Taylor & Francis, pp. 189–194, 1996 (bibliographic; not fetched) | System Usability Scale in the user study |
+| **X10** | S. G. Hart, L. E. Staveland, "Development of NASA-TLX (Task Load Index): Results of Empirical and Theoretical Research," *Advances in Psychology* 52:139–183, 1988 — [doi:10.1016/S0166-4115(08)62386-9](https://doi.org/10.1016/S0166-4115(08)62386-9) (bibliographic; not fetched) | Workload in the user study |
+| **X11** | R. S. Kennedy, N. E. Lane, K. S. Berbaum, M. G. Lilienthal, "Simulator Sickness Questionnaire: An Enhanced Method for Quantifying Simulator Sickness," *The International Journal of Aviation Psychology* 3(3):203–220, 1993 — [doi:10.1207/s15327108ijap0303_3](https://doi.org/10.1207/s15327108ijap0303_3) (bibliographic; not fetched) | Discomfort in the user study |
+| **X12** | I. Radu, "Augmented reality in education: a meta-review and cross-media analysis," *Personal and Ubiquitous Computing* 18(6):1533–1543, 2014 — [doi:10.1007/s00779-013-0747-y](https://doi.org/10.1007/s00779-013-0747-y) (bibliographic; not fetched) | Related work: AR for learning |
+| **X13** | M.-B. Ibáñez, C. Delgado-Kloos, "Augmented reality for STEM learning: A systematic review," *Computers & Education* 123:109–123, 2018 — [doi:10.1016/j.compedu.2018.05.002](https://doi.org/10.1016/j.compedu.2018.05.002) (bibliographic; not fetched) | Related work: AR in science and engineering teaching |
 
 ## Firmware, protocols, software
 

@@ -171,11 +171,20 @@ def render(boms: dict[str, list[dict]]) -> str:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=Path, help="older phases/ folder to take Own / Paid USD from (first run)")
+    ap.add_argument("--set", nargs="+", metavar=("STATUS", "ID"),
+                    help="set a status on part IDs without editing PARTS.md by hand, e.g. --set have PWR-30 CTL-01")
     a = ap.parse_args(argv)
     if DOC.exists():
         decisions = read_doc(DOC.read_text(encoding="utf-8"))
     else:
         decisions = seed(a.seed) if a.seed else {}
+    if a.set:
+        status, ids = a.set[0], a.set[1:]
+        known = {r["ID"] for f in sorted(ROOT.glob("phases/*/bom.csv")) for r in csv.DictReader(f.open(encoding="utf-8"))}
+        if status not in STATUSES or not ids or set(ids) - known:
+            ap.error(f"--set needs one of {', '.join(STATUSES)} and known part IDs (unknown: {sorted(set(ids) - known)})")
+        for i in ids:
+            decisions[i] = {**decisions.get(i, {"note": "", "paid": ""}), "status": status}
     boms = apply(decisions)
     DOC.write_text(render(boms), encoding="utf-8")
     readme = ROOT / "README.md"

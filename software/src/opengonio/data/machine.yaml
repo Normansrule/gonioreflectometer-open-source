@@ -81,6 +81,15 @@ scan:                           # 3D photo scanner (stage 11): second camera fix
   ps_band: 3                    # LED bank band used for photometric stereo (one band = one albedo)
   ps_m4_deg: [40, 100, 160, 220, 280, 320]
 
+slip:                           # open-loop axes drift (belt creep, lost steps): model and limits in gantry/slip.py, wiki → Calibration
+  mode: rehome                  # off | rehome (re-home an axis when its error bound passes the budget) | probe (also measure the drift first; grblHAL)
+  budget_deg: null              # allowed 2-sigma angle error between references; null = repeatability_target_deg
+  q_deg2_per_deg: 1.0e-6        # NOMINAL until M19.2: random-walk variance per degree travelled
+  creep_sd: 2.0e-4              # NOMINAL until M19.2: prior spread of the creep, deg per deg (0.02 %)
+  switch_sd_deg: 0.02           # NOMINAL until M19.2: repeatability of the home switch
+  max_correct_deg: 1.0          # more measured slip than this is a mechanical fault: the run stops
+  approach_deg: 0.0             # > 0: final approach always from the switch side, from this far back (takes up backlash)
+
 axes:
   M4:
     name: light_arm             # angle from camera to light, about +Z (through the back at 180)
@@ -105,7 +114,8 @@ axes:
     min_deg: -90.0
     max_deg: 90.0
     home_deg: -90.0
-    gear_ratio: 5.0
+    gear_ratio: 3.0             # 20T -> printed 60T: the ratio that fits the table's 232 mm belt (one closed-belt size)
+    microsteps: 32              # 0.019 deg per step (5:1 at 1/16 was 0.0225)
   M1:
     name: sample_spin           # about the sample normal
     fluidnc_axis: A

@@ -319,5 +319,5 @@ figcaption { margin-top: var(--s-3); font-size: var(--step-small); color: var(--
 
 /* the landing header on the narrowest phones: "Project map" becomes "Map" */
 .show-xs { display: none; }
-@media (max-width: 360px) { .hide-xs { display: none; } .show-xs { display: inline; }
+@media (max-width: 430px) { .hide-xs { display: none; } .show-xs { display: inline; }
   .top { gap: var(--s-3); } .top .mark { font-size: 1.25rem; } .top .theme { padding: 0 var(--s-3); } }

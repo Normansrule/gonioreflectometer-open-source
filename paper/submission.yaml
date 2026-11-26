@@ -1,0 +1,77 @@
+# Where and how the project is published. Source of truth for `make paper-check` (tools/paper_check.py), the
+# specifications table (DOI, OSHWA UID) and the roadmap milestone M50. Requirements checked 2026-11-14 against the
+# sources listed under each venue; re-check them before submitting (journals change their guides).
+# SPDX-License-Identifier: CC-BY-SA-4.0
+
+archive:                       # HardwareX accepts Zenodo, OSF or Mendeley Data; Zenodo archives every GitHub release
+  repository: https://github.com/Normansrule/gonioreflectometer-open-source
+  zenodo_doi: null             # e.g. 10.5281/zenodo.1234567 after M50.1; goes into the specifications table
+  oshwa_uid: null              # e.g. US002xxx after M45.2 (optional row in the specifications table)
+
+author:
+  name: Aleksander Norman
+  affiliation: California State University, Dominguez Hills
+  orcid: null                  # [TBD] https://orcid.org: journals ask for it at submission
+  email_in_manuscript: null    # [TBD] corresponding-author email: not stored in the repo until you choose one
+
+venues:
+  - id: hardwarex
+    name: HardwareX (Elsevier)
+    kind: hardware article
+    order: 2
+    manuscript: paper/opengonio.tex
+    sources:
+      - https://zenodo.org/record/5078227          # HardwareX template, version July 2022 (latest on the record)
+      - https://zenodo.org/record/3944758          # approved file repositories: Mendeley Data, OSF, Zenodo
+      - https://www.elsevier.com/en-gb/about/policies-and-standards/the-use-of-generative-ai-and-ai-assisted-technologies-in-writing-for-elsevier
+    sections:                  # template: "All sections are mandatory"; order as in 2026 HardwareX articles
+      - Specifications table
+      - Hardware in context
+      - Hardware description
+      - Design files summary
+      - Bill of materials summary
+      - Build instructions
+      - Operation instructions
+      - Validation and characterization
+      - Ethics statements
+      - CRediT author statement
+      - Declaration of competing interest
+      - Acknowledgements
+      - Declaration of generative AI and AI-assisted technologies in the writing process   # last, right above references
+    spec_rows: [Hardware name, Subject area, Hardware type, Closest commercial analog, Open source license,
+                Cost of hardware, Source file repository]
+    rules:
+      - 'design files in an approved repository with a DOI, public at submission (Zenodo via M50.1)'
+      - 'validation demonstrates the hardware in a scientific application (paper/results.yaml)'
+      - 'numbered references (2026 articles cite [1], [2]): `make paper-submit` builds that version'
+      - 'AI declaration immediately above the references, titled as in `sections`'
+      - 'graphical abstract (shown on 2026 articles): paper/figures/graphical_abstract.png'
+      - 'licences must be open (OSHWA definition): CERN-OHL-S-2.0, GPL-3.0-or-later, CC BY-SA 4.0'
+  - id: joss
+    name: Journal of Open Source Software (JOSS)
+    kind: software paper (the opengonio Python package)
+    order: 3
+    manuscript: paper/joss/paper.md
+    sources:
+      - https://joss.readthedocs.io/en/latest/paper.html
+      - https://joss.readthedocs.io/en/latest/review_criteria.html
+    sections: [Summary, Statement of need, State of the field, Software design, Research impact statement,
+               AI usage disclosure, Acknowledgements, References]
+    words: [750, 1750]
+    rules:
+      - 'must not focus on new research results (those go to HardwareX)'
+      - 'impact evidence must be "compelling and specific, not aspirational": submit after real measurements exist'
+      - 'tests, installation and usage docs, community guidelines (CONTRIBUTING.md)'
+  - id: arxiv
+    name: arXiv preprint
+    kind: preprint of the HardwareX manuscript
+    order: 1
+    manuscript: paper/opengonio.tex
+    sources:
+      - https://info.arxiv.org/help/submit_tex.html
+      - https://info.arxiv.org/help/00README.html
+      - https://blog.arxiv.org/2026/01/21/attention-authors-updated-endorsement-policy/
+    rules:
+      - 'upload the LaTeX source with references.bib and no .bbl (since late 2025 arXiv runs biber itself; an uploaded .bbl must match its TeX Live bbl format): `make paper-arxiv` builds that zip'
+      - 'endorsement (since 2026-01-21) needs an institutional email AND an earlier paper in the same arXiv domain; without one, ask an established arXiv author (for example a faculty member) for a personal endorsement'
+      - 'at most two submissions per calendar month (arXiv rate limit since 2026-10-01)'

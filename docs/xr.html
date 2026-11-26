@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenGonio AR and VR training</title>
+<meta name="description" content="Augmented and virtual reality training for the OpenGonio gonioreflectometer: the axis arcs and their limits, the light path and the BRDF lobe, in a headset or in this page. Not yet run on a headset.">
+<meta name="theme-color" content="#0c0b0a">
+<link rel="icon" href="og/icon.svg" type="image/svg+xml">
+<link rel="preload" href="og/fonts/hanken-grotesk-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="og/og.css">
+<script src="og/og.js"></script>
+<link rel="stylesheet" href="og/lab.css">
+<link rel="stylesheet" href="og/render.css">
+<link rel="stylesheet" href="og/xr.css">
+</head>
+<body>
+<a class="skip btn btn-light" href="#main">Skip to the trainer</a>
+<header class="bar">
+ <a class="mark display" href="./">OpenGonio</a>
+ <nav aria-label="Training sections">
+  <a href="#trainer">Trainer</a><a href="#headset">Headset</a><a href="#compare">Compare</a><a href="#graphics">Graphics</a><a href="#limits">Limits</a>
+ </nav>
+ <button class="btn theme" type="button" data-theme-toggle><span data-theme-label>Light</span></button>
+</header>
+<main id="main">
+<section class="intro">
+ <div>
+  <h1 class="display">AR and VR training</h1>
+  <p class="lead">See what the machine does before you run it: where each axis can travel, where the light goes, and
+   what the camera measures. In a headset over the real machine, or here in the page.</p>
+  <p class="note">Status: runs in this page. Not yet run on a headset: the Augmented Reality (AR) and Virtual Reality
+   (VR) buttons below use WebXR and are untested on HoloLens 2 and Meta Quest until the hardware is in the lab.</p>
+ </div>
+</section>
+
+<section id="trainer">
+ <h2>Trainer</h2>
+ <p class="sub">Drag to orbit, wheel to zoom, arrow keys orbit, + and − zoom. Five lessons, each adds one idea.</p>
+ <div class="grid">
+  <div class="stage" id="xr-stage">
+   <canvas id="xr-gl" tabindex="0" role="img" aria-label="3D view of the gonioreflectometer with its axis arcs, the light ray from the lamp to the sample, the mirror direction and the BRDF lobe; the angles are given beside it"></canvas>
+   <p class="nogl" id="xr-nogl" hidden>This browser has no WebGL, so the 3D view is off.</p>
+  </div>
+  <div class="card controls" data-ui>
+   <div class="seg xr-lessons" role="radiogroup" aria-label="Lesson" id="xr-lessons"></div>
+   <p class="xr-lesson"><b id="xr-lesson-title"></b><span id="xr-lesson-text"></span></p>
+   <label>M4 light arm <input id="xr-m4" type="range"><output></output></label>
+   <label>M3 table <input id="xr-m3" type="range"><output></output></label>
+   <label>M2 tilt <input id="xr-m2" type="range"><output></output></label>
+   <label>M1 spin <input id="xr-m1" type="range"><output></output></label>
+   <label>Roughness <input id="xr-rough" type="range" min="0.05" max="1" step="0.01"><output></output></label>
+   <label>Metallic <input id="xr-metal" type="range" min="0" max="1" step="0.01"><output></output></label>
+   <label>Base colour <input id="xr-base" type="range" min="0.05" max="1" step="0.01"><output></output></label>
+   <div class="checks">
+    <label class="check"><input type="checkbox" id="xr-play"> Play the lesson</label>
+    <label class="check"><input type="checkbox" id="xr-ghost" checked> Show the machine</label>
+   </div>
+   <dl class="xr-read">
+    <div><dt>θi (lamp to normal)</dt><dd id="xr-ti">–</dd></div>
+    <div><dt>θr (camera to normal)</dt><dd id="xr-tr">–</dd></div>
+    <div><dt>Camera off the mirror direction</dt><dd id="xr-off">–</dd></div>
+    <div><dt>BRDF at the camera</dt><dd id="xr-f">–</dd></div>
+   </dl>
+   <p class="status" id="xr-status" role="status">Loading…</p>
+  </div>
+ </div>
+ <p class="note"><span class="key k4"></span> M4 light arm &nbsp; <span class="key k3"></span> M3 table &nbsp;
+  <span class="key k2"></span> M2 tilt &nbsp; <span class="key k1"></span> M1 spin &nbsp; <span class="key kstop"></span> limit,
+  no travel. The Bidirectional Reflectance Distribution Function (BRDF) is the model the project fits: Lambert + GGX.</p>
+</section>
+
+<section id="headset">
+ <h2>In a headset</h2>
+ <p class="sub">Open this page in the headset's browser. The same page serves both devices, so they show the same content.</p>
+ <div class="grid">
+  <div class="card">
+   <div class="buttons">
+    <button class="btn btn-light" type="button" id="xr-ar" disabled>Enter AR</button>
+    <button class="btn" type="button" id="xr-vr" disabled>Enter VR</button>
+   </div>
+   <p class="small">AR: <span id="xr-ar-note">checking…</span> · VR: <span id="xr-vr-note">checking…</span></p>
+   <label class="check"><input type="checkbox" id="xr-align" checked> Align to the real machine in AR (two points)</label>
+   <ol class="xr-steps">
+    <li><b>Align (AR).</b> Pinch at the centre of the sample, then pinch at the camera lens. The overlay snaps to those
+     two points; height comes from gravity.</li>
+    <li><b>Step.</b> Pinch, or pull the trigger, for the next lesson. The lessons play on their own.</li>
+    <li><b>Leave.</b> End the session from the headset's menu. The frame-time log appears below.</li>
+   </ol>
+  </div>
+  <div class="card">
+   <h3>Session log</h3>
+   <p class="small">Written when a headset session ends: frame times, views, alignment error. This is the data the
+    platform comparison uses.</p>
+   <pre class="xr-log" id="xr-log">No headset session yet.</pre>
+   <div class="buttons"><button class="btn" type="button" id="xr-save" disabled>Download log (JSON)</button></div>
+  </div>
+ </div>
+</section>
+
+<section id="compare">
+ <h2>Two headsets, one protocol</h2>
+ <p class="sub">What will be measured on each device. No value is filled in until it is measured on the hardware.</p>
+ <div class="card"><div class="scrollx"><table class="tbl">
+  <caption class="sr-only">Comparison protocol for HoloLens 2 and Meta Quest</caption>
+  <thead><tr><th>Measure</th><th>How</th><th>HoloLens 2</th><th>Meta Quest</th></tr></thead>
+  <tbody>
+   <tr><td>Display type</td><td>from the vendor's specification</td><td>optical see-through</td><td>video passthrough</td></tr>
+   <tr><td>AR session starts (WebXR <code>immersive-ar</code>)</td><td>the button above</td><td>[TBD]</td><td>[TBD]</td></tr>
+   <tr><td>Frame rate, 95th percentile frame time</td><td>session log</td><td>[TBD]</td><td>[TBD]</td></tr>
+   <tr><td>Alignment error at the camera lens</td><td>session log, <code>residual_mm</code></td><td>[TBD]</td><td>[TBD]</td></tr>
+   <tr><td>Overlay drift after walking round the bench</td><td>ruler at the lamp arc's 20° stop</td><td>[TBD]</td><td>[TBD]</td></tr>
+   <tr><td>Arc visible in one view at 0.75 m</td><td>fraction of the M4 arc inside the field of view</td><td>[TBD]</td><td>[TBD]</td></tr>
+   <tr><td>Legibility of thin lines under the lab lights</td><td>5-point rating, lamp on and off</td><td>[TBD]</td><td>[TBD]</td></tr>
+   <tr><td>Learning gain, usability, workload, discomfort</td><td>pre and post quiz, questionnaires (needs ethics approval)</td><td>[TBD]</td><td>[TBD]</td></tr>
+  </tbody></table></div></div>
+ <p class="note">Protocol and sources: wiki page “XR training”. HoloLens 2 is out of production and its software support
+  ends on 31 December 2027; its browser has had periods where AR sessions did not start. A native build is the
+  fallback and is planned, not built.</p>
+</section>
+
+<section id="graphics">
+ <h2>Graphics</h2>
+ <p class="sub">The trainer is also a small real-time graphics project.</p>
+ <div class="grid">
+  <div class="card"><h3>One BRDF, four renderers</h3>
+   <p>The lobe is drawn from the same Lambert + GGX formula as the fit (<code>fit.py</code>), the browser renderer
+    (<code>render-gl.js</code>) and the numpy renderer. A test compares this page's JavaScript with the Python.</p></div>
+  <div class="card"><h3>Lines that survive a headset</h3>
+   <p>One-pixel lines vanish on a see-through display. Every arc and ray is two crossed ribbons of real width in
+    millimetres, drawn as triangles with premultiplied alpha.</p></div>
+  <div class="card"><h3>Stereo without an engine</h3>
+   <p>Plain WebGL: one draw per eye with the headset's own view and projection matrices. No engine or library to
+    install, about 300 lines.</p></div>
+  <div class="card"><h3>Next</h3>
+   <p>Measured BRDF from a real run in the lobe; the fitted material lit on the sample in the headset; occlusion by
+    the real machine; a native OpenXR build for comparison.</p></div>
+ </div>
+</section>
+
+<section id="limits">
+ <h2>Limits</h2>
+ <ul class="limits">
+  <li>Not yet run on any headset. Everything on this page was checked in a desktop browser only.</li>
+  <li>The overlay is not hidden by the real machine: virtual lines draw over real parts that should cover them.</li>
+  <li>Two-point alignment fixes position and heading; it assumes the bench is level.</li>
+  <li>The lobe is the fitted model, not measured data, and is drawn on a square-root scale.</li>
+  <li>The comparison table is a protocol. No result exists yet.</li>
+ </ul>
+</section>
+</main>
+<footer class="site-foot">
+ <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="xr.html" aria-current="page">AR and VR</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
+ <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span><span>Not yet run on a headset.</span></p>
+</footer>
+<script src="og/model/rig.js"></script>
+<script src="og/xr.js"></script>
+</body>
+</html>

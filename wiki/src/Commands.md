@@ -22,6 +22,8 @@ opengonio scan demo --out demo               # 3D scan pipeline on a synthetic o
 opengonio capture warmup --minutes 10        # stage 06: lamp settle time -> lights.white.warmup_s
 opengonio capture mirror --theta 40          # mirror sweep -> data/mirror_40/ (images + manifest.json)
 opengonio verify data/mirror_40              # PASS / WARN / FAIL: missing images, angles, lamp drift, saturation
+opengonio slip M3                            # axis drift: travel 360°, find the home switch again, 5 rounds (grblHAL; --sim plastic --creep 0.0008 to try)
+opengonio doctor                             # which software is installed: OpenCV (ArUco, HDR), pyserial, COLMAP, LaTeX; versions and gaps
 opengonio curve data/mirror_40               # curve.csv + curve.svg (picture of the run)
 opengonio calibrate mirror data/mirror_*     # angle offset -> software/config/calibration.yaml
 opengonio capture dark      && opengonio calibrate dark data/dark            # lamp-off level

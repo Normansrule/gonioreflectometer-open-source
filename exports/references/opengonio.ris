@@ -1618,6 +1618,18 @@ PY  - 2016
 ER  - 
 
 TY  - JOUR
+ID  - T59
+AU  - Kalman, R. E.
+TI  - A new approach to linear filtering and prediction problems
+T2  - Journal of Basic Engineering
+PY  - 1960
+VL  - 82
+IS  - 1
+DO  - 10.1115/1.3662552
+SP  - 35-45
+ER  - 
+
+TY  - JOUR
 ID  - V1
 AU  - Zhang, Z.
 TI  - A flexible new technique for camera calibration
@@ -3239,4 +3251,131 @@ TY  - ELEC
 ID  - H60
 TI  - W3C, portable network graphics (PNG) specification
 UR  - https://www.w3.org/TR/png/
+ER  - 
+
+TY  - GEN
+ID  - X1
+AU  - W3C Immersive Web Working Group
+TI  - WebXR device API
+UR  - https://www.w3.org/TR/webxr/
+ER  - 
+
+TY  - GEN
+ID  - X2
+AU  - W3C Immersive Web Working Group
+TI  - WebXR augmented reality module - level 1
+UR  - https://www.w3.org/TR/webxr-ar-module-1/
+ER  - 
+
+TY  - GEN
+ID  - X3
+AU  - Microsoft
+TI  - WebXR overview
+UR  - https://learn.microsoft.com/windows/mixed-reality/develop/javascript/webxr-overview
+ER  - 
+
+TY  - GEN
+ID  - X4
+AU  - Meta
+TI  - Mixed reality support in browser
+UR  - https://developers.meta.com/horizon/documentation/web/webxr-mixed-reality/
+ER  - 
+
+TY  - GEN
+ID  - X5
+AU  - UploadVR
+TI  - Microsoft is discontinuing HoloLens 2, with no replacement
+PY  - 2024
+UR  - https://www.uploadvr.com/microsoft-discontinuing-hololens-2/
+ER  - 
+
+TY  - GEN
+ID  - X6
+AU  - Microsoft Tech Community
+TI  - Hololens 2 - edge - WebXR & immersive-ar mode
+PY  - 2023
+UR  - https://techcommunity.microsoft.com/t5/mixed-reality-general/hololens-2-edge-webxr-amp-immersive-ar-mode/m-p/3865166
+ER  - 
+
+TY  - JOUR
+ID  - X7
+AU  - Milgram, P.
+AU  - Kishino, F.
+TI  - A taxonomy of mixed reality visual displays
+T2  - IEICE Transactions on Information and Systems
+PY  - 1994
+VL  - 12
+ER  - 
+
+TY  - JOUR
+ID  - X8
+AU  - Azuma, R. T.
+TI  - A survey of augmented reality
+T2  - Presence: Teleoperators and Virtual Environments
+PY  - 1997
+VL  - 6
+IS  - 4
+DO  - 10.1162/pres.1997.6.4.355
+SP  - 355-385
+ER  - 
+
+TY  - CHAP
+ID  - X9
+AU  - Brooke, J.
+TI  - SUS: A ’quick and dirty’ usability scale
+T2  - Usability evaluation in industry
+PY  - 1996
+PB  - Taylor & Francis
+SP  - 189-194
+ER  - 
+
+TY  - JOUR
+ID  - X10
+AU  - Hart, S. G.
+AU  - Staveland, L. E.
+TI  - Development of NASA-TLX (task load index): Results of empirical and theoretical research
+T2  - Advances in Psychology
+PY  - 1988
+VL  - 52
+DO  - 10.1016/S0166-4115(08
+SP  - 139-183
+ER  - 
+
+TY  - JOUR
+ID  - X11
+AU  - Kennedy, R. S.
+AU  - Lane, N. E.
+AU  - Berbaum, K. S.
+AU  - Lilienthal, M. G.
+TI  - Simulator sickness questionnaire: An enhanced method for quantifying simulator sickness
+T2  - The International Journal of Aviation Psychology
+PY  - 1993
+VL  - 3
+IS  - 3
+DO  - 10.1207/s15327108ijap0303_3
+SP  - 203-220
+ER  - 
+
+TY  - JOUR
+ID  - X12
+AU  - Radu, I.
+TI  - Augmented reality in education: A meta-review and cross-media analysis
+T2  - Personal and Ubiquitous Computing
+PY  - 2014
+VL  - 18
+IS  - 6
+DO  - 10.1007/s00779-013-0747-y
+SP  - 1533-1543
+ER  - 
+
+TY  - JOUR
+ID  - X13
+AU  - Ibáñez, M.-B.
+AU  - Delgado-Kloos, C.
+TI  - Augmented reality for STEM learning: A systematic review
+T2  - Computers & Education
+PY  - 2018
+VL  - 123
+DO  - 10.1016/j.compedu.2018.05.002
+SP  - 109-123
 ER  - 

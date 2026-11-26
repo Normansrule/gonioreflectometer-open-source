@@ -151,7 +151,7 @@ def build() -> cq.Assembly:
     add("SPN-01_motor_M1", orient(B.nema17(21.5, 20), t=(0, 0, 150 + P.SPIN["motor_face"])), BUY, g="tilt")
     ya = P.YOKE_INNER / 2
     add("TLT-01_motor_M2", orient(B.nema17(38, 24), z_to=(0, 1, 0), y_to=(0, 0, 1), t=(0, ya, yz + P.YOKE_SEAT + P.TILT_BELT_C)), BUY, g="table")
-    add("TLT-07b_pulley_100T", orient(P.gt2_pulley(100), z_to=(0, 1, 0), y_to=(0, 0, 1), t=(0, ya + 13, 150)), PRINT, g="tilt")
+    add("TLT-07b_pulley_60T", orient(P.gt2_pulley(P.TILT_PULLEY), z_to=(0, 1, 0), y_to=(0, 0, 1), t=(0, ya + 13, 150)), PRINT, g="tilt")
     for s in (-1, 1):
         add("TLT-05_stub_bolt", orient(B.bolt(8, 35, 13, 5.3, True), z_to=(0, -s, 0), y_to=(0, 0, 1), t=(0, s * (ya + 12 + 1 + 9.4 + 5.3), 150)), BUY, g="tilt")
         add("FRM-08_608", orient(B.cyl(22, 7).cut(B.cyl(8, 7)), z_to=(0, s, 0), y_to=(0, 0, 1), t=(0, s * (ya + 12 - 7.2), 150)), BUY, g="table")
