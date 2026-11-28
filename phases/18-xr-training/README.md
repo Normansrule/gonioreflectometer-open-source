@@ -141,11 +141,13 @@ The trainer shows measured data and renders the fitted material in the headset. 
 
 #### Do
 
-1. Load a run's `curve.csv` and `fit.json` in the page; draw the measured points on the lobe next to the fitted surface.
+1. Website → AR and VR → lesson 4 → Load curve.csv: choose the run's `curve.csv`. Set roughness, metallic and base colour to the values in the run's `fit.json`.
+2. Move the lamp (M4) through the incidence angles of the run; the points are drawn for the nearest θi within 5°.
 
 #### Verify
 
-- [ ] Points lie on the lobe where the holdout error is low; `make test` passes.
+- [ ] The page reports the number of points and their θi.
+- [ ] Points lie on the lobe where the holdout error of the fit is low.
 
 #### If a check fails
 
@@ -161,8 +163,8 @@ Screenshot and run name in phases/18-xr-training/design.md → Results; commit.
 
 #### Do
 
-1. Draw the sample disc lit with the fitted material (shader of `docs/og/render-gl.js`) under the virtual lamp.
-2. Occlusion: render the CAD model depth-only before the overlay in AR, so real parts hide lines behind them.
+1. Occlusion (built): in AR with “Hide lines behind the machine” on, walk round the machine and watch a ray pass behind the table post. Repeat with it off; compare the two session logs.
+2. Lit sample (to build): draw the sample disc with the fitted material (shader of `docs/og/render-gl.js`) under the virtual lamp.
 
 #### Verify
 

@@ -32,8 +32,9 @@ Status: runs in a desktop browser. **Not yet run on a headset.** Every headset n
 | Geometry       | `docs/og/model/rig.js`, written by `make cad`                                                                                         | Axes, travel, lamp and camera points come from the CAD and `machine.yaml`; `make check` fails if they drift |
 | BRDF           | Same formula as `fit.py`                                                                                                              | One model in the fit, the three renderers and the trainer                                                   |
 | Lines          | Two crossed ribbons, width in millimetres                                                                                             | One-pixel lines are hard to see in a headset                                                                |
+| Frame cost     | Overlay rebuilt once per frame (about 2,000 triangles), drawn once per eye                                                            | Measured on a desktop processor: about 2 ms to rebuild; headset figure \[TBD\]                              |
 | Alignment (AR) | Two points: pinch at the sample centre, then at the camera lens                                                                       | No markers, no camera access; gives position and heading, height from gravity                               |
-| Log            | Frame times, views, framebuffer size, alignment residual, as JSON                                                                     | The raw data of the comparison                                                                              |
+| Log            | Frame times, views, framebuffer size, alignment residual, occlusion on or off, as JSON                                                | The raw data of the comparison                                                                              |
 
 Terms follow Milgram and Kishino (Milgram & Kishino, 1994); registration and the two display types follow Azuma (Azuma, 1997).
 
@@ -68,14 +69,15 @@ The last four rows need participants and ethics approval (M53.2). Without approv
 
 ## Graphics development
 
-| Item                                                                                      | State   |
-|-------------------------------------------------------------------------------------------|---------|
-| BRDF lobe from the fitted model, in stereo                                                | built   |
-| Ribbon lines with premultiplied alpha (correct on additive and on video displays)         | built   |
-| CAD model as a ghost in VR, hidden in AR                                                  | built   |
-| Measured points on the lobe (M54.1)                                                       | planned |
-| Sample lit with the fitted material in the headset; occlusion by the real machine (M54.2) | planned |
-| Native OpenXR build with the same lessons (M54.3)                                         | planned |
+| Item                                                                              | State                                                                 |
+|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| BRDF lobe from the fitted model, in stereo                                        | built                                                                 |
+| Ribbon lines with premultiplied alpha (correct on additive and on video displays) | built                                                                 |
+| CAD model as a ghost in VR, hidden in AR                                          | built                                                                 |
+| Run data as points on the lobe, with a `curve.csv` loader (M54.1)                 | built; the shipped data is a simulated run, a real run needs stage 07 |
+| Occlusion in AR: the CAD model drawn depth-only at the aligned pose (M54.2)       | built; untested on a headset; its cost is logged per session          |
+| Sample lit with the fitted material in the headset (M54.2)                        | planned                                                               |
+| Native OpenXR build with the same lessons (M54.3)                                 | planned                                                               |
 
 ## Journal rules (Springer *Virtual Reality*)
 
@@ -97,9 +99,9 @@ Read from the journal’s submission guidelines on 2026-11-25; re-read before su
 ## Limits
 
 - No headset has run the page. Nothing here is a result.
-- Overlays are not hidden by the real machine yet.
+- Occlusion by the real machine is only as good as the alignment, and costs one extra draw of the model per eye.
 - Two-point alignment assumes a level bench and gives no tilt correction.
-- The lobe is the fitted model on a square-root scale, not measured data.
+- The lobe is the fitted model on a square-root scale. The points shipped with the page are simulated, not measured.
 
 ## References
 

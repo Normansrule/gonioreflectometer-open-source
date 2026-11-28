@@ -22,4 +22,6 @@ Details: wiki → XR training. Paper draft: `paper/xr/opengonio-xr.tex`.
 | Step | Result |
 |---|---|
 | M51.1 | Desktop browser: five lessons render; `test_xr.py` passes (2026-11-25, headless Chrome). No headset. |
-| M52.1 – M55.2 | [TBD]: needs the headsets and the built machine |
+| M54.1 | Page part built (2026-11-28): simulated run drawn on the lobe, `curve.csv` loader. Real run: [TBD] |
+| M54.2 | Occlusion built, untested on a headset. Lit sample: not built |
+| M52.1 – M53.2, M54.3, M55 | [TBD]: needs the headsets and the built machine |

@@ -82,6 +82,28 @@
              fps: +(1000 / mean).toFixed(2), late_frames: dts.filter(d => d > 1.5 * med).length };
   }
 
+  /** Run data, rows of [theta_i, phi_i, theta_r, phi_r, BRDF] in the sample frame (curve.csv), placed on the lobe for the
+      lamp direction of `o`: the rows whose theta_i is nearest the current one, if within `tol` degrees. */
+  function dataPoints(o, rows, tol) {
+    const lp = sub(o.l, mulS(o.n, dot(o.n, o.l))), have = [...new Set(rows.filter(r => r[4] != null).map(r => r[0]))].sort((a, b) => a - b);
+    if (!o.lit || len(lp) < 1e-6 || !have.length) return { theta_i: null, have, pts: [] };
+    const best = have.reduce((a, b) => Math.abs(b - o.ti) < Math.abs(a - o.ti) ? b : a);
+    if (Math.abs(best - o.ti) > tol) return { theta_i: null, have, pts: [] };
+    const el = norm(lp), ep = cross(o.n, el), pts = [];
+    rows.forEach(r => { if (r[4] == null || r[0] !== best) return;
+      const th = r[2] * D2R, ph = (r[3] - r[1]) * D2R;                 // azimuth measured from the lamp's side of the normal
+      pts.push({ dir: add(mulS(o.n, Math.cos(th)), add(mulS(el, Math.sin(th) * Math.cos(ph)), mulS(ep, Math.sin(th) * Math.sin(ph)))),
+                 value: r[4] * Math.cos(th) }); });
+    return { theta_i: best, have, pts };
+  }
+  /** curve.csv text to rows of [theta_i, phi_i, theta_r, phi_r, BRDF]; throws if a column is missing. */
+  function parseCurve(text) {
+    const lines = text.split(/\r?\n/).filter(l => l.trim()), head = lines[0].split(",").map(h => h.trim());
+    const idx = ["theta_i", "phi_i", "theta_r", "phi_r", "brdf_per_sr"].map(k => { const i = head.indexOf(k); if (i < 0) throw new Error("no column " + k); return i; });
+    return lines.slice(1).map(l => { const c = l.split(","); return idx.map(i => c[i] === undefined || c[i].trim() === "" ? null : +c[i]); })
+      .filter(r => r.slice(0, 4).every(v => v !== null && Number.isFinite(v)) && (r[4] === null || Number.isFinite(r[4])));
+  }
+
   /* ---------- overlay geometry: triangles only, so lines keep their width in a headset ---------- */
   function builder() {
     const pos = [], col = [];
@@ -102,7 +124,7 @@
   const circle = (c, u, w, r, a0, a1, step) => { const out = [];
     for (let a = a0; a <= a1 + 1e-6; a += step) out.push(add(c, add(mulS(u, r * Math.cos(a * D2R)), mulS(w, r * Math.sin(a * D2R))))); return out; };
   const C = { m4: [0.16, 0.78, 0.62], m3: [0.95, 0.66, 0.20], m2: [0.62, 0.52, 0.95], m1: [0.33, 0.62, 0.98], stop: [0.92, 0.26, 0.24],
-              ray: [1.0, 0.80, 0.42], mirror: [1.0, 0.95, 0.80], view: [0.72, 0.76, 0.84], normal: [0.95, 0.95, 0.97], lobe: [1.0, 0.62, 0.22] };
+              ray: [1.0, 0.80, 0.42], mirror: [1.0, 0.95, 0.80], view: [0.72, 0.76, 0.84], normal: [0.95, 0.95, 0.97], lobe: [1.0, 0.62, 0.22], data: [0.40, 0.90, 1.0] };
   const rgba = (c, a) => [c[0], c[1], c[2], a];
 
   /** The overlay for one frame. `s` is the state (pose, mat, lesson, clock, sweep), `R` the rig. */
@@ -152,6 +174,11 @@
       }
       if (o.seen) g.blob(add(O, mulS(o.v, rad(o.v))), 8, rgba(C.normal, 1));   // where the camera samples the lobe
     }
+    let data = null;
+    if (L >= 3 && s.data && s.showData) {                   // run data on the same scale as the lobe
+      data = dataPoints(o, s.data.rows, 5);
+      data.pts.forEach(q => g.blob(add(O, mulS(q.dir, 150 * Math.min(Math.sqrt(Math.max(q.value, 0)), 1.35))), 6, rgba(C.data, 1)));
+    }
     if (L >= 4) {                                            // the sweep: one bar per lamp angle already visited
       for (let a = a0; a <= Math.min(s.sweep, a1) + 1e-6; a += 4) {
         const q = optics(R, Object.assign({}, s.pose, { M4: a }), s.mat), h = 170 * Math.min(Math.sqrt(q.reading), 1.35);
@@ -159,7 +186,7 @@
         if (h > 0.5) g.tube(p, add(p, [0, 0, h]), 7, rgba(C.lobe, 0.9));
       }
     }
-    return { geo: g.data(), optics: o };
+    return { geo: g.data(), optics: o, data };
   }
 
   /* ---------- pose of each CAD group (tools/cad/poses.py) ---------- */
@@ -220,13 +247,21 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
     const ob = gl.createBuffer(), oc = gl.createBuffer();
 
     const s = { pose: { M1: 0, M2: 0, M3: 45, M4: 120 }, mat: { base: 0.8, rough: 0.35, metal: 0 }, lesson: 0, clock: 0, sweep: R.ranges.M4[1],
-                play: false, ghost: true, view: { yaw: -58, pitch: 26, zoom: 1 }, xr: null, placement: null, align: null, logs: [] };
+                play: false, ghost: true, occlude: true, showData: true, data: null, view: { yaw: -58, pitch: 26, zoom: 1 }, xr: null, placement: null, align: null, logs: [] };
 
-    function draw(VP, mode) {
-      const sc = scene(R, s), o = sc.optics;
+    /** Build the overlay once per frame (not once per eye) and upload it. */
+    function prepare() {
+      const sc = scene(R, s);
+      gl.bindBuffer(gl.ARRAY_BUFFER, ob); gl.bufferData(gl.ARRAY_BUFFER, sc.geo.pos, gl.DYNAMIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, oc); gl.bufferData(gl.ARRAY_BUFFER, sc.geo.col, gl.DYNAMIC_DRAW);
+      return sc;
+    }
+    function draw(VP, mode, sc) {
+      const o = sc.optics;
       gl.enable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
       const ghost = mode === "immersive-ar" ? 0 : (s.ghost ? (mode ? 0.55 : 1) : 0);
-      if (mesh && ghost > 0) {
+      const depthOnly = mode === "immersive-ar" && s.occlude;   // AR: the model writes depth only, so real parts hide lines behind them
+      if (mesh && (ghost > 0 || depthOnly)) {
         gl.useProgram(PM); gl.bindBuffer(gl.ARRAY_BUFFER, mesh.vb); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.ib);
         const A = { pos: gl.getAttribLocation(PM, "aPos"), nrm: gl.getAttribLocation(PM, "aNrm"), grp: gl.getAttribLocation(PM, "aGroup") };
         gl.enableVertexAttribArray(A.pos); gl.vertexAttribPointer(A.pos, 3, gl.SHORT, false, mesh.ST, 0);
@@ -235,16 +270,18 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
         gl.uniformMatrix4fv(U(PM, "uVP"), false, VP); gl.uniformMatrix4fv(U(PM, "uG"), false, groupMatrices(R, s.pose).flat());
         gl.uniform1f(U(PM, "uScale"), R.scale); gl.uniform3fv(U(PM, "uLamp"), o.lamp); gl.uniform1f(U(PM, "uAlpha"), 1);
         gl.uniform3f(U(PM, "uTint"), 0.30 * ghost, 0.31 * ghost, 0.34 * ghost);
+        if (ghost <= 0) gl.colorMask(false, false, false, false);
         gl.disable(gl.BLEND); gl.depthMask(true); gl.drawElements(gl.TRIANGLES, mesh.n, gl.UNSIGNED_INT, 0);
+        gl.colorMask(true, true, true, true);
         [A.pos, A.nrm, A.grp].forEach(a => gl.disableVertexAttribArray(a));
       }
       gl.useProgram(PO); gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
       const p = gl.getAttribLocation(PO, "aPos"), c = gl.getAttribLocation(PO, "aCol");
-      gl.bindBuffer(gl.ARRAY_BUFFER, ob); gl.bufferData(gl.ARRAY_BUFFER, sc.geo.pos, gl.DYNAMIC_DRAW); gl.enableVertexAttribArray(p); gl.vertexAttribPointer(p, 3, gl.FLOAT, false, 0, 0);
-      gl.bindBuffer(gl.ARRAY_BUFFER, oc); gl.bufferData(gl.ARRAY_BUFFER, sc.geo.col, gl.DYNAMIC_DRAW); gl.enableVertexAttribArray(c); gl.vertexAttribPointer(c, 4, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, ob); gl.enableVertexAttribArray(p); gl.vertexAttribPointer(p, 3, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, oc); gl.enableVertexAttribArray(c); gl.vertexAttribPointer(c, 4, gl.FLOAT, false, 0, 0);
       gl.uniformMatrix4fv(U(PO, "uVP"), false, VP); gl.drawArrays(gl.TRIANGLES, 0, sc.geo.n);
       gl.disableVertexAttribArray(p); gl.disableVertexAttribArray(c); gl.depthMask(true); gl.disable(gl.BLEND);
-      return o;
+      o.data = sc.data; return o;
     }
 
     /* ----- the page view ----- */
@@ -253,6 +290,12 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
       $("xr-tr").textContent = o.seen ? o.tr.toFixed(1) + "°" : "behind";
       $("xr-off").textContent = o.lit && o.seen ? o.off.toFixed(1) + "°" : "–";
       $("xr-f").textContent = o.brdf.toFixed(3) + " /sr";
+      const d = o.data, n = $("xr-data-note");
+      if (!s.data) n.textContent = "No run data loaded.";
+      else if (!s.showData) n.textContent = s.data.label + ": hidden.";
+      else if (s.lesson < 3) n.textContent = s.data.label + ": shown from lesson 4.";
+      else if (d && d.pts.length) n.textContent = s.data.label + ": " + d.pts.length + " points at θi = " + d.theta_i + "°.";
+      else n.textContent = s.data.label + ": no rows within 5° of this θi. Rows exist at θi = " + (d ? d.have.join("°, ") + "°" : "–") + ".";
     }
     function pageFrame(t) {
       if (s.xr) return;
@@ -266,7 +309,7 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
         gl.clearColor(bg[0], bg[1], bg[2], 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         const yaw = s.view.yaw * D2R, pit = s.view.pitch * D2R, dist = 1150 * s.view.zoom / Math.min(1, (w / h) / 1.2), at = [40, 0, 150];
         const eye = [at[0] + dist * Math.cos(pit) * Math.cos(yaw), at[1] + dist * Math.cos(pit) * Math.sin(yaw), at[2] + dist * Math.sin(pit)];
-        readout(draw(mul(persp(0.62, w / h, 10, 8000), lookAt(eye, at, [0, 0, 1])), null));
+        readout(draw(mul(persp(0.62, w / h, 10, 8000), lookAt(eye, at, [0, 0, 1])), null, prepare()));
       }
       requestAnimationFrame(pageFrame);
     }
@@ -285,6 +328,17 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
       b.addEventListener("click", () => setLesson(i)); $("xr-lessons").appendChild(b); });
     $("xr-play").addEventListener("change", e => { s.play = e.target.checked; });
     $("xr-ghost").addEventListener("change", e => { s.ghost = e.target.checked; });
+    $("xr-occlude").addEventListener("change", e => { s.occlude = e.target.checked; });
+    $("xr-data").addEventListener("change", e => { s.showData = e.target.checked; });
+    const setMat = m => { [["xr-rough", "rough"], ["xr-metal", "metal"], ["xr-base", "base"]].forEach(([id, k]) => { s.mat[k] = m[k]; const e = $(id); e.value = m[k]; e.nextElementSibling.textContent = (+m[k]).toFixed(2); }); };
+    const ex = window.SIM_EXAMPLES && window.SIM_EXAMPLES.plastic;
+    if (ex) s.data = { rows: ex.rows, label: "Simulated run, not a measurement", fit: { base: ex.fit.base_color, rough: ex.fit.roughness, metal: ex.fit.metallic } };
+    $("xr-fit").disabled = !(s.data && s.data.fit);
+    $("xr-fit").addEventListener("click", () => { if (s.data && s.data.fit) setMat(s.data.fit); });
+    $("xr-file").addEventListener("change", async e => { const f = e.target.files[0]; if (!f) return;
+      try { const rows = parseCurve(await f.text()); if (!rows.length) throw new Error("no rows");
+        s.data = { rows, label: "Loaded " + f.name + " (" + rows.length + " rows)", fit: null }; $("xr-fit").disabled = true; status("Loaded " + f.name + "."); }
+      catch (err) { status("Could not read " + f.name + ": " + err.message + ". Expected a run's curve.csv."); } });
     let drag = null;
     canvas.addEventListener("pointerdown", e => { drag = [e.clientX, e.clientY]; canvas.setPointerCapture(e.pointerId); });
     canvas.addEventListener("pointermove", e => { if (!drag) return; s.view.yaw -= (e.clientX - drag[0]) * 0.4; s.view.pitch = Math.max(-5, Math.min(85, s.view.pitch + (e.clientY - drag[1]) * 0.3)); drag = [e.clientX, e.clientY]; });
@@ -317,7 +371,7 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
       s.align = mode === "immersive-ar" && $("xr-align").checked ? { pts: [], src: null } : null;
       s.xr = session; s.play = true; setLesson(0);
       const log = { mode, started: new Date().toISOString(), user_agent: navigator.userAgent, reference_space: floor ? "local-floor" : "local",
-                    views: 0, framebuffer: null, alignment: null, lessons_seen: [], dts: [] };
+                    views: 0, framebuffer: null, alignment: null, occlusion: mode === "immersive-ar" && s.occlude, lessons_seen: [], dts: [] };
       let last = 0, t0 = 0, pending = null;
       session.addEventListener("select", ev => { pending = ev.inputSource; });
       session.addEventListener("end", () => {
@@ -345,9 +399,10 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
         gl.bindFramebuffer(gl.FRAMEBUFFER, layer.framebuffer);
         gl.clearColor(0, 0, 0, mode === "immersive-ar" ? 0 : 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         log.views = pose.views.length; log.framebuffer = [layer.framebufferWidth, layer.framebufferHeight];
+        const sc = prepare();
         for (const view of pose.views) {
           const vp = layer.getViewport(view); gl.viewport(vp.x, vp.y, vp.width, vp.height);
-          draw(mul(Array.from(view.projectionMatrix), mul(Array.from(view.transform.inverse.matrix), s.placement.matrix)), mode);
+          draw(mul(Array.from(view.projectionMatrix), mul(Array.from(view.transform.inverse.matrix), s.placement.matrix)), mode, sc);
         }
       });
       status(mode === "immersive-ar" && s.align ? "In the headset: pinch at the sample centre, then at the camera lens." : "In the headset: pinch or pull the trigger for the next lesson.");
@@ -364,6 +419,6 @@ void main(){ vec3 n = normalize(vN); vec3 l = normalize(uLamp - vW); float d = a
     requestAnimationFrame(pageFrame);
   }
 
-  window.XRTrain = { LESSONS, brdf, frame, optics, place, summary, scene, animate, start };
+  window.XRTrain = { LESSONS, brdf, frame, optics, place, summary, dataPoints, parseCurve, scene, animate, start };
   if (typeof document !== "undefined" && document.getElementById("xr-gl")) start().catch(e => { const n = document.getElementById("xr-status"); if (n) n.textContent = "Could not start: " + e.message; });
 })();

@@ -13,3 +13,5 @@
 .key.k1 { background: #549efa; } .key.kstop { background: #eb423d; }
 .limits { display: grid; gap: var(--s-2); padding-left: 1.2em; }
 @media (max-width: 560px) { .xr-read { grid-template-columns: 1fr; } }
+.xr-data { display: grid; gap: var(--s-2); }
+.xr-file { cursor: pointer; }

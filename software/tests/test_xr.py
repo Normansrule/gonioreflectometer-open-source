@@ -72,3 +72,24 @@ def test_two_point_alignment_puts_the_zero_point_and_the_camera_where_they_were_
 def test_frame_time_summary():
     s = js("XRTrain.summary([11,11,11,11,11,11,11,11,11,33])")
     assert s["frames"] == 10 and s["late_frames"] == 1 and s["median_ms"] == 11 and s["fps"] == pytest.approx(1000 / 13.2, abs=0.01)
+
+
+def test_run_data_lands_on_the_fitted_lobe():
+    """The simulated run shipped with the site, drawn for theta_i = 50 degrees, must sit on the lobe of its own fit."""
+    pre = (ROOT / "docs/og/sim-examples.js").read_text()
+    out = js("(() => { " + pre + " const ex = SIM_EXAMPLES.plastic, m = {base: ex.fit.base_color, rough: ex.fit.roughness, metal: ex.fit.metallic};"
+             " const o = XRTrain.optics(window.RIG, {M1:0, M2:0, M3:45, M4:95}, m), d = XRTrain.dataPoints(o, ex.rows, 5);"
+             " const dot = (a, b) => a[0]*b[0] + a[1]*b[1] + a[2]*b[2];"
+             " return [o.ti, d.theta_i, d.pts.map(q => [q.value, XRTrain.brdf(o.n, o.l, q.dir, m) * dot(o.n, q.dir)]),"
+             " XRTrain.dataPoints(XRTrain.optics(window.RIG, {M1:0, M2:0, M3:45, M4:102}, m), ex.rows, 2).pts.length]; })()")
+    assert out[0] == pytest.approx(50.0, abs=1e-6) and out[1] == 50 and len(out[2]) >= 5
+    got, want = np.array(out[2]).T
+    assert np.allclose(got, want, rtol=0.03)
+    assert out[3] == 0                                       # theta_i = 57 degrees: no rows within 2 degrees, nothing drawn
+
+
+def test_curve_csv_parser_keeps_gaps_and_rejects_a_missing_column():
+    rows = js(r"XRTrain.parseCurve('M3,theta_i,phi_i,theta_r,phi_r,brdf_per_sr\n0,20,0,10,180,0.5\n0,20,0,80,180,\n')")
+    assert rows == [[20, 0, 10, 180, 0.5], [20, 0, 80, 180, None]]
+    bad = js(r"(() => { try { XRTrain.parseCurve('theta_i,phi_i\n1,2\n'); return 'ok'; } catch (e) { return e.message; } })()")
+    assert "theta_r" in bad

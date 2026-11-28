@@ -55,6 +55,14 @@
    <div class="checks">
     <label class="check"><input type="checkbox" id="xr-play"> Play the lesson</label>
     <label class="check"><input type="checkbox" id="xr-ghost" checked> Show the machine</label>
+    <label class="check"><input type="checkbox" id="xr-data" checked> Show run data on the lobe</label>
+   </div>
+   <div class="xr-data">
+    <p class="small" id="xr-data-note">No run data loaded.</p>
+    <div class="buttons">
+     <button class="btn" type="button" id="xr-fit" disabled>Use the run's fitted material</button>
+     <label class="btn xr-file">Load curve.csv<input type="file" id="xr-file" accept=".csv,text/csv" class="sr-only"></label>
+    </div>
    </div>
    <dl class="xr-read">
     <div><dt>θi (lamp to normal)</dt><dd id="xr-ti">–</dd></div>
@@ -81,6 +89,7 @@
    </div>
    <p class="small">AR: <span id="xr-ar-note">checking…</span> · VR: <span id="xr-vr-note">checking…</span></p>
    <label class="check"><input type="checkbox" id="xr-align" checked> Align to the real machine in AR (two points)</label>
+   <label class="check"><input type="checkbox" id="xr-occlude" checked> Hide lines behind the machine in AR</label>
    <ol class="xr-steps">
     <li><b>Align (AR).</b> Pinch at the centre of the sample, then pinch at the camera lens. The overlay snaps to those
      two points; height comes from gravity.</li>
@@ -132,9 +141,14 @@
   <div class="card"><h3>Stereo without an engine</h3>
    <p>Plain WebGL: one draw per eye with the headset's own view and projection matrices. No engine or library to
     install, about 300 lines.</p></div>
+  <div class="card"><h3>Data on the model</h3>
+   <p>A run's <code>curve.csv</code> is drawn as points on the lobe, on the same scale. The page ships a simulated
+    run; load your own file to compare a real measurement with its fit.</p></div>
+  <div class="card"><h3>Occlusion in AR</h3>
+   <p>The CAD model is drawn into the depth buffer only, at the aligned pose, so real parts hide the lines behind
+    them. It is as good as the alignment; untested on a headset.</p></div>
   <div class="card"><h3>Next</h3>
-   <p>Measured BRDF from a real run in the lobe; the fitted material lit on the sample in the headset; occlusion by
-    the real machine; a native OpenXR build for comparison.</p></div>
+   <p>The fitted material lit on the sample in the headset; a native OpenXR build for comparison.</p></div>
  </div>
 </section>
 
@@ -142,9 +156,9 @@
  <h2>Limits</h2>
  <ul class="limits">
   <li>Not yet run on any headset. Everything on this page was checked in a desktop browser only.</li>
-  <li>The overlay is not hidden by the real machine: virtual lines draw over real parts that should cover them.</li>
+  <li>Occlusion by the real machine uses the CAD model at the aligned pose; an alignment error shows as lines cut in the wrong place.</li>
   <li>Two-point alignment fixes position and heading; it assumes the bench is level.</li>
-  <li>The lobe is the fitted model, not measured data, and is drawn on a square-root scale.</li>
+  <li>The lobe is the fitted model on a square-root scale. The points shipped with the page come from the simulator, not from a measurement.</li>
   <li>The comparison table is a protocol. No result exists yet.</li>
  </ul>
 </section>
@@ -153,6 +167,7 @@
  <nav aria-label="Pages"><a class="mark" href="./">OpenGonio</a><a href="explore/">Project map</a><a href="inside.html">Inside</a><a href="app/">Control app</a><a href="lab.html">Lab</a><a href="render.html">Render</a><a href="xr.html" aria-current="page">AR and VR</a><a href="power.html">Power wiring</a><a href="controller.html">Controller wiring</a><a href="machine.html">Machine wiring</a><a href="addons.html">Hub add-ons</a><a href="wiring.html">Wiring guide</a><a href="build.html">Build book</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/blob/main/paper/build/opengonio.pdf">Paper (PDF)</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source/wiki">Wiki</a><a href="https://github.com/Normansrule/Gonioreflectometer-Open-Source">GitHub</a></nav>
  <p><span>Hardware CERN-OHL-S-2.0</span><span>Software GPL-3.0-or-later</span><span>Docs CC BY-SA 4.0</span><span>Not yet run on a headset.</span></p>
 </footer>
+<script src="og/sim-examples.js"></script>
 <script src="og/model/rig.js"></script>
 <script src="og/xr.js"></script>
 </body>
