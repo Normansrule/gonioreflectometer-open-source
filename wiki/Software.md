@@ -30,6 +30,7 @@ opengonio curve data/sim/plastic           # reflectance curve
 | CadQuery | regenerating the printed parts | `pip install cadquery` | use the STEP and STL files in the repository |
 | LaTeX (latexmk, biber), pandoc | paper PDF, Word and wiki exports | system packages | `make paper` and `make export` are skipped |
 | Node.js | one test: the AR / VR page's JavaScript against the Python | nodejs.org | that test is skipped |
+| GitHub Actions | the automated checks, the website, the wiki and the desktop app builds on every push | runs on GitHub; nothing to install | run `make all` and `make ci` by hand |
 | A WebXR browser (Edge on HoloLens 2, Browser on Meta Quest) | AR and VR training in a headset | on the headset | the trainer runs in the page |
 
 OpenCV is checked by `software/tests/test_opencv.py` on synthetic images: the HDR merge returns linear radiance from gamma-encoded frames, a rendered ChArUco board calibrates a camera, and image files keep RGB order. The camera itself needs the hardware.

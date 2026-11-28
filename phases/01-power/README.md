@@ -112,10 +112,11 @@ Tick the boxes; `make done id=M05.1`.
 
 1. Adapter **unplugged** from the wall, round plug in the jack. E-stop pressed.
 2. Cut list (measure your own route along the deck edge first): red 10 cm (jack → NC 1) and one run NC 2 → tray (≈ 1 m); black one run jack → tray (≈ 1 m). Keep the rest: 10 cm offcuts for M08.3 and M10.3, 15 cm leads for the lamp (M18.1).
-3. Jack `+` → red wire → e-stop NC terminal 1. Strip 8 mm, twist, under either gap of the terminal screw, tighten, tug.
-4. E-stop NC terminal 2 → red wire (the whole run to the tray) → a 3-way lever connector: MOT+, slot 1. Mark it with tape. (M14.1 puts the limit switch in place of this wire.)
-5. Jack `−` → black wire (the whole run to the tray) → a second 3-way lever connector: MOT−, slot 1. Mark it.
-6. Tug every wire: none slips out. Lid back on the e-stop box.
+3. Cable entry: both red wires leave the e-stop box through one hole in an end wall, the one facing the jack. Use the fitted gland or plug if there is one. Otherwise open one knockout (the round disc with a groove): flat screwdriver on the groove from outside, push at three points round it. Feed the wires through the hole before putting them on the terminals.
+4. Jack `+` → red wire → e-stop NC terminal 1. Strip 8 mm, twist, under either gap of the terminal screw, tighten, tug.
+5. E-stop NC terminal 2 → red wire (the whole run to the tray) → a 3-way lever connector: MOT+, slot 1. Mark it with tape. (M14.1 puts the limit switch in place of this wire.)
+6. Jack `−` → black wire (the whole run to the tray) → a second 3-way lever connector: MOT−, slot 1. Mark it.
+7. Tug every wire: none slips out. Lid back on the e-stop box: lower it straight while drawing the slack out through the hole; no wire in the seam.
 
 #### Verify
 
@@ -126,6 +127,8 @@ Tick the boxes; `make done id=M05.1`.
 
 - No beep through the e-stop: you used the NO contact; move the wires to the NC pair found in M04.2.
 - Wire pulls out: strip longer (11 mm in lever connectors), twist, re-close the lever.
+- Lid will not close: a wire crosses the rim, or too much wire is inside. Route both through the cable hole and leave about a hand's width inside.
+- Knockout will not open by hand: do not drill or cut. Check whether it is a threaded plug that unscrews; if not, note the box model in the stage results.
 
 #### Record
 

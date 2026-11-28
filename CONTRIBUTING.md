@@ -16,6 +16,11 @@ Thank you for helping. Builders, testers and developers are all welcome.
 - Never invent links, part numbers, prices or results: mark unknowns `[TBD]`.
 - Generated files (`README.md` tables, `PARTS.md`, `wiki/`, `exports/`, `paper/generated/`) come from their sources: edit the source.
 
+## Commits and credit
+
+- Commits are made by people. The automated workflows that regenerate files commit under the name of the person who pushed; no bot account appears as a contributor.
+- Tools the project relies on (OpenCV, GitHub Actions, COLMAP and the rest) are credited in the wiki (Software → Other software this project uses) and in `REFERENCES.md`, not as contributors.
+
 ## Licences
 
 Hardware: CERN-OHL-S-2.0. Software: GPL-3.0-or-later. Documentation: CC BY-SA 4.0. By contributing you agree that your
